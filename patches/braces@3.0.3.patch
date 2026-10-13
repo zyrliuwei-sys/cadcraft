@@ -1,0 +1,16 @@
+diff --git a/lib/parse.js b/lib/parse.js
+index 3a6988e629f52aee6609dc5ec290a5e9ff47cecb..110eed336c0aa21c30db6ab4875ff16abd6a18b3 100644
+--- a/lib/parse.js
++++ b/lib/parse.js
+@@ -74,6 +74,11 @@ const parse = (input, options = {}) => {
+   push({ type: 'bos' });
+ 
+   while (index < length) {
++    // Bound the AST depth before recursive stringify/compile/expand visitors
++    // consume it. The upstream 3.0.3 release only bounds input length.
++    if (stack.length > 128) {
++      throw new SyntaxError('Brace pattern nesting exceeds the safe limit (128)');
++    }
+     block = stack[stack.length - 1];
+     value = advance();
+ 
