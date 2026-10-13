@@ -110,5 +110,6 @@
       "msw",
       "sharp"
     ]
-  }
+  },
+  "packageManager": "pnpm@11.15.1"
 }
