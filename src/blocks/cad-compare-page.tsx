@@ -118,6 +118,32 @@ export function CadComparePage() {
         eyebrow={m['cad.compare.eyebrow']()}
         title={m['cad.cmp.h1']()}
         lead={m['cad.cmp.lead']()}
+        aside={
+          <div className="border-foreground/80 bg-sheet grid grid-cols-2 border">
+            <div className="bg-signal-soft border-foreground/80 border-r p-6 sm:p-8">
+              <p className="text-muted-foreground font-mono text-[11px] tracking-[0.08em] uppercase">
+                CADCraft
+              </p>
+              <p className="font-display-wide mt-4 text-5xl font-semibold sm:text-6xl">
+                $0
+              </p>
+              <p className="text-muted-foreground mt-3 text-sm">
+                {m['cad.cmp.price_cc_note']()}
+              </p>
+            </div>
+            <div className="p-6 sm:p-8">
+              <p className="text-muted-foreground font-mono text-[11px] tracking-[0.08em] uppercase">
+                AutoCAD
+              </p>
+              <p className="font-display-wide mt-4 text-5xl font-semibold sm:text-6xl">
+                ~$2k
+              </p>
+              <p className="text-muted-foreground mt-3 text-sm">
+                {m['cad.cmp.price_ac_note']()}
+              </p>
+            </div>
+          </div>
+        }
       >
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Link href="/online" className={ctaPrimary}>

@@ -1,6 +1,7 @@
 import handler from '@tanstack/react-start/server-entry';
 
 import { getCookieFromHeader } from './lib/cookie';
+import { respErr } from './lib/resp';
 import { paraglideMiddleware } from './paraglide/server.js';
 
 // On Cloudflare Workers, stash the binding env (D1, ASSETS, …) on globalThis
@@ -38,6 +39,9 @@ function htmlEdgeCache(req: Request): Cache | undefined {
   if (req.method !== 'GET') return undefined;
   const url = new URL(req.url);
   if (url.search || !HTML_CACHE_PATHS.has(url.pathname)) return undefined;
+  // Never share SSR output between sessions or locale-cookie variants.
+  if (req.headers.has('Cookie') || req.headers.has('Authorization'))
+    return undefined;
   return (globalThis as { caches?: { default?: Cache } }).caches?.default;
 }
 
@@ -71,8 +75,25 @@ async function renderWithEdgeCache(req: Request): Promise<Response> {
 // getLocale() resolves per-request (AsyncLocalStorage) during SSR.
 export default {
   async fetch(req: Request): Promise<Response> {
+    const url = new URL(req.url);
+    const origin = req.headers.get('Origin');
+    if (
+      url.pathname.startsWith('/api/') &&
+      !['GET', 'HEAD', 'OPTIONS'].includes(req.method) &&
+      !url.pathname.startsWith('/api/payment/notify/') &&
+      !url.pathname.startsWith('/api/auth/') &&
+      origin &&
+      origin !== url.origin
+    ) {
+      return respErr('Forbidden origin', { status: 403 });
+    }
     await ensureCloudflareEnv();
     const response = await renderWithEdgeCache(req);
+    if (url.pathname.startsWith('/api/')) {
+      response.headers.set('X-Robots-Tag', 'noindex, nofollow');
+      // API responses can contain sessions, payment data or user records.
+      response.headers.set('Cache-Control', 'private, no-store');
+    }
     response.headers.set('X-Content-Type-Options', 'nosniff');
     response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
     response.headers.set(

@@ -26,13 +26,22 @@ import { Header } from '@/blocks/header';
 export const Route = createFileRoute('/')({
   loader: () => ({ locale: getLocale() }),
   head: ({ loaderData }) => {
+    const heroPreload = {
+      rel: 'preload',
+      as: 'image',
+      type: 'image/webp',
+      imageSrcSet:
+        '/imgs/cadcraft/cadcraft-drawing-640.webp 640w, /imgs/cadcraft/cadcraft-drawing-960.webp 960w, /imgs/cadcraft/cadcraft-drawing.webp 1680w',
+      imageSizes: '(min-width: 1280px) 1232px, 100vw',
+      fetchPriority: 'high' as const,
+    };
     const locale = loaderData?.locale ?? 'en';
     const title = m['common.metadata.title']({}, { locale: locale as any });
     const description = m['common.metadata.description'](
       {},
       { locale: locale as any }
     );
-    return pageHead({
+    const head = pageHead({
       path: '/',
       locale,
       title,
@@ -65,6 +74,7 @@ export const Route = createFileRoute('/')({
         },
       ],
     });
+    return { ...head, links: [heroPreload, ...head.links] };
   },
   component: HomePage,
 });

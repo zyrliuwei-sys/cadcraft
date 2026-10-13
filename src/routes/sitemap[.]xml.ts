@@ -11,6 +11,7 @@ const STATIC_PATHS = [
   '/vs-autocad',
   '/privacy-policy',
   '/terms-of-service',
+  '/acceptable-use-policy',
 ];
 
 type Entry = {
@@ -26,6 +27,20 @@ function urlFor(path: string, locale: string): string {
   }).href;
 }
 
+function xmlEscape(value: string): string {
+  return value.replace(
+    /[&<>"']/g,
+    (char) =>
+      ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&apos;',
+      })[char]!
+  );
+}
+
 // One <url> per language version, each listing every alternate (Google's
 // recommended hreflang form) — so /zh pages are real <loc>s that crawlers and
 // the IndexNow sitemap submit pick up, not just alternates of the en page.
@@ -33,15 +48,15 @@ function entryXml(e: Entry): string {
   const alternates = [
     ...locales.map(
       (loc) =>
-        `    <xhtml:link rel="alternate" hreflang="${loc}" href="${urlFor(e.path, loc)}"/>`
+        `    <xhtml:link rel="alternate" hreflang="${loc}" href="${xmlEscape(urlFor(e.path, loc))}"/>`
     ),
-    `    <xhtml:link rel="alternate" hreflang="x-default" href="${urlFor(e.path, baseLocale)}"/>`,
+    `    <xhtml:link rel="alternate" hreflang="x-default" href="${xmlEscape(urlFor(e.path, baseLocale))}"/>`,
   ].join('\n');
   return locales
     .map((loc) =>
       [
         '  <url>',
-        `    <loc>${urlFor(e.path, loc)}</loc>`,
+        `    <loc>${xmlEscape(urlFor(e.path, loc))}</loc>`,
         alternates,
         e.lastModified ? `    <lastmod>${e.lastModified}</lastmod>` : null,
         `    <changefreq>${e.changeFrequency}</changefreq>`,
@@ -79,7 +94,7 @@ export const Route = createFileRoute('/sitemap.xml')({
           }
           for (const post of rows) {
             entries.push({
-              path: `/blog/${post.slug}`,
+              path: `/blog/${encodeURIComponent(post.slug)}`,
               lastModified: new Date(post.createdAt).toISOString(),
               changeFrequency: 'monthly',
               priority: 0.6,

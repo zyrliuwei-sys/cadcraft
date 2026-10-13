@@ -34,7 +34,7 @@ async function POST({ request }: { request: Request }) {
     if (action !== 'grant' && action !== 'deduct')
       return respErr('Invalid action');
     const amount = Number(credits);
-    if (!Number.isFinite(amount) || amount <= 0)
+    if (!Number.isSafeInteger(amount) || amount <= 0)
       return respErr('Invalid credits');
 
     const [target] = await db()

@@ -82,6 +82,9 @@ export async function grant(params: {
   scene?: string;
   expiresAt?: Date | null;
 }) {
+  if (!Number.isSafeInteger(params.credits) || params.credits <= 0) {
+    throw new Error('Credits must be a positive safe integer');
+  }
   const newCredit: NewCredit = {
     id: getUuid(),
     userId: params.userId,
@@ -122,6 +125,9 @@ export async function consume(params: {
     metadata,
     tx,
   } = params;
+  if (!Number.isSafeInteger(amount) || amount <= 0) {
+    throw new Error('Credits must be a positive safe integer');
+  }
   const now = new Date();
 
   const execute = async (tx: any) => {
@@ -190,6 +196,10 @@ export async function consume(params: {
       }
 
       batchNo++;
+    }
+
+    if (remainingToConsume > 0) {
+      throw new Error('Credit consumption could not complete');
     }
 
     // 3. Create consumption record

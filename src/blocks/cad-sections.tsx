@@ -36,9 +36,9 @@ export function Eyebrow({ children }: { children: ReactNode }) {
   return (
     <p className="text-signal-ink mb-5 flex items-center gap-3 font-mono text-xs font-medium tracking-[0.08em] uppercase">
       <span className="snap-mark" aria-hidden="true" />
-      <span className="shrink-0">{children}</span>
+      <span className="min-w-0 break-words">{children}</span>
       <span
-        className="plot-rule bg-signal/50 h-px w-24 sm:w-40"
+        className="plot-rule bg-signal/50 h-px w-12 shrink-0 sm:w-40"
         aria-hidden="true"
       />
     </p>
@@ -127,7 +127,7 @@ export function CadHero() {
               <picture>
                 <source
                   type="image/webp"
-                  srcSet="/imgs/cadcraft/cadcraft-drawing-960.webp 960w, /imgs/cadcraft/cadcraft-drawing.webp 1680w"
+                  srcSet="/imgs/cadcraft/cadcraft-drawing-640.webp 640w, /imgs/cadcraft/cadcraft-drawing-960.webp 960w, /imgs/cadcraft/cadcraft-drawing.webp 1680w"
                   sizes="(min-width: 1280px) 1232px, 100vw"
                 />
                 <img
@@ -680,6 +680,7 @@ export function DownloadRows({ className }: { className?: string }) {
       desc: m['cad.download.windows_desc'](),
       file: 'MSI x64',
       href: cadcraftLinks.windows,
+      os: 'windows' as Os,
     },
     {
       icon: Monitor,
@@ -687,6 +688,7 @@ export function DownloadRows({ className }: { className?: string }) {
       desc: m['cad.download.macos_desc'](),
       file: 'DMG Universal',
       href: cadcraftLinks.macos,
+      os: 'macos' as Os,
     },
     {
       icon: Terminal,
@@ -694,6 +696,7 @@ export function DownloadRows({ className }: { className?: string }) {
       desc: m['cad.download.linux_desc'](),
       file: 'Flatpak x86_64',
       href: cadcraftLinks.linux,
+      os: 'linux' as Os,
     },
   ];
   return (
@@ -809,12 +812,12 @@ export function CadLearn() {
             className="group bg-sheet hover:border-foreground flex flex-col border transition-colors"
           >
             <img
-              src="/imgs/cadcraft/cadcraft-canvas.webp"
-              alt={m['home.hero.image_alt']()}
-              width={1160}
-              height={940}
+              src="/imgs/cadcraft/cadcraft-grips.webp"
+              alt={m['home.learn.image_alt']()}
+              width={1100}
+              height={619}
               loading="lazy"
-              className="aspect-[16/9] w-full object-cover object-top"
+              className="aspect-[16/9] w-full object-cover"
             />
             <div className="flex flex-1 flex-col p-6">
               <h3 className="font-display text-2xl font-semibold">

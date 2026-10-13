@@ -15,6 +15,7 @@ export const Route = createFileRoute('/ai-livestream')({
       meta: [
         { title },
         { name: 'description', content: description },
+        { name: 'robots', content: 'noindex,follow' },
         { property: 'og:title', content: title },
         { property: 'og:description', content: description },
         { property: 'og:type', content: 'website' },
@@ -27,7 +28,8 @@ export const Route = createFileRoute('/ai-livestream')({
       links: [
         {
           rel: 'canonical',
-          href: localizeUrl(`${envConfigs.app_url}/`, { locale }).href,
+          href: localizeUrl(`${envConfigs.app_url}/ai-livestream`, { locale })
+            .href,
         },
       ],
     };

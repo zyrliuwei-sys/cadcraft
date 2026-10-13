@@ -31,6 +31,30 @@ export function CadDownloadPage() {
         eyebrow={m['cad.dl.version']()}
         title={m['cad.dl.h1']()}
         lead={m['cad.dl.lead']()}
+        aside={
+          <dl className="border-foreground/80 bg-sheet grid grid-cols-2 border-t border-l">
+            {[
+              [m['home.spec.release'](), `v${V}`],
+              [m['home.spec.license'](), m['home.spec.license_v']()],
+              ['Windows', 'x64, ARM64, x86'],
+              ['macOS', 'Universal'],
+              ['Linux', 'x86_64, aarch64, riscv64'],
+              ['FreeBSD', 'x86_64'],
+            ].map(([k, v]) => (
+              <div
+                key={k}
+                className="border-foreground/80 border-r border-b px-4 py-4"
+              >
+                <dt className="text-muted-foreground font-mono text-[11px] tracking-[0.08em] uppercase">
+                  {k}
+                </dt>
+                <dd className="font-display mt-1.5 text-lg leading-snug font-semibold">
+                  {v}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        }
       >
         <div className="mt-8 flex flex-wrap gap-3">
           <a

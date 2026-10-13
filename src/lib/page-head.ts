@@ -30,6 +30,9 @@ export function pageHead({
       { property: 'og:url', content: urlFor(locale) },
       { property: 'og:image', content: image },
       { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:title', content: title },
+      { name: 'twitter:description', content: description },
+      { name: 'twitter:image', content: image },
     ],
     links: [
       { rel: 'canonical', href: urlFor(locale) },
@@ -43,7 +46,7 @@ export function pageHead({
     scripts: (Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : []).map(
       (data) => ({
         type: 'application/ld+json',
-        children: JSON.stringify(data),
+        children: JSON.stringify(data).replace(/</g, '\\u003c'),
       })
     ),
   };

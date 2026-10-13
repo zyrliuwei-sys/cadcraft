@@ -19,6 +19,7 @@ export function Reveal({
       el.classList.add('is-visible');
       return;
     }
+    el.dataset.revealPending = 'true';
     const io = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {

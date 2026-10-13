@@ -111,8 +111,8 @@ export function CadOnlinePage() {
             <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
               {m['cad.online.render_desc']()}
             </p>
-            <ul className="mt-3 space-y-1 font-mono text-sm">
-              <li>
+            <ul className="mt-4 space-y-2 font-mono text-sm">
+              <li className="flex flex-wrap items-baseline gap-x-3">
                 <a
                   className="text-signal-ink hover:underline"
                   href={`${cadcraftLinks.app}?webgl`}
@@ -120,10 +120,12 @@ export function CadOnlinePage() {
                   rel="noopener"
                 >
                   /cadcraft-app/?webgl
-                </a>{' '}
-                — {m['cad.online.render_webgl']()}
+                </a>
+                <span className="text-muted-foreground font-sans">
+                  {m['cad.online.render_webgl']()}
+                </span>
               </li>
-              <li>
+              <li className="flex flex-wrap items-baseline gap-x-3">
                 <a
                   className="text-signal-ink hover:underline"
                   href={`${cadcraftLinks.app}?cpu`}
@@ -131,8 +133,10 @@ export function CadOnlinePage() {
                   rel="noopener"
                 >
                   /cadcraft-app/?cpu
-                </a>{' '}
-                — {m['cad.online.render_cpu']()}
+                </a>
+                <span className="text-muted-foreground font-sans">
+                  {m['cad.online.render_cpu']()}
+                </span>
               </li>
             </ul>
           </div>

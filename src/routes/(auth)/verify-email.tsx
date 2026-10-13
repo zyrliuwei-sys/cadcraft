@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { authClient, useSession } from '@/core/auth/client';
 import { Link, useRouter } from '@/core/i18n/navigation';
 import { envConfigs } from '@/config';
+import { safeInternalPath } from '@/lib/redirect';
 import { m } from '@/paraglide/messages.js';
 import { deLocalizeHref, localizeHref } from '@/paraglide/runtime.js';
 import { Button } from '@/components/ui/button';
@@ -24,8 +25,7 @@ function safeDecodeCallbackUrl(raw?: string | null) {
   if (!raw) return '/';
   try {
     const decoded = decodeURIComponent(raw);
-    if (decoded.startsWith('/')) return decoded;
-    return '/';
+    return safeInternalPath(decoded) || '/';
   } catch {
     return '/';
   }

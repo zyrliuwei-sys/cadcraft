@@ -28,20 +28,22 @@ export function safeInternalPath(
 ): string | null {
   if (!input) return null;
 
-  let path = input;
-  if (!path.startsWith('/') || path.startsWith('//')) {
-    const origin = typeof window !== 'undefined' ? window.location.origin : '';
-    if (!origin) return null;
-    try {
-      const url = new URL(path, origin);
-      if (url.origin !== origin) return null;
-      path = url.pathname + url.search + url.hash;
-    } catch {
-      return null;
-    }
+  // Browsers normalize backslashes and control characters in URLs. Validate
+  // the parsed origin even for paths (e.g. /\\evil.example), before navigation.
+  if (/[\\\u0000-\u0020\u007f]/.test(input)) return null;
+  const origin =
+    typeof window !== 'undefined'
+      ? window.location.origin
+      : 'https://redirect.invalid';
+  if (typeof window === 'undefined' && !input.startsWith('/')) return null;
+  try {
+    const url = new URL(input, origin);
+    if (url.origin !== origin) return null;
+    const path = url.pathname + url.search + url.hash;
+    return AUTH_PATH_RE.test(deLocalizeHref(path)) ? null : path;
+  } catch {
+    return null;
   }
-
-  return AUTH_PATH_RE.test(path) ? null : path;
 }
 
 // Schemes that execute or embed rather than hand off to an installed app.

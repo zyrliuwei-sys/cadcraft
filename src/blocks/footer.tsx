@@ -34,13 +34,20 @@ export function Footer() {
       links: [
         { label: m['landing.footer.privacy'](), href: '/privacy-policy' },
         { label: m['landing.footer.terms'](), href: '/terms-of-service' },
+        {
+          label: m['landing.footer.aup'](),
+          href: '/acceptable-use-policy',
+        },
+        {
+          label: `${m['landing.footer.contact']()}: support@cadcraft.org`,
+          href: 'mailto:support@cadcraft.org',
+        },
       ],
     },
   ];
 
   return (
     <SiteFooter
-      tagline={m['cad.footer.tagline']()}
       columns={columns}
       badges={<FooterBadgeList className="mt-10" />}
       disclaimer={m['cad.footer.disclaimer']()}
@@ -49,9 +56,9 @@ export function Footer() {
           aria-hidden="true"
           className="overflow-hidden border-t px-4 sm:px-6"
         >
-          <p className="font-display-wide mx-auto flex max-w-7xl items-end justify-between pt-6 text-[clamp(56px,15.5vw,228px)] leading-[0.78] font-semibold select-none">
+          <p className="font-display-wide mx-auto flex max-w-7xl items-end justify-between pt-6 text-[clamp(40px,14.2vw,228px)] leading-[0.78] font-semibold select-none">
             <span>CADCraft</span>
-            <span className="snap-mark mb-[0.06em] size-[0.18em]! border-[0.035em]!" />
+            <span className="snap-mark mb-[0.06em] hidden size-[0.18em]! border-[0.035em]! sm:inline-block" />
           </p>
         </div>
       }

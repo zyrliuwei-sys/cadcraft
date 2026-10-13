@@ -16,3 +16,7 @@ overrides:
   js-yaml: 4.3.2
   postcss: 8.5.23
   browserslist: 4.28.7
+  seroval: 1.6.9
+  '@babel/core': 7.29.7
+  source-map-js: 1.2.2
+  'esbuild@<=0.24.2': 0.25.12

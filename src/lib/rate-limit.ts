@@ -1,5 +1,3 @@
-import { md5 } from './hash';
-
 type MinIntervalOptions = {
   intervalMs: number;
   keyPrefix?: string;
@@ -13,13 +11,11 @@ declare global {
 }
 
 function getClientIpFromRequest(request: Request): string {
+  const cloudflareIp = request.headers.get('cf-connecting-ip');
+  if (cloudflareIp) return cloudflareIp;
   const xff = request.headers.get('x-forwarded-for');
   if (xff) return xff.split(',')[0]?.trim() || '';
-  return (
-    request.headers.get('cf-connecting-ip') ||
-    request.headers.get('x-real-ip') ||
-    ''
-  );
+  return request.headers.get('x-real-ip') || '';
 }
 
 function getStore(): Store {
@@ -32,11 +28,11 @@ function getStore(): Store {
 function buildKey(request: Request, opts: MinIntervalOptions): string {
   const url = new URL(request.url);
   const ip = getClientIpFromRequest(request);
-  const cookie = request.headers.get('cookie') || '';
-  const cookieHash = cookie ? md5(cookie) : 'no-cookie';
   const prefix = opts.keyPrefix || 'min-interval';
   const extra = opts.extraKey ? `|${opts.extraKey}` : '';
-  return `${prefix}|${request.method}|${url.pathname}|${ip}|${cookieHash}${extra}`;
+  // Cookies are caller-controlled; changing an unrelated cookie must not
+  // create a fresh rate-limit bucket for the same client.
+  return `${prefix}|${request.method}|${url.pathname}|${ip}${extra}`;
 }
 
 export function enforceMinIntervalRateLimit(
@@ -70,6 +66,10 @@ export function enforceMinIntervalRateLimit(
         }
       );
     }
+  }
+  if (!store.has(key) && store.size >= 10_000) {
+    const oldest = store.keys().next().value;
+    if (oldest !== undefined) store.delete(oldest);
   }
   store.set(key, now);
   return null;

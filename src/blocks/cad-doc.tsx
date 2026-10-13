@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 
 import { cn } from '@/lib/utils';
 import { Eyebrow } from '@/blocks/cad-sections';
@@ -9,23 +9,34 @@ export function PageHero({
   title,
   lead,
   children,
+  aside,
 }: {
   eyebrow?: string;
   title: string;
   lead: string;
   children?: ReactNode;
+  /** Right-hand visual on large screens (real image or real data). */
+  aside?: ReactNode;
 }) {
   return (
     <section className="bg-sheet-grid border-b">
-      <div className="mx-auto max-w-7xl px-4 pt-14 pb-14 sm:px-6 lg:pt-20 lg:pb-20">
-        {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
-        <h1 className="font-display max-w-4xl text-4xl leading-[1.06] font-semibold text-balance sm:text-5xl lg:text-[58px]">
-          {title}
-        </h1>
-        <p className="text-muted-foreground mt-6 max-w-[62ch] text-lg leading-relaxed">
-          {lead}
-        </p>
-        {children}
+      <div
+        className={cn(
+          'mx-auto grid max-w-7xl items-center gap-12 px-4 pt-14 pb-14 sm:px-6 lg:pt-20 lg:pb-20 [&>*]:min-w-0',
+          aside && 'lg:grid-cols-[1.25fr_1fr] lg:gap-16'
+        )}
+      >
+        <div className="reveal is-visible">
+          {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
+          <h1 className="font-display rise-in max-w-4xl text-4xl leading-[1.06] font-semibold text-balance sm:text-5xl lg:text-[58px]">
+            {title}
+          </h1>
+          <p className="text-muted-foreground rise-in-2 mt-6 max-w-[62ch] text-lg leading-relaxed">
+            {lead}
+          </p>
+          <div className="rise-in-3">{children}</div>
+        </div>
+        {aside && <div className="rise-in-3">{aside}</div>}
       </div>
     </section>
   );
@@ -41,6 +52,28 @@ export function DocLayout({
   toc: { id: string; label: string }[];
   children: ReactNode;
 }) {
+  const [active, setActive] = useState(toc[0]?.id);
+  const ids = toc.map((t) => t.id).join('|');
+  useEffect(() => {
+    const els = ids
+      .split('|')
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => !!el);
+    const io = new IntersectionObserver(
+      (entries) => {
+        const hit = entries
+          .filter((e) => e.isIntersecting)
+          .sort(
+            (a, b) => a.boundingClientRect.top - b.boundingClientRect.top
+          )[0];
+        if (hit) setActive(hit.target.id);
+      },
+      { rootMargin: '-80px 0px -65% 0px' }
+    );
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, [ids]);
+
   return (
     <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[240px_1fr] lg:gap-20 lg:py-20">
       <aside className="hidden lg:block">
@@ -53,7 +86,13 @@ export function DocLayout({
               <li key={t.id}>
                 <a
                   href={`#${t.id}`}
-                  className="text-foreground/70 hover:text-foreground hover:border-signal -ml-px block border-l-2 border-transparent py-1.5 pl-4 text-sm transition-colors"
+                  aria-current={active === t.id ? 'location' : undefined}
+                  className={cn(
+                    'hover:text-foreground -ml-px block border-l-2 py-1.5 pl-4 text-sm transition-colors',
+                    active === t.id
+                      ? 'border-signal text-foreground font-medium'
+                      : 'text-foreground/65 border-transparent'
+                  )}
                 >
                   {t.label}
                 </a>

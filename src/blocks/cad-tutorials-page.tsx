@@ -11,6 +11,7 @@ import { ctaPrimary } from '@/lib/cta';
 import { m } from '@/paraglide/messages.js';
 import { DocLayout, DocSection, PageHero, Steps } from '@/blocks/cad-doc';
 import { CodeBlock } from '@/components/code-block';
+import { SheetFrame } from '@/components/sheet-frame';
 
 function Note({ children }: { children: ReactNode }) {
   return (
@@ -162,6 +163,17 @@ export function CadTutorialsPage() {
         eyebrow={m['cad.nav.tutorials']()}
         title={m['cad.tut.h1']()}
         lead={m['cad.tut.lead']()}
+        aside={
+          <SheetFrame>
+            <img
+              src="/imgs/cadcraft/cadcraft-canvas.webp"
+              alt={m['cad.tut.hero_alt']()}
+              width={1160}
+              height={940}
+              className="block h-auto w-full"
+            />
+          </SheetFrame>
+        }
       >
         <Link href="/online" target="_blank" className={`${ctaPrimary} mt-8`}>
           <Globe className="size-4" />

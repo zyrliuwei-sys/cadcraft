@@ -3,7 +3,6 @@ import type { ComponentType, ReactNode, SVGProps } from 'react';
 import { Link } from '@/core/i18n/navigation';
 import { envConfigs } from '@/config';
 import { cn } from '@/lib/utils';
-import { LocaleSelector } from '@/components/locale-selector';
 
 export interface FooterColumn {
   title: string;
@@ -44,7 +43,7 @@ export function SiteFooter({
 
   return (
     <footer className="bg-background text-foreground border-foreground/80 border-t">
-      <div className="mx-auto max-w-7xl px-6 pt-14 pb-6 sm:px-10 sm:pt-16 lg:px-16">
+      <div className="mx-auto max-w-7xl px-4 pt-14 pb-8 sm:px-6 sm:pt-20">
         {tagline && (
           <p className="font-display mb-12 max-w-3xl text-3xl leading-[1.1] font-semibold sm:text-[44px]">
             {tagline}
@@ -102,7 +101,7 @@ export function SiteFooter({
 
         {badges}
 
-        {/* Socials + language row */}
+        {/* Social links */}
         <div className="mt-8 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
           {socials && socials.length > 0 ? (
             <div className="flex items-center gap-5">
@@ -122,10 +121,6 @@ export function SiteFooter({
           ) : (
             <div />
           )}
-          <LocaleSelector
-            variant="pill"
-            className="border-border text-foreground hover:bg-accent hover:text-accent-foreground"
-          />
         </div>
 
         {/* Bottom bar */}

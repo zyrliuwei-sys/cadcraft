@@ -4,11 +4,10 @@ import { useState } from 'react';
 import { ArrowRight, Menu, X } from 'lucide-react';
 
 import { useSession } from '@/core/auth/client';
-import { Link } from '@/core/i18n/navigation';
+import { Link, usePathname } from '@/core/i18n/navigation';
 import { envConfigs } from '@/config';
 import { cn } from '@/lib/utils';
 import { m } from '@/paraglide/messages.js';
-import { LocaleSelector } from '@/components/locale-selector';
 import { SiteUserMenu } from '@/components/site-user-menu';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { buttonVariants } from '@/components/ui/button';
@@ -34,6 +33,9 @@ export function SiteHeader({
   cta?: { href: string; label: string };
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const pathname = usePathname();
+  const isActive = (href: string) =>
+    href !== '/' && (pathname === href || pathname.startsWith(`${href}/`));
   const { data: session } = useSession();
   const user = session?.user;
 
@@ -72,7 +74,13 @@ export function SiteHeader({
                 key={link.href}
                 href={link.href}
                 target={link.external ? '_blank' : undefined}
-                className="text-foreground/80 hover:text-foreground text-sm font-medium transition-colors"
+                aria-current={isActive(link.href) ? 'page' : undefined}
+                className={cn(
+                  'hover:text-foreground relative text-sm font-medium transition-colors',
+                  isActive(link.href)
+                    ? 'text-foreground after:bg-signal after:absolute after:inset-x-0 after:-bottom-[22px] after:h-[2px]'
+                    : 'text-foreground/80'
+                )}
               >
                 {link.label}
               </Link>
@@ -82,7 +90,6 @@ export function SiteHeader({
 
         {/* Desktop actions */}
         <div className="hidden items-center gap-3 lg:flex">
-          <LocaleSelector />
           <ThemeToggle />
           {user ? (
             <SiteUserMenu
@@ -106,7 +113,8 @@ export function SiteHeader({
 
         {/* Mobile toggle */}
         <button
-          className="p-2 lg:hidden"
+          type="button"
+          className="flex size-10 items-center justify-center lg:hidden"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={mobileOpen}
@@ -145,7 +153,6 @@ export function SiteHeader({
             )}
           </nav>
           <div className="border-border mt-3 flex items-center gap-2 border-t pt-3">
-            <LocaleSelector />
             <ThemeToggle />
             <div className="flex-1" />
             {user ? (

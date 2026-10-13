@@ -1,6 +1,7 @@
 /*
  * Brand type (files from @fontsource-variable):
- *   Archivo (wght + wdth axes): display, set wide for drawing-title-block headlines
+ *   Archivo (instanced to wght 500-700, wdth 110-125%): wide display headlines
+ *   (src/assets/fonts, generated with fonttools varLib.instancer)
  *   IBM Plex Sans: body
  *   JetBrains Mono: commands, coordinates, code
  * Latin files for Archivo and Plex are preloaded in __root.tsx, so
@@ -10,9 +11,9 @@
   font-family: 'Archivo Variable';
   font-style: normal;
   font-display: swap;
-  font-weight: 100 900;
-  font-stretch: 62% 125%;
-  src: url('../../node_modules/@fontsource-variable/archivo/files/archivo-latin-ext-standard-normal.woff2')
+  font-weight: 500 700;
+  font-stretch: 110% 125%;
+  src: url('../assets/fonts/archivo-display-latin-ext.woff2')
     format('woff2-variations');
   unicode-range:
     U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
@@ -47,9 +48,9 @@
   font-family: 'Archivo Variable';
   font-style: normal;
   font-display: swap;
-  font-weight: 100 900;
-  font-stretch: 62% 125%;
-  src: url('../../node_modules/@fontsource-variable/archivo/files/archivo-latin-standard-normal.woff2')
+  font-weight: 500 700;
+  font-stretch: 110% 125%;
+  src: url('../assets/fonts/archivo-display-latin.woff2')
     format('woff2-variations');
   unicode-range:
     U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,

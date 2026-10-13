@@ -4,8 +4,9 @@ import { ArrowLeft, Calendar } from 'lucide-react';
 
 import { Link } from '@/core/i18n/navigation';
 import { envConfigs } from '@/config';
+import { pageHead } from '@/lib/page-head';
 import { m } from '@/paraglide/messages.js';
-import { getLocale, localizeUrl } from '@/paraglide/runtime.js';
+import { getLocale } from '@/paraglide/runtime.js';
 import { Footer } from '@/blocks/footer';
 import { Header } from '@/blocks/header';
 import { MarkdownContent } from '@/components/markdown-content';
@@ -25,18 +26,28 @@ export const Route = createFileRoute('/blog/$slug')({
   head: ({ loaderData }) => {
     if (!loaderData) return {};
     const { locale, post } = loaderData;
-    const canonical = localizeUrl(`${envConfigs.app_url}/blog/${post.slug}`, {
-      locale: locale as any,
-    }).href;
+    const head = pageHead({
+      path: `/blog/${encodeURIComponent(post.slug)}`,
+      locale,
+      title: `${post.title} | ${envConfigs.app_name}`,
+      description: post.description,
+      jsonLd: {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: post.title,
+        description: post.description,
+        datePublished: new Date(post.createdAt).toISOString(),
+      },
+    });
     return {
+      ...head,
       meta: [
-        { title: `${post.title} | ${envConfigs.app_name}` },
-        { name: 'description', content: post.description },
+        ...head.meta,
+        { property: 'og:type', content: 'article' },
         ...(post.source === 'local'
           ? [{ name: 'robots', content: 'noindex,follow' }]
           : []),
       ],
-      links: [{ rel: 'canonical', href: canonical }],
     };
   },
   component: BlogPostPage,

@@ -101,9 +101,9 @@ export function DataTable<T>({
   return (
     <div className="space-y-4">
       {showHeader && (
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {onSearchChange && (
-            <div className="relative max-w-sm">
+            <div className="relative w-full min-w-0 sm:max-w-sm sm:flex-1">
               <Search className="text-muted-foreground absolute top-2.5 left-2.5 size-4" />
               <Input
                 value={search || ''}
@@ -111,7 +111,7 @@ export function DataTable<T>({
                 placeholder={
                   searchPlaceholder || m['common.search.placeholder']()
                 }
-                className="h-9 pl-8"
+                className="h-10 pl-8"
               />
             </div>
           )}
@@ -120,7 +120,7 @@ export function DataTable<T>({
             <Button
               variant="outline"
               size="icon"
-              className="ml-auto size-9"
+              className="ml-auto size-10"
               onClick={handleRefresh}
               disabled={busy}
               aria-label={m['common.table.refresh']()}
@@ -187,7 +187,7 @@ export function DataTable<T>({
         </Table>
       </div>
 
-      <div className="flex items-center justify-between px-2">
+      <div className="flex flex-wrap items-center justify-between gap-3 px-2">
         <p className="text-muted-foreground text-sm">
           {m['common.table.total']({ count: total })}
         </p>

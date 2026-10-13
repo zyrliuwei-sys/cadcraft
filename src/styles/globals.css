@@ -300,8 +300,17 @@
   .rise-in-2 {
     animation: rise-in 0.9s 0.12s cubic-bezier(0.2, 0.7, 0.2, 1) both;
   }
+  /* Transform-only so the hero screenshot counts as LCP from first paint. */
+  @keyframes rise-up {
+    from {
+      transform: translateY(32px);
+    }
+    to {
+      transform: none;
+    }
+  }
   .rise-in-3 {
-    animation: rise-in 0.9s 0.24s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation: rise-up 1s 0.2s cubic-bezier(0.2, 0.7, 0.2, 1) both;
   }
   .dim-draw {
     animation: plot-x 1.1s 0.35s cubic-bezier(0.65, 0, 0.35, 1) both;
@@ -393,6 +402,10 @@
     }
   }
   .reveal {
+    opacity: 1;
+    transform: none;
+  }
+  .reveal[data-reveal-pending] {
     opacity: 0;
     transform: translateY(14px);
     transition:
@@ -404,7 +417,8 @@
     transform: none;
   }
   @media (prefers-reduced-motion: reduce) {
-    .reveal {
+    .reveal,
+    .reveal[data-reveal-pending] {
       opacity: 1;
       transform: none;
       transition: none;
