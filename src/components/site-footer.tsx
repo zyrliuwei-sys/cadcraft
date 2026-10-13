@@ -26,6 +26,8 @@ export function SiteFooter({
   socials,
   copyright,
   badges,
+  disclaimer,
+  signature,
 }: {
   tagline?: string;
   columns?: FooterColumn[];
@@ -33,14 +35,18 @@ export function SiteFooter({
   copyright?: string;
   /** Rendered above the socials row, e.g. admin-managed footer badges. */
   badges?: ReactNode;
+  /** Small print under the bottom bar, e.g. a trademark notice. */
+  disclaimer?: string;
+  /** Full-width brand moment rendered at the very bottom. */
+  signature?: ReactNode;
 }) {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-background text-foreground border-border border-t">
+    <footer className="bg-background text-foreground border-foreground/80 border-t">
       <div className="mx-auto max-w-7xl px-6 pt-14 pb-6 sm:px-10 sm:pt-16 lg:px-16">
         {tagline && (
-          <p className="mb-12 max-w-2xl font-serif text-4xl leading-[1] tracking-wide sm:text-5xl">
+          <p className="font-display mb-12 max-w-3xl text-3xl leading-[1.1] font-semibold sm:text-[44px]">
             {tagline}
           </p>
         )}
@@ -58,7 +64,7 @@ export function SiteFooter({
           >
             {columns.map((col) => (
               <div key={col.title} className="space-y-5">
-                <p className="text-foreground text-[13px] font-semibold tracking-wide">
+                <p className="text-muted-foreground font-mono text-[11px] tracking-[0.08em] uppercase">
                   {col.title}
                 </p>
                 <ul className="space-y-2">
@@ -129,7 +135,13 @@ export function SiteFooter({
               `© ${year} ${envConfigs.app_name}. All rights reserved.`}
           </span>
         </div>
+        {disclaimer && (
+          <p className="text-muted-foreground mt-4 max-w-4xl text-xs leading-5">
+            {disclaimer}
+          </p>
+        )}
       </div>
+      {signature}
     </footer>
   );
 }

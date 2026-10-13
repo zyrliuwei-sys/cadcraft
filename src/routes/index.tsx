@@ -1,16 +1,27 @@
 import { createFileRoute } from '@tanstack/react-router';
 
 import { envConfigs } from '@/config';
-import {
-  HERO_DESKTOP_SIZES,
-  HERO_DESKTOP_WIDTHS,
-  HERO_MOBILE_MEDIA,
-  HERO_MOBILE_WIDTHS,
-  optSrcSet,
-} from '@/config/hotel-lobby-images';
+import { CADCRAFT_VERSION, cadcraftLinks } from '@/config/cadcraft';
+import { pageHead } from '@/lib/page-head';
 import { m } from '@/paraglide/messages.js';
-import { getLocale, locales, localizeUrl } from '@/paraglide/runtime.js';
-import { HotelLobbyPage } from '@/blocks/hotel-lobby';
+import { getLocale } from '@/paraglide/runtime.js';
+import {
+  CadAgents,
+  CadArtCraft,
+  CadCompareTeaser,
+  CadCta,
+  CadDownload,
+  CadFaq,
+  CadFeatures,
+  CadHero,
+  CadLearn,
+  CadMarquee,
+  CadTitleBlock,
+  CadWhatIs,
+  faqItems,
+} from '@/blocks/cad-sections';
+import { Footer } from '@/blocks/footer';
+import { Header } from '@/blocks/header';
 
 export const Route = createFileRoute('/')({
   loader: () => ({ locale: getLocale() }),
@@ -21,71 +32,62 @@ export const Route = createFileRoute('/')({
       {},
       { locale: locale as any }
     );
-    const urlFor = (loc: string) =>
-      localizeUrl(`${envConfigs.app_url}/`, { locale: loc as any }).href;
-    return {
-      meta: [
-        { title },
-        { name: 'description', content: description },
-        { property: 'og:title', content: title },
-        { property: 'og:description', content: description },
-        { property: 'og:type', content: 'website' },
+    return pageHead({
+      path: '/',
+      locale,
+      title,
+      description,
+      jsonLd: [
         {
-          property: 'og:image',
-          content: `${envConfigs.app_url}/imgs/generated/hotel-lobby-duet.png`,
-        },
-        { name: 'twitter:card', content: 'summary_large_image' },
-      ],
-      links: [
-        // LCP: the hero <picture> sits behind <source>s, which the browser
-        // only discovers after layout — preload the matching rendition.
-        {
-          rel: 'preload',
-          as: 'image',
-          type: 'image/avif',
-          media: HERO_MOBILE_MEDIA,
-          imageSrcSet: optSrcSet('hero-mobile', HERO_MOBILE_WIDTHS, 'avif'),
-          imageSizes: '100vw',
-          fetchPriority: 'high',
+          '@context': 'https://schema.org',
+          '@type': 'SoftwareApplication',
+          name: 'CADCraft',
+          alternateName: 'ArtCraft CADCraft',
+          author: { '@type': 'Organization', name: 'ArtCraft' },
+          image: `${envConfigs.app_url}/imgs/cadcraft/cadcraft-drawing.webp`,
+          applicationCategory: 'DesignApplication',
+          operatingSystem: 'Windows, macOS, Linux, FreeBSD, Web',
+          softwareVersion: CADCRAFT_VERSION,
+          license: 'https://opensource.org/licenses/MIT',
+          offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+          downloadUrl: cadcraftLinks.releases,
+          url: envConfigs.app_url,
+          description,
         },
         {
-          rel: 'preload',
-          as: 'image',
-          type: 'image/avif',
-          media: '(min-width: 601px)',
-          imageSrcSet: optSrcSet('hero-desktop', HERO_DESKTOP_WIDTHS, 'avif'),
-          imageSizes: HERO_DESKTOP_SIZES,
-          fetchPriority: 'high',
-        },
-        {
-          rel: 'preload',
-          as: 'image',
-          type: 'image/webp',
-          href: '/imgs/generated/opt/studio-backdrop-960.webp',
-        },
-        { rel: 'canonical', href: urlFor(locale) },
-        ...locales.map((loc) => ({
-          rel: 'alternate',
-          hrefLang: loc,
-          href: urlFor(loc),
-        })),
-        { rel: 'alternate', hrefLang: 'x-default', href: urlFor('en') },
-      ],
-      scripts: [
-        {
-          type: 'application/ld+json',
-          children: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'WebPage',
-            name: title,
-            description,
-            url: urlFor(locale),
-            inLanguage: locale,
-            primaryImageOfPage: `${envConfigs.app_url}/imgs/generated/hotel-lobby-duet.png`,
-          }),
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: faqItems().map(([q, a]) => ({
+            '@type': 'Question',
+            name: q,
+            acceptedAnswer: { '@type': 'Answer', text: a },
+          })),
         },
       ],
-    };
+    });
   },
-  component: HotelLobbyPage,
+  component: HomePage,
 });
+
+function HomePage() {
+  return (
+    <>
+      <Header />
+      <main>
+        <CadHero />
+        <CadTitleBlock />
+        <CadWhatIs />
+        <CadFeatures />
+        <CadMarquee />
+        <CadArtCraft />
+        <CadAgents />
+        <CadCompareTeaser />
+        <CadDownload />
+        <CadLearn />
+        <CadFaq />
+        <CadCta />
+      </main>
+      <Footer />
+    </>
+  );
+}

@@ -4,8 +4,14 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --font-sans: 'DM Sans Variable', 'PingFang SC', sans-serif;
-  --font-serif-display: 'Bebas Neue', 'Arial Narrow', sans-serif;
+  --font-sans:
+    'IBM Plex Sans Variable', -apple-system, 'Segoe UI', Helvetica, Arial,
+    'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-display-family:
+    'Archivo Variable', -apple-system, 'Segoe UI', Helvetica, Arial,
+    'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-mono-family:
+    'JetBrains Mono Variable', ui-monospace, 'SF Mono', Menlo, monospace;
 }
 
 @theme inline {
@@ -28,6 +34,11 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-signal: var(--signal);
+  --color-signal-ink: var(--signal-ink);
+  --color-signal-soft: var(--signal-soft);
+  --color-sheet: var(--sheet);
+  --color-grid-line: var(--grid-line);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
@@ -41,57 +52,100 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: 0px;
+  --radius-md: var(--radius);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   --font-sans:
     var(--font-sans), -apple-system, 'system-ui', 'Segoe UI', Helvetica, Arial,
     sans-serif;
-  /* CJK serif glyphs use locally-installed fonts — a Chinese serif webfont
-     ships 300+ @font-face subsets (~100KB render-blocking CSS on every page)
-     and is not worth it for headings. */
-  --font-serif:
-    var(--font-serif-display), ui-serif, Georgia, Cambria, 'Times New Roman',
-    'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'SimSun', Times, serif;
+  --font-serif: var(--font-display-family);
+  --font-mono: var(--font-mono-family);
 }
 
 @layer base {
-  :root,
+  /* CADCraft AI brand: "drafting sheet".
+     Cool drafting-paper white, graphite ink, one markup-orange signal
+     (the colour of a CAD snap marker), square corners everywhere.
+     Dark mode is the "plot room": graphite sheet, paper ink. */
+  :root {
+    --background: oklch(0.985 0.002 250);
+    --foreground: oklch(0.22 0.012 255);
+    --sheet: oklch(1 0 0);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.22 0.012 255);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.22 0.012 255);
+    --primary: oklch(0.22 0.012 255);
+    --primary-foreground: oklch(0.985 0.002 250);
+    --secondary: oklch(0.955 0.004 250);
+    --secondary-foreground: oklch(0.22 0.012 255);
+    --muted: oklch(0.955 0.004 250);
+    --muted-foreground: oklch(0.46 0.012 255);
+    --accent: oklch(0.95 0.025 50);
+    --accent-foreground: oklch(0.22 0.012 255);
+    --signal: oklch(0.67 0.19 45);
+    --signal-ink: oklch(0.53 0.17 40);
+    --signal-soft: oklch(0.96 0.03 55);
+    --destructive: oklch(0.55 0.2 27);
+    --destructive-foreground: oklch(0.98 0 0);
+    --border: oklch(0.885 0.006 250);
+    --input: oklch(0.85 0.008 250);
+    --ring: oklch(0.67 0.19 45);
+    --grid-line: oklch(0.22 0.012 255 / 0.06);
+    --chart-1: oklch(0.67 0.19 45);
+    --chart-2: oklch(0.22 0.012 255);
+    --chart-3: oklch(0.6 0.03 250);
+    --chart-4: oklch(0.78 0.1 70);
+    --chart-5: oklch(0.45 0.08 255);
+    --radius: 0.125rem;
+    --sidebar: oklch(0.975 0.003 250);
+    --sidebar-foreground: oklch(0.22 0.012 255);
+    --sidebar-primary: oklch(0.22 0.012 255);
+    --sidebar-primary-foreground: oklch(0.985 0.002 250);
+    --sidebar-accent: oklch(0.95 0.005 250);
+    --sidebar-accent-foreground: oklch(0.22 0.012 255);
+    --sidebar-border: oklch(0.885 0.006 250);
+    --sidebar-ring: oklch(0.67 0.19 45);
+  }
   .dark {
-    --background: oklch(0.15 0.009 42);
-    --foreground: oklch(0.94 0.013 78);
-    --card: oklch(0.2 0.012 44);
-    --card-foreground: oklch(0.94 0.013 78);
-    --popover: oklch(0.2 0.012 44);
-    --popover-foreground: oklch(0.94 0.013 78);
-    --primary: oklch(0.73 0.09 57);
-    --primary-foreground: oklch(0.15 0.009 42);
-    --secondary: oklch(0.25 0.013 43);
-    --secondary-foreground: oklch(0.94 0.013 78);
-    --muted: oklch(0.25 0.013 43);
-    --muted-foreground: oklch(0.71 0.021 67);
-    --accent: oklch(0.3 0.02 44);
-    --accent-foreground: oklch(0.96 0.012 78);
+    --background: oklch(0.185 0.01 255);
+    --foreground: oklch(0.95 0.004 250);
+    --sheet: oklch(0.215 0.012 255);
+    --card: oklch(0.215 0.012 255);
+    --card-foreground: oklch(0.95 0.004 250);
+    --popover: oklch(0.215 0.012 255);
+    --popover-foreground: oklch(0.95 0.004 250);
+    --primary: oklch(0.95 0.004 250);
+    --primary-foreground: oklch(0.185 0.01 255);
+    --secondary: oklch(0.245 0.012 255);
+    --secondary-foreground: oklch(0.95 0.004 250);
+    --muted: oklch(0.235 0.012 255);
+    --muted-foreground: oklch(0.72 0.012 255);
+    --accent: oklch(0.3 0.04 45);
+    --accent-foreground: oklch(0.95 0.004 250);
+    --signal: oklch(0.74 0.17 50);
+    --signal-ink: oklch(0.78 0.15 55);
+    --signal-soft: oklch(0.27 0.04 45);
     --destructive: oklch(0.62 0.19 25);
     --destructive-foreground: oklch(0.98 0 0);
-    --border: oklch(0.34 0.019 44);
-    --input: oklch(0.34 0.019 44);
-    --ring: oklch(0.73 0.09 57);
-    --chart-1: oklch(0.73 0.09 57);
-    --chart-2: oklch(0.61 0.08 38);
-    --chart-3: oklch(0.78 0.03 79);
-    --chart-4: oklch(0.55 0.035 170);
-    --chart-5: oklch(0.63 0.055 26);
-    --radius: 0.25rem;
-    --sidebar: oklch(0.17 0.01 42);
-    --sidebar-foreground: oklch(0.94 0.013 78);
-    --sidebar-primary: oklch(0.73 0.09 57);
-    --sidebar-primary-foreground: oklch(0.15 0.009 42);
-    --sidebar-accent: oklch(0.27 0.016 44);
-    --sidebar-accent-foreground: oklch(0.94 0.013 78);
-    --sidebar-border: oklch(0.34 0.019 44);
-    --sidebar-ring: oklch(0.73 0.09 57);
+    --border: oklch(0.32 0.012 255);
+    --input: oklch(0.36 0.012 255);
+    --ring: oklch(0.74 0.17 50);
+    --grid-line: oklch(0.95 0.004 250 / 0.05);
+    --chart-1: oklch(0.74 0.17 50);
+    --chart-2: oklch(0.95 0.004 250);
+    --chart-3: oklch(0.6 0.03 250);
+    --chart-4: oklch(0.8 0.1 70);
+    --chart-5: oklch(0.6 0.08 255);
+    --sidebar: oklch(0.2 0.011 255);
+    --sidebar-foreground: oklch(0.95 0.004 250);
+    --sidebar-primary: oklch(0.95 0.004 250);
+    --sidebar-primary-foreground: oklch(0.185 0.01 255);
+    --sidebar-accent: oklch(0.26 0.012 255);
+    --sidebar-accent-foreground: oklch(0.95 0.004 250);
+    --sidebar-border: oklch(0.32 0.012 255);
+    --sidebar-ring: oklch(0.74 0.17 50);
   }
 }
 
@@ -101,6 +155,18 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-feature-settings:
+      'ss01',
+      'tnum' 0;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: var(--signal);
+    color: var(--primary-foreground);
+  }
+  :focus-visible {
+    outline: 2px solid var(--signal);
+    outline-offset: 3px;
   }
 
   @keyframes drift-a {
@@ -165,6 +231,183 @@
     .animate-drift-b,
     .animate-drift-c {
       animation: none !important;
+    }
+  }
+}
+
+@layer utilities {
+  /* Drafting-sheet grid: 8px minor, 40px major, in graphite at low alpha. */
+  .bg-sheet-grid {
+    background-image:
+      linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px),
+      linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+    background-size:
+      40px 40px,
+      40px 40px,
+      8px 8px,
+      8px 8px;
+    background-position: -1px -1px;
+  }
+  .font-display {
+    font-family: var(--font-display-family);
+    font-stretch: 112%;
+    letter-spacing: -0.02em;
+  }
+  .font-display-wide {
+    font-family: var(--font-display-family);
+    font-stretch: 125%;
+    letter-spacing: 0.01em;
+  }
+  /* Snap marker: the orange square CAD draws on an endpoint. */
+  .snap-mark {
+    display: inline-block;
+    width: 0.62em;
+    height: 0.62em;
+    border: 2px solid var(--signal);
+    vertical-align: 0.06em;
+  }
+
+  /* Outlined display type for the command marquee. */
+  .text-outline {
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--foreground);
+  }
+
+  /* Hero: headline rises in, dimension line plots from its left tick. */
+  @keyframes rise-in {
+    from {
+      opacity: 0;
+      transform: translateY(0.35em);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes plot-x {
+    from {
+      clip-path: inset(0 100% 0 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+  .rise-in {
+    animation: rise-in 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  .rise-in-2 {
+    animation: rise-in 0.9s 0.12s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  .rise-in-3 {
+    animation: rise-in 0.9s 0.24s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  .dim-draw {
+    animation: plot-x 1.1s 0.35s cubic-bezier(0.65, 0, 0.35, 1) both;
+  }
+
+  /* Hero screenshot settles into place as it scrolls into view. */
+  @keyframes sheet-settle {
+    from {
+      transform: perspective(1600px) rotateX(10deg) scale(0.94);
+      opacity: 0.6;
+    }
+    to {
+      transform: none;
+      opacity: 1;
+    }
+  }
+  @supports (animation-timeline: view()) {
+    .sheet-settle {
+      transform-origin: 50% 0;
+      animation: sheet-settle linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 35%;
+    }
+  }
+
+  /* Section eyebrow rule plots across when its section reveals. */
+  .plot-rule {
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 1.2s cubic-bezier(0.65, 0, 0.35, 1) 0.15s;
+  }
+  .is-visible .plot-rule {
+    transform: scaleX(1);
+  }
+
+  /* Command marquee. */
+  @keyframes marquee-x {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+  .marquee-track {
+    animation: marquee-x 60s linear infinite;
+  }
+  .marquee:hover .marquee-track {
+    animation-play-state: paused;
+  }
+
+  /* Reading progress (scroll-driven, hidden where unsupported). */
+  .scroll-progress {
+    display: none;
+  }
+  @supports (animation-timeline: scroll()) {
+    @keyframes progress-x {
+      from {
+        transform: scaleX(0);
+      }
+      to {
+        transform: scaleX(1);
+      }
+    }
+    .scroll-progress {
+      display: block;
+      animation: progress-x linear both;
+      animation-timeline: scroll(root);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rise-in,
+    .rise-in-2,
+    .rise-in-3,
+    .dim-draw,
+    .sheet-settle {
+      animation: none !important;
+    }
+    .plot-rule {
+      transform: none;
+      transition: none;
+    }
+    .marquee {
+      overflow-x: auto;
+    }
+    .marquee-track {
+      animation: none;
+    }
+  }
+  .reveal {
+    opacity: 0;
+    transform: translateY(14px);
+    transition:
+      opacity 0.6s ease,
+      transform 0.6s ease;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
     }
   }
 }

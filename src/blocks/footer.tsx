@@ -1,3 +1,4 @@
+import { cadcraftLinks } from '@/config/cadcraft';
 import { m } from '@/paraglide/messages.js';
 import { FooterBadgeList } from '@/components/footer-badge-list';
 import { SiteFooter, type FooterColumn } from '@/components/site-footer';
@@ -5,36 +6,55 @@ import { SiteFooter, type FooterColumn } from '@/components/site-footer';
 export function Footer() {
   const columns: FooterColumn[] = [
     {
-      title: m['landing.footer.feature'](),
+      title: m['cad.footer.product'](),
       links: [
-        { label: m['hotel.nav.create'](), href: '/#create' },
-        { label: m['hotel.nav.how'](), href: '/#how' },
+        { label: m['cad.nav.overview'](), href: '/' },
+        { label: m['cad.nav.download'](), href: '/download' },
+        { label: m['cad.nav.online'](), href: '/online' },
       ],
     },
     {
-      title: m['landing.footer.resources'](),
+      title: m['cad.footer.learn'](),
       links: [
-        {
-          label: 'support@hotel-lobby.org',
-          href: 'mailto:support@hotel-lobby.org',
-        },
+        { label: m['cad.nav.tutorials'](), href: '/tutorials' },
+        { label: m['cad.nav.compare'](), href: '/vs-autocad' },
       ],
     },
     {
-      title: m['landing.footer.legal'](),
+      title: m['cad.footer.project'](),
+      links: [
+        { label: m['cad.footer.github'](), href: cadcraftLinks.repo },
+        { label: m['cad.footer.releases'](), href: cadcraftLinks.releases },
+        { label: m['cad.footer.official'](), href: cadcraftLinks.official },
+        { label: m['cad.footer.wiki'](), href: cadcraftLinks.wiki },
+      ],
+    },
+    {
+      title: m['cad.footer.legal'](),
       links: [
         { label: m['landing.footer.privacy'](), href: '/privacy-policy' },
         { label: m['landing.footer.terms'](), href: '/terms-of-service' },
-        { label: m['landing.footer.aup'](), href: '/acceptable-use-policy' },
       ],
     },
   ];
 
   return (
     <SiteFooter
-      tagline={m['hotel.footer.line']()}
+      tagline={m['cad.footer.tagline']()}
       columns={columns}
       badges={<FooterBadgeList className="mt-10" />}
+      disclaimer={m['cad.footer.disclaimer']()}
+      signature={
+        <div
+          aria-hidden="true"
+          className="overflow-hidden border-t px-4 sm:px-6"
+        >
+          <p className="font-display-wide mx-auto flex max-w-7xl items-end justify-between pt-6 text-[clamp(56px,15.5vw,228px)] leading-[0.78] font-semibold select-none">
+            <span>CADCraft</span>
+            <span className="snap-mark mb-[0.06em] size-[0.18em]! border-[0.035em]!" />
+          </p>
+        </div>
+      }
     />
   );
 }

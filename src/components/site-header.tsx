@@ -26,17 +26,20 @@ const isExternalHref = (href: string) => /^https?:\/\//.test(href);
 export function SiteHeader({
   navLinks,
   logoAlt,
+  cta,
 }: {
   navLinks?: NavLink[];
   logoAlt: string;
+  /** Primary button for signed-out visitors; defaults to Get Started → /settings. */
+  cta?: { href: string; label: string };
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { data: session } = useSession();
   const user = session?.user;
 
   return (
-    <header className="bg-background/95 border-border sticky top-0 z-50 w-full border-b backdrop-blur-sm">
-      <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-4 sm:px-6">
+    <header className="bg-background/90 border-border sticky top-0 z-50 w-full border-b backdrop-blur-md">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
         {/* Brand */}
         <Link href="/" className="flex items-center gap-2.5">
           <img
@@ -44,15 +47,15 @@ export function SiteHeader({
             alt={logoAlt}
             width={512}
             height={512}
-            className="size-8 rounded-full"
+            className="size-7"
           />
-          <span className="text-base font-bold tracking-tight">
+          <span className="font-display text-[17px] font-bold">
             {envConfigs.app_name}
           </span>
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden items-center gap-6 md:flex">
+        <nav className="hidden items-center gap-6 lg:flex">
           {navLinks?.map((link) =>
             isExternalHref(link.href) ? (
               <a
@@ -60,7 +63,7 @@ export function SiteHeader({
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-foreground text-sm transition-colors"
+                className="text-foreground/80 hover:text-foreground text-sm font-medium transition-colors"
               >
                 {link.label}
               </a>
@@ -69,7 +72,7 @@ export function SiteHeader({
                 key={link.href}
                 href={link.href}
                 target={link.external ? '_blank' : undefined}
-                className="text-muted-foreground hover:text-foreground text-sm transition-colors"
+                className="text-foreground/80 hover:text-foreground text-sm font-medium transition-colors"
               >
                 {link.label}
               </Link>
@@ -78,7 +81,7 @@ export function SiteHeader({
         </nav>
 
         {/* Desktop actions */}
-        <div className="hidden items-center gap-3 md:flex">
+        <div className="hidden items-center gap-3 lg:flex">
           <LocaleSelector />
           <ThemeToggle />
           {user ? (
@@ -88,8 +91,14 @@ export function SiteHeader({
               image={user.image}
             />
           ) : (
-            <Link href="/settings" className={cn(buttonVariants(), 'gap-1.5')}>
-              {m['common.nav.get_started']()}
+            <Link
+              href={cta?.href ?? '/settings'}
+              className={cn(
+                buttonVariants(),
+                'h-9 gap-1.5 rounded-none px-4 text-[13px] font-semibold'
+              )}
+            >
+              {cta?.label ?? m['common.nav.get_started']()}
               <ArrowRight className="size-4" />
             </Link>
           )}
@@ -97,7 +106,7 @@ export function SiteHeader({
 
         {/* Mobile toggle */}
         <button
-          className="p-2 md:hidden"
+          className="p-2 lg:hidden"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={mobileOpen}
@@ -108,7 +117,7 @@ export function SiteHeader({
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="border-border border-t px-4 pt-2 pb-4 md:hidden">
+        <div className="border-border border-t px-4 pt-2 pb-4 lg:hidden">
           <nav className="flex flex-col gap-2">
             {navLinks?.map((link) =>
               isExternalHref(link.href) ? (
@@ -147,11 +156,11 @@ export function SiteHeader({
               />
             ) : (
               <Link
-                href="/settings"
-                className={cn(buttonVariants(), 'gap-1.5')}
+                href={cta?.href ?? '/settings'}
+                className={cn(buttonVariants(), 'gap-1.5 rounded-sm')}
                 onClick={() => setMobileOpen(false)}
               >
-                {m['common.nav.get_started']()}
+                {cta?.label ?? m['common.nav.get_started']()}
               </Link>
             )}
           </div>

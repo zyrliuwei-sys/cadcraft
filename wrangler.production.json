@@ -14,8 +14,8 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "hotel-lobby-db",
-      "database_id": "9c9d279e-2929-4b38-9d0f-0259fb6a96dd",
+      "database_name": "cadcraft-ai",
+      "database_id": "e3f6fa92-0a2e-46dd-9102-4f5a62dba48f",
       "migrations_dir": "drizzle"
     }
   ],

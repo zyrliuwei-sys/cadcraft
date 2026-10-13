@@ -6,8 +6,9 @@ import { m } from '@/paraglide/messages.js';
 const STATIC_PAGES: { path: string; title: string; description: string }[] = [
   {
     path: '',
-    title: 'Hotel Lobby AI Filter',
-    description: 'Two-person duet planning and prompt guide',
+    title: 'CADCraft — free open-source AutoCAD alternative',
+    description:
+      'Download guide, online version, tutorials and AutoCAD comparison',
   },
   {
     path: '/privacy-policy',
@@ -20,9 +21,25 @@ const STATIC_PAGES: { path: string; title: string; description: string }[] = [
     description: 'Terms of use',
   },
   {
-    path: '/acceptable-use-policy',
-    title: 'Acceptable Use Policy',
-    description: 'Content rules, child safety and how to report violations',
+    path: '/download',
+    title: 'Download CADCraft',
+    description:
+      'Install guide for Windows, macOS, Linux, FreeBSD and the web build',
+  },
+  {
+    path: '/online',
+    title: 'Use CADCraft online',
+    description: 'Run the full CADCraft app in the browser via WebAssembly',
+  },
+  {
+    path: '/tutorials',
+    title: 'CADCraft tutorials',
+    description: 'Basic operations, CLI and MCP automation',
+  },
+  {
+    path: '/vs-autocad',
+    title: 'CADCraft vs AutoCAD',
+    description: 'Differences, advantages and when to choose each',
   },
 ];
 
