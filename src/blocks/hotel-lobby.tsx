@@ -1134,7 +1134,7 @@ export function HotelLobbyPage() {
           <p>{m['hotel.footer.line']()}</p>
         </div>
         <div className="hl-footer-links">
-          <a href="mailto:support@hotel-lobby.org">support@hotel-lobby.org</a>
+          <a href="mailto:support@cadcraft.org">support@cadcraft.org</a>
           <Link href="/privacy-policy">{m['landing.footer.privacy']()}</Link>
           <Link href="/terms-of-service">{m['landing.footer.terms']()}</Link>
           <Link href="/acceptable-use-policy">{m['landing.footer.aup']()}</Link>

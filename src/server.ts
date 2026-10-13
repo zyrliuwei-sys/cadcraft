@@ -76,6 +76,11 @@ async function renderWithEdgeCache(req: Request): Promise<Response> {
 export default {
   async fetch(req: Request): Promise<Response> {
     const url = new URL(req.url);
+    // Canonical host: permanently redirect www.<domain> to the bare domain.
+    if (url.hostname.startsWith('www.')) {
+      url.hostname = url.hostname.slice(4);
+      return Response.redirect(url.toString(), 301);
+    }
     const origin = req.headers.get('Origin');
     if (
       url.pathname.startsWith('/api/') &&

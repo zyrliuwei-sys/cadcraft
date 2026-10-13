@@ -11,6 +11,7 @@ WORKDIR /app
 # Copy package manifests, build config, and ALL dialect templates so the
 # postinstall hook can stamp out a matching schema.ts during install.
 COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml vite.config.ts ./
+COPY patches/ patches/
 COPY scripts/db-setup.mjs scripts/db-setup.mjs
 COPY src/config/db/schema.sqlite.ts src/config/db/schema.sqlite.ts
 COPY src/config/db/schema.postgres.ts src/config/db/schema.postgres.ts
@@ -33,9 +34,9 @@ WORKDIR /app
 # such as AUTH_SECRET and DATABASE_URL must be supplied to the running container.
 ENV NODE_ENV=production
 
-ARG VITE_APP_URL=https://hotel-lobby.org
-ARG VITE_APP_NAME="Hotel Lobby AI"
-ARG VITE_APP_DESCRIPTION="Plan a two-person Hotel Lobby AI filter video and copy a prompt for an image-to-video studio."
+ARG VITE_APP_URL=https://cadcraft.org
+ARG VITE_APP_NAME="CADCraft AI"
+ARG VITE_APP_DESCRIPTION="CADCraft download and installation guide, Autodesk AutoCAD feature comparison and user experience"
 ARG VITE_APP_LOGO=/logo.svg
 ARG VITE_DEFAULT_LOCALE=en
 ENV VITE_APP_URL=${VITE_APP_URL} \
