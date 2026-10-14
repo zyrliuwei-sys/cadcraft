@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, notFound } from '@tanstack/react-router';
 import { Download, Film, Loader2 } from 'lucide-react';
 
 import { Link } from '@/core/i18n/navigation';
@@ -153,5 +153,9 @@ function VideosPage() {
 }
 
 export const Route = createFileRoute('/settings/videos')({
+  // Hidden: left over from the Hotel Lobby AI project, not part of CADCraft.
+  beforeLoad: () => {
+    throw notFound();
+  },
   component: VideosPage,
 });

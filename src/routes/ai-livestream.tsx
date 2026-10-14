@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, notFound } from '@tanstack/react-router';
 
 import { envConfigs } from '@/config';
 import { m } from '@/paraglide/messages.js';
@@ -6,6 +6,10 @@ import { getLocale, localizeUrl } from '@/paraglide/runtime.js';
 import { HotelLobbyPage } from '@/blocks/hotel-lobby';
 
 export const Route = createFileRoute('/ai-livestream')({
+  // Hidden: left over from the Hotel Lobby AI project, not part of CADCraft.
+  beforeLoad: () => {
+    throw notFound();
+  },
   loader: () => ({ locale: getLocale() }),
   head: ({ loaderData }) => {
     const locale = loaderData?.locale ?? 'en';

@@ -83,8 +83,8 @@ export function isAllowedAppProtocolUrl(
     .includes(scheme);
 }
 
-/** Default landing after sign-in / sign-up: the generator on the homepage. */
-export const AFTER_AUTH_HOME = '/#create';
+/** Default landing after sign-in / sign-up: the homepage. */
+export const AFTER_AUTH_HOME = '/';
 
 /**
  * Where to send the user once they are signed in.

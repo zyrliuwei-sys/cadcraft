@@ -2,7 +2,6 @@ import { createFileRoute, Outlet } from '@tanstack/react-router';
 import {
   Coins,
   CreditCard,
-  Film,
   Home,
   Key,
   LayoutDashboard,
@@ -28,12 +27,6 @@ function SettingsLayout() {
       href: '/settings',
       label: m['settings.nav.overview'](),
       icon: LayoutDashboard,
-      group,
-    },
-    {
-      href: '/settings/videos',
-      label: m['settings.nav.videos'](),
-      icon: Film,
       group,
     },
     {

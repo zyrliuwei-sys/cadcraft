@@ -7,6 +7,7 @@ import { resetPassword } from '@/core/auth/client';
 import { Link, useRouter } from '@/core/i18n/navigation';
 import { envConfigs } from '@/config';
 import { m } from '@/paraglide/messages.js';
+import { getLocale } from '@/paraglide/runtime.js';
 import { TextField } from '@/components/form-field';
 import { Button } from '@/components/ui/button';
 import {
@@ -184,5 +185,13 @@ function ResetPasswordPage() {
 }
 
 export const Route = createFileRoute('/(auth)/reset-password')({
+  loader: () => ({ locale: getLocale() }),
+  head: ({ loaderData }) => ({
+    meta: [
+      {
+        title: `${m['common.sign.reset_password_title']({}, { locale: loaderData?.locale })} | ${envConfigs.app_name}`,
+      },
+    ],
+  }),
   component: ResetPasswordPage,
 });

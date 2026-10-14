@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, notFound } from '@tanstack/react-router';
 
 import { envConfigs } from '@/config';
 import { pageHead } from '@/lib/page-head';
@@ -11,6 +11,10 @@ import { formatPostDate } from '@/content/posts';
 import { getBlogPostsFn } from '@/content/posts/server';
 
 export const Route = createFileRoute('/blog/')({
+  // Hidden: left over from the Hotel Lobby AI project, not part of CADCraft.
+  beforeLoad: () => {
+    throw notFound();
+  },
   loader: async () => {
     const locale = getLocale();
     const posts = await getBlogPostsFn({ data: { locale } });

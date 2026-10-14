@@ -14,7 +14,7 @@ import {
 } from '@/lib/redirect';
 import { track } from '@/lib/track';
 import { m } from '@/paraglide/messages.js';
-import { localizeHref } from '@/paraglide/runtime.js';
+import { getLocale, localizeHref } from '@/paraglide/runtime.js';
 import { usePublicConfig } from '@/hooks/use-public-config';
 import { TextField } from '@/components/form-field';
 import { Button } from '@/components/ui/button';
@@ -340,5 +340,13 @@ function SignUpPage() {
 }
 
 export const Route = createFileRoute('/(auth)/sign-up')({
+  loader: () => ({ locale: getLocale() }),
+  head: ({ loaderData }) => ({
+    meta: [
+      {
+        title: `${m['common.sign.sign_up_title']({}, { locale: loaderData?.locale })} | ${envConfigs.app_name}`,
+      },
+    ],
+  }),
   component: SignUpPage,
 });

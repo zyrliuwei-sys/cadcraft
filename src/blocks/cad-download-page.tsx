@@ -229,6 +229,7 @@ export function CadDownloadPage() {
             <li>{m['cad.dl.req_win']()}</li>
             <li>{m['cad.dl.req_mac']()}</li>
             <li>{m['cad.dl.req_linux']()}</li>
+            <li>{m['cad.dl.req_freebsd']()}</li>
             <li>{m['cad.dl.req_web']()}</li>
           </ul>
         </DocSection>

@@ -14,8 +14,11 @@ import archivoLatinUrl from '@/assets/fonts/archivo-display-latin.woff2?url';
 import plexLatinUrl from '@fontsource-variable/ibm-plex-sans/files/ibm-plex-sans-latin-wght-normal.woff2?url';
 import { ThemeProvider } from 'next-themes';
 
+import { Link } from '@/core/i18n/navigation';
 import { envConfigs } from '@/config';
 import { getQueryClient } from '@/lib/query-client';
+import { cn } from '@/lib/utils';
+import { m } from '@/paraglide/messages.js';
 import { getLocale } from '@/paraglide/runtime.js';
 import { Ads } from '@/components/analytics/ads';
 import { Clarity } from '@/components/analytics/clarity';
@@ -25,6 +28,7 @@ import { PurchaseTracker } from '@/components/analytics/purchase-tracker';
 import { CustomerService } from '@/components/customer-service';
 import { GoogleOneTap } from '@/components/google-one-tap';
 import { SandboxPreviewBridge } from '@/components/sandbox-preview-bridge';
+import { buttonVariants } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/sonner';
 
 import '@/styles/fonts.css';
@@ -84,7 +88,7 @@ export const Route = createRootRoute({
           crossOrigin: 'anonymous',
         },
         { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' },
-        { rel: 'apple-touch-icon', href: '/favicon.svg' },
+        { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
       ],
     };
   },
@@ -150,12 +154,12 @@ function RootDocument({ children }: { children: ReactNode }) {
 
 function NotFound() {
   return (
-    <div className="bg-background text-foreground flex min-h-screen flex-col items-center justify-center gap-4">
+    <div className="bg-background text-foreground flex min-h-screen flex-col items-center justify-center gap-4 px-4 text-center">
       <h1 className="text-6xl font-bold">404</h1>
-      <p className="text-muted-foreground">Page not found</p>
-      <a href="/" className="text-sm underline underline-offset-4">
-        Back to home
-      </a>
+      <p className="text-muted-foreground">{m['common.not_found.message']()}</p>
+      <Link href="/" className={cn(buttonVariants(), 'mt-2')}>
+        {m['common.not_found.back_home']()}
+      </Link>
     </div>
   );
 }
@@ -163,10 +167,8 @@ function NotFound() {
 function RootError({ error, reset }: ErrorComponentProps) {
   return (
     <div className="bg-background text-foreground flex min-h-screen flex-col items-center justify-center gap-4">
-      <h1 className="text-4xl font-bold">Oops</h1>
-      <p className="text-muted-foreground">
-        Something went wrong. Please try again.
-      </p>
+      <h1 className="text-4xl font-bold">{m['common.error.title']()}</h1>
+      <p className="text-muted-foreground">{m['common.error.message']()}</p>
       {import.meta.env.DEV && error instanceof Error && (
         <pre className="bg-muted mt-2 max-w-lg overflow-auto rounded p-4 text-xs">
           {error.message}
@@ -175,9 +177,9 @@ function RootError({ error, reset }: ErrorComponentProps) {
       <button
         type="button"
         onClick={reset}
-        className="text-sm underline underline-offset-4"
+        className={cn(buttonVariants(), 'mt-2')}
       >
-        Try again
+        {m['common.error.retry']()}
       </button>
     </div>
   );

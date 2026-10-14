@@ -7,7 +7,6 @@ import {
   Hr,
   Html,
   Img,
-  Link,
   Preview,
   Section,
   Text,
@@ -16,42 +15,38 @@ import {
 const copy = {
   en: {
     preview: (app: string) =>
-      `Your account is ready — make your first ${app} duet video`,
+      `Your account is ready — start drafting with CADCraft on ${app}`,
     heading: (app: string) => `Welcome to ${app}`,
     greeting: (name?: string) => (name ? `Hi ${name},` : 'Hi there,'),
     intro:
-      'Your account is ready. Upload two photos and we turn them into the viral two-person duet in the orange recording booth — scene, moves and audio included.',
-    stepsTitle: 'How it works',
+      'Your account is ready. CADCraft is a free, open-source AutoCAD-style drafting app — you can use it right in your browser, or download it for Windows, macOS, Linux or FreeBSD.',
+    stepsTitle: 'Get started',
     steps: [
-      'Upload one clear portrait for each person.',
-      'Choose a plan to generate your scene and full duet video in the booth.',
-      'Happy with it? Animate it — your MP4 with audio is ready in about 3–5 minutes.',
+      'Open CADCraft online — no install needed.',
+      'Type a command such as LINE or CIRCLE and press Enter.',
+      'Follow the beginner tutorials to learn editing, layers and export.',
     ],
     credits: (n: number) =>
-      `We've added ${n.toLocaleString('en-US')} free credits to your account to get you started.`,
-    refund: 'If a generation fails, your credits are refunded automatically.',
-    cta: 'Make your first duet',
-    videos: 'Your finished videos are always saved in My videos.',
+      `We've added ${n.toLocaleString('en-US')} free credits to your account.`,
+    cta: 'Open CADCraft online',
     footer: (app: string) =>
       `You're receiving this email because you created an account on ${app}.`,
   },
   zh: {
-    preview: (app: string) => `账号已就绪，来做你的第一个 ${app} 对唱视频`,
+    preview: (app: string) => `账号已就绪，在 ${app} 开始用 CADCraft 画图`,
     heading: (app: string) => `欢迎来到 ${app}`,
     greeting: (name?: string) => (name ? `${name}，你好：` : '你好：'),
     intro:
-      '你的账号已经准备好了。上传两张照片，我们就能为你生成暖橙色录音棚里的双人对唱视频：场景、动作和声音一步到位。',
-    stepsTitle: '三步出片',
+      '你的账号已经准备好了。CADCraft 是一款免费开源的 AutoCAD 式制图软件，可以直接在浏览器里使用，也可以下载 Windows、macOS、Linux 或 FreeBSD 版。',
+    stepsTitle: '快速上手',
     steps: [
-      '为两个人各上传一张清晰的正脸照。',
-      '选择套餐，生成你们在录音棚里的场景和完整对唱视频。',
-      '满意就点生成视频，约 3–5 分钟拿到带音频的 MP4。',
+      '打开 CADCraft 在线版，无需安装。',
+      '输入 LINE 或 CIRCLE 等命令，按回车。',
+      '跟着新手教程，学习编辑、图层和导出。',
     ],
     credits: (n: number) =>
-      `我们已向你的账号赠送 ${n.toLocaleString('en-US')} 积分，可以直接开始。`,
-    refund: '生成失败会自动退还积分。',
-    cta: '做第一个对唱视频',
-    videos: '生成好的视频都会保存在「我的视频」里。',
+      `我们已向你的账号赠送 ${n.toLocaleString('en-US')} 积分。`,
+    cta: '打开 CADCraft 在线版',
     footer: (app: string) => `你收到这封邮件，是因为你在 ${app} 注册了账号。`,
   },
 };
@@ -60,17 +55,14 @@ export function WelcomeEmail({
   appName = 'our app',
   logoUrl,
   url,
-  videosUrl,
   name,
   credits,
   locale = 'en',
 }: {
   appName?: string;
   logoUrl?: string;
-  /** Where the main button goes (the create section). */
+  /** Where the main button goes. */
   url: string;
-  /** "My videos" page; the line is omitted when not given. */
-  videosUrl?: string;
   name?: string;
   /** Signup credits granted, if any — omitted from the copy when 0. */
   credits?: number;
@@ -115,25 +107,13 @@ export function WelcomeEmail({
               </Button>
             </Section>
 
-            <Section style={styles.perks}>
-              {credits && credits > 0 ? (
+            {credits && credits > 0 ? (
+              <Section style={styles.perks}>
                 <Text style={styles.perk}>
                   {'🎁\u00a0\u00a0'}
                   {t.credits(credits)}
                 </Text>
-              ) : null}
-              <Text style={styles.perk}>
-                {'↩️\u00a0\u00a0'}
-                {t.refund}
-              </Text>
-            </Section>
-
-            {videosUrl ? (
-              <Text style={styles.small}>
-                <Link href={videosUrl} style={styles.link}>
-                  {t.videos}
-                </Link>
-              </Text>
+              </Section>
             ) : null}
 
             <Hr style={styles.hr} />

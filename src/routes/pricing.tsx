@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, notFound } from '@tanstack/react-router';
 
 import { m } from '@/paraglide/messages.js';
 import { getLocale } from '@/paraglide/runtime.js';
@@ -7,6 +7,10 @@ import { Header } from '@/blocks/header';
 import { Pricing } from '@/blocks/pricing';
 
 export const Route = createFileRoute('/pricing')({
+  // Hidden: left over from the Hotel Lobby AI project, not part of CADCraft.
+  beforeLoad: () => {
+    throw notFound();
+  },
   loader: () => {
     const locale = getLocale();
     return {

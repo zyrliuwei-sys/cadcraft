@@ -39,7 +39,7 @@ export function Footer() {
           href: '/acceptable-use-policy',
         },
         {
-          label: `${m['landing.footer.contact']()}: support@cadcraft.org`,
+          label: m['cad.footer.contact'](),
           href: 'mailto:support@cadcraft.org',
         },
       ],
@@ -49,6 +49,9 @@ export function Footer() {
   return (
     <SiteFooter
       columns={columns}
+      copyright={m['cad.footer.copyright']({
+        year: String(new Date().getFullYear()),
+      })}
       badges={<FooterBadgeList className="mt-10" />}
       disclaimer={m['cad.footer.disclaimer']()}
       signature={

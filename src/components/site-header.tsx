@@ -127,7 +127,11 @@ export function SiteHeader({
           type="button"
           className="flex size-10 items-center justify-center lg:hidden"
           onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+          aria-label={
+            mobileOpen
+              ? m['common.nav.close_menu']()
+              : m['common.nav.open_menu']()
+          }
           aria-expanded={mobileOpen}
         >
           {mobileOpen ? <X className="size-5" /> : <Menu className="size-5" />}

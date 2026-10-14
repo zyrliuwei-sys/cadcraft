@@ -57,7 +57,10 @@ export const Route = createFileRoute('/')({
           applicationCategory: 'DesignApplication',
           operatingSystem: 'Windows, macOS, Linux, FreeBSD, Web',
           softwareVersion: CADCRAFT_VERSION,
-          license: 'https://opensource.org/licenses/MIT',
+          license: [
+            'https://opensource.org/licenses/MIT',
+            'https://opensource.org/licenses/Apache-2.0',
+          ],
           offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
           downloadUrl: cadcraftLinks.releases,
           url: envConfigs.app_url,

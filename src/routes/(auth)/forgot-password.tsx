@@ -7,7 +7,7 @@ import { requestPasswordReset } from '@/core/auth/client';
 import { Link } from '@/core/i18n/navigation';
 import { envConfigs } from '@/config';
 import { m } from '@/paraglide/messages.js';
-import { localizeHref } from '@/paraglide/runtime.js';
+import { getLocale, localizeHref } from '@/paraglide/runtime.js';
 import { usePublicConfig } from '@/hooks/use-public-config';
 import { TextField } from '@/components/form-field';
 import { Button } from '@/components/ui/button';
@@ -168,5 +168,13 @@ function ForgotPasswordPage() {
 }
 
 export const Route = createFileRoute('/(auth)/forgot-password')({
+  loader: () => ({ locale: getLocale() }),
+  head: ({ loaderData }) => ({
+    meta: [
+      {
+        title: `${m['common.sign.forgot_password_title']({}, { locale: loaderData?.locale })} | ${envConfigs.app_name}`,
+      },
+    ],
+  }),
   component: ForgotPasswordPage,
 });

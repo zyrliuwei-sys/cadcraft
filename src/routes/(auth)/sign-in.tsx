@@ -12,7 +12,7 @@ import {
   safeInternalPath,
 } from '@/lib/redirect';
 import { m } from '@/paraglide/messages.js';
-import { localizeHref } from '@/paraglide/runtime.js';
+import { getLocale, localizeHref } from '@/paraglide/runtime.js';
 import { usePublicConfig } from '@/hooks/use-public-config';
 import { TextField } from '@/components/form-field';
 import { Button } from '@/components/ui/button';
@@ -318,5 +318,13 @@ function SignInPage() {
 }
 
 export const Route = createFileRoute('/(auth)/sign-in')({
+  loader: () => ({ locale: getLocale() }),
+  head: ({ loaderData }) => ({
+    meta: [
+      {
+        title: `${m['common.sign.sign_in_title']({}, { locale: loaderData?.locale })} | ${envConfigs.app_name}`,
+      },
+    ],
+  }),
   component: SignInPage,
 });
