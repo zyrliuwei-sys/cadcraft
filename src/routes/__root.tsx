@@ -15,7 +15,7 @@ import plexLatinUrl from '@fontsource-variable/ibm-plex-sans/files/ibm-plex-sans
 import { ThemeProvider } from 'next-themes';
 
 import { Link } from '@/core/i18n/navigation';
-import { envConfigs } from '@/config';
+import { DEFAULT_ADSENSE_CODE, envConfigs } from '@/config';
 import { getQueryClient } from '@/lib/query-client';
 import { cn } from '@/lib/utils';
 import { m } from '@/paraglide/messages.js';
@@ -44,7 +44,7 @@ const getAnalyticsConfigs = createServerFn().handler(async () => {
     plausibleDomain: configs.plausible_domain?.trim() || '',
     plausibleSrc: configs.plausible_src?.trim() || '',
     clarityProjectId: configs.clarity_project_id?.trim() || '',
-    adsenseCode: configs.adsense_code?.trim() || '',
+    adsenseCode: configs.adsense_code?.trim() || DEFAULT_ADSENSE_CODE,
     crispWebsiteId:
       configs.crisp_enabled === 'true'
         ? configs.crisp_website_id?.trim() || ''
@@ -126,7 +126,6 @@ function RootComponent() {
         {analytics?.clarityProjectId ? (
           <Clarity projectId={analytics.clarityProjectId} />
         ) : null}
-        {analytics?.adsenseCode ? <Ads code={analytics.adsenseCode} /> : null}
         <CustomerService
           crispWebsiteId={analytics?.crispWebsiteId || undefined}
           tawkPropertyId={analytics?.tawkPropertyId || undefined}
@@ -139,10 +138,13 @@ function RootComponent() {
 }
 
 function RootDocument({ children }: { children: ReactNode }) {
+  const analytics = Route.useLoaderData();
+
   return (
     <html lang={getLocale()} suppressHydrationWarning>
       <head>
         <HeadContent />
+        <Ads code={analytics?.adsenseCode || DEFAULT_ADSENSE_CODE} />
       </head>
       <body className="font-sans antialiased">
         {children}

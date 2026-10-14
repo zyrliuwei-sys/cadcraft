@@ -1,6 +1,9 @@
 export const AUTH_SECRET_PLACEHOLDER =
   'shipany-dev-secret-change-in-production';
 
+// Public Google AdSense publisher ID used when no admin-panel override exists.
+export const DEFAULT_ADSENSE_CODE = 'ca-pub-2841223102464177';
+
 // Isomorphic env access:
 // - Public (client-visible) vars are VITE_-prefixed and read from
 //   import.meta.env (statically injected into the client bundle by Vite).
