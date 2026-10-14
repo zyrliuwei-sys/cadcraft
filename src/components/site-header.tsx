@@ -98,16 +98,27 @@ export function SiteHeader({
               image={user.image}
             />
           ) : (
-            <Link
-              href={cta?.href ?? '/settings'}
-              className={cn(
-                buttonVariants(),
-                'h-9 gap-1.5 rounded-none px-4 text-[13px] font-semibold'
-              )}
-            >
-              {cta?.label ?? m['common.nav.get_started']()}
-              <ArrowRight className="size-4" />
-            </Link>
+            <>
+              <Link
+                href="/sign-in"
+                className={cn(
+                  buttonVariants({ variant: 'ghost' }),
+                  'h-9 rounded-none px-4 text-[13px] font-semibold'
+                )}
+              >
+                {m['common.sign.sign_in_title']()}
+              </Link>
+              <Link
+                href={cta?.href ?? '/settings'}
+                className={cn(
+                  buttonVariants(),
+                  'h-9 gap-1.5 rounded-none px-4 text-[13px] font-semibold'
+                )}
+              >
+                {cta?.label ?? m['common.nav.get_started']()}
+                <ArrowRight className="size-4" />
+              </Link>
+            </>
           )}
         </div>
 
@@ -162,13 +173,25 @@ export function SiteHeader({
                 image={user.image}
               />
             ) : (
-              <Link
-                href={cta?.href ?? '/settings'}
-                className={cn(buttonVariants(), 'gap-1.5 rounded-sm')}
-                onClick={() => setMobileOpen(false)}
-              >
-                {cta?.label ?? m['common.nav.get_started']()}
-              </Link>
+              <>
+                <Link
+                  href="/sign-in"
+                  className={cn(
+                    buttonVariants({ variant: 'outline' }),
+                    'rounded-sm'
+                  )}
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {m['common.sign.sign_in_title']()}
+                </Link>
+                <Link
+                  href={cta?.href ?? '/settings'}
+                  className={cn(buttonVariants(), 'gap-1.5 rounded-sm')}
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {cta?.label ?? m['common.nav.get_started']()}
+                </Link>
+              </>
             )}
           </div>
         </div>
