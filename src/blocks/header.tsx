@@ -8,6 +8,9 @@ export function Header() {
     { href: '/online', label: m['cad.nav.online']() },
     { href: '/tutorials', label: m['cad.nav.tutorials']() },
     { href: '/vs-autocad', label: m['cad.nav.compare']() },
+    { href: '/blog', label: m['cad.nav.blog']() },
+    { href: '/about', label: m['cad.nav.about']() },
+    { href: '/contact', label: m['cad.nav.contact']() },
     { href: cadcraftLinks.repo, label: m['cad.nav.github']() },
   ];
 

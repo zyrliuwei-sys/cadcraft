@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 
 import { envConfigs } from '@/config';
 import { baseLocale, locales, localizeUrl } from '@/paraglide/runtime.js';
+import { getLocalPosts } from '@/content/posts';
 
 const STATIC_PATHS = [
   '',
@@ -9,6 +10,9 @@ const STATIC_PATHS = [
   '/online',
   '/tutorials',
   '/vs-autocad',
+  '/blog',
+  '/about',
+  '/contact',
   '/privacy-policy',
   '/terms-of-service',
   '/acceptable-use-policy',
@@ -76,23 +80,30 @@ export const Route = createFileRoute('/sitemap.xml')({
         const entries: Entry[] = STATIC_PATHS.map((path) => ({
           path,
           changeFrequency: path === '/blog' ? 'daily' : 'weekly',
-          priority: path === '' ? 1 : 0.8,
+          priority: path === '' ? 1 : path === '/blog' ? 0.7 : 0.8,
         }));
 
-        // Only published project articles belong in the sitemap. The bundled
-        // ShipAny tutorial posts are demo content and carry noindex.
+        // Local project articles are published content and use the same
+        // hreflang entry format as the static pages.
+        const localPosts = getLocalPosts(baseLocale);
+        const knownPostSlugs = new Set<string>();
+        for (const post of localPosts) {
+          knownPostSlugs.add(post.slug);
+          entries.push({
+            path: `/blog/${encodeURIComponent(post.slug)}`,
+            lastModified: post.createdAt,
+            changeFrequency: 'monthly',
+            priority: 0.6,
+          });
+        }
+
+        // Add published database articles without duplicating a local article.
         try {
           const { listPublishedArticles } =
             await import('@/modules/posts/service');
           const rows = await listPublishedArticles().catch(() => []);
-          if (rows.length > 0) {
-            entries.push({
-              path: '/blog',
-              changeFrequency: 'weekly',
-              priority: 0.7,
-            });
-          }
           for (const post of rows) {
+            if (knownPostSlugs.has(post.slug)) continue;
             entries.push({
               path: `/blog/${encodeURIComponent(post.slug)}`,
               lastModified: new Date(post.createdAt).toISOString(),

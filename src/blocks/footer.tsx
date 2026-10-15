@@ -18,6 +18,7 @@ export function Footer() {
       links: [
         { label: m['cad.nav.tutorials'](), href: '/tutorials' },
         { label: m['cad.nav.compare'](), href: '/vs-autocad' },
+        { label: m['cad.nav.blog'](), href: '/blog' },
       ],
     },
     {
@@ -32,6 +33,7 @@ export function Footer() {
     {
       title: m['cad.footer.legal'](),
       links: [
+        { label: m['cad.nav.about'](), href: '/about' },
         { label: m['landing.footer.privacy'](), href: '/privacy-policy' },
         { label: m['landing.footer.terms'](), href: '/terms-of-service' },
         {
@@ -39,8 +41,8 @@ export function Footer() {
           href: '/acceptable-use-policy',
         },
         {
-          label: m['cad.footer.contact'](),
-          href: 'mailto:support@cadcraft.org',
+          label: m['cad.nav.contact'](),
+          href: '/contact',
         },
       ],
     },

@@ -15,10 +15,6 @@ import { formatPostDate, loadLocalPost } from '@/content/posts';
 import { getBlogPostFn } from '@/content/posts/server';
 
 export const Route = createFileRoute('/blog/$slug')({
-  // Hidden: left over from the Hotel Lobby AI project, not part of CADCraft.
-  beforeLoad: () => {
-    throw notFound();
-  },
   loader: async ({ params }) => {
     const locale = getLocale();
     const post = await getBlogPostFn({
@@ -45,13 +41,7 @@ export const Route = createFileRoute('/blog/$slug')({
     });
     return {
       ...head,
-      meta: [
-        ...head.meta,
-        { property: 'og:type', content: 'article' },
-        ...(post.source === 'local'
-          ? [{ name: 'robots', content: 'noindex,follow' }]
-          : []),
-      ],
+      meta: [...head.meta, { property: 'og:type', content: 'article' }],
     };
   },
   component: BlogPostPage,

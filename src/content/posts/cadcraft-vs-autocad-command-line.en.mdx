@@ -1,0 +1,65 @@
+export const meta = {
+  title: 'The First CADCraft Workflow I Run from a Terminal',
+  description:
+    'A practical look at the command line, drawing extents, scripts, and file conversion when moving from AutoCAD to CADCraft.',
+  created_at: '2026-10-15',
+  author_name: 'CADCraft AI Editorial',
+  author_image: '/logo.svg',
+};
+
+When someone asks whether CADCraft feels like AutoCAD, the easy answer is to compare the buttons. The more useful answer starts at the command line. Both applications treat typed commands as a first-class way to draw, but CADCraft makes the command line unusually easy to carry outside the desktop window. That changes how I test a drawing, batch a conversion, and hand a repeatable task to an agent.
+
+## Start with a file, not a blank screen
+
+With AutoCAD, I usually open a drawing, inspect the current workspace, and then decide whether to automate part of the job. With CADCraft, I can begin by asking the CLI what a file contains:
+
+```bash
+cadcraft-cli info drawing.dxf
+```
+
+That small distinction matters. `info` is a cheap sanity check before loading a large file or sending it through a script. If I only need a different representation, I can convert directly:
+
+```bash
+cadcraft-cli convert drawing.dxf drawing.svg
+```
+
+The exported image or SVG is fitted to the model-space extents by default. It is not necessarily the same view I last had on screen, which is exactly what I want for a predictable preview and something I need to remember when comparing screenshots with an AutoCAD viewport.
+
+## The command syntax is familiar, but the workflow is not
+
+CADCraft keeps the habits that make AutoCAD command-line drafting fast: command names, prompts, aliases, relative coordinates such as `@dx,dy`, polar input such as `@d<a`, direct distance entry, and Enter to repeat. A short script can create a test drawing without a mouse:
+
+```bash
+cadcraft-cli run --sample --script 'CIRCLE 22,3 1\n' --save out.dxf --export out.png
+```
+
+The important part is not the circle. It is the complete loop: create geometry, save a DXF, and export an image in one process. I use this for regression checks, examples in documentation, and small experiments where opening a full GUI would add more state than the test needs. AutoCAD scripts can be just as powerful, but they tend to live inside a workstation-oriented setup; CADCraft's `run` command makes the same idea explicit at the shell.
+
+## Framing is a separate decision
+
+The first time I compared a CADCraft export with an AutoCAD screenshot, the geometry was correct but the images looked different. The reason was the view. For a specific drawing window, give the converter the rectangle you actually care about:
+
+```bash
+cadcraft-cli convert drawing.dwg detail.png --window 0,0,20000,15000
+```
+
+For a selected region, run a selection command, zoom to the resulting objects, and export the current view:
+
+```bash
+cadcraft-cli run drawing.dwg \
+  --cmd 'select {"window":[[0,0],[20000,15000]]}' \
+  --cmd 'zoom {"mode":"object"}' \
+  --export selection.png
+```
+
+This is one of the practical differences that does not show up in a feature checklist. In an interactive AutoCAD session, I can fix the viewport by eye. In a headless CADCraft job, view state is part of the recipe and should be written down.
+
+## Treat file compatibility as a review step
+
+CADCraft reads and writes DXF across the common R12–2018 range and can open and save DWG through its open-source library. That does not mean every object survives a round trip unchanged. If CADCraft does not model an entity yet, it may not be preserved on save. I therefore keep the original file, run `info` first, and inspect an exported preview before replacing anything. This is a better habit than assuming a successful exit code means the drawing is semantically identical.
+
+## Where agents fit
+
+The same command surface can be exposed through `cadcraft-cli mcp`, connected to a running app with `cadcraft-cli mcp --connect 127.0.0.1:7979`, or driven through the JSON control channel. An agent can execute a command, inspect entities, and render a result instead of guessing from a screenshot. That is the part AutoCAD users may notice most: CADCraft is not only imitating a familiar drafting workflow; it is making that workflow inspectable and repeatable.
+
+My starting recipe is therefore simple: use `info` before conversion, make the coordinate system and view explicit, save to a new file, and render a preview before trusting the result. The commands feel familiar enough for an AutoCAD user, but the terminal makes the work easier to test, document, and run again.
