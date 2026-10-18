@@ -125,7 +125,10 @@ export function CadOnlinePage() {
               href={src}
               target="_blank"
               rel="noopener"
-              className={cn(ctaPrimary, 'h-9 px-4 text-sm')}
+              className={cn(
+                ctaPrimary,
+                'hidden h-9 px-4 text-sm md:inline-flex'
+              )}
             >
               <Maximize2 className="size-4" />
               {m['cad.online.fullscreen']()}
