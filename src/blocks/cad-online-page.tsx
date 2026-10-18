@@ -12,7 +12,8 @@ type Renderer = '' | '?webgl' | '?cpu';
 // Phones get the full desktop UI: render the app at this width, then scale it
 // down to fit, instead of letting the toolbars and panels collapse onto each other.
 const MOBILE_BREAKPOINT = 768;
-const VIRTUAL_WIDTH = 1024;
+const VIRTUAL_WIDTH = 1440;
+const VIRTUAL_HEIGHT = 613;
 
 function useFitScale() {
   const ref = useRef<HTMLDivElement>(null);
@@ -27,13 +28,13 @@ function useFitScale() {
     if (!el) return;
     const update = () => {
       setMeasured(true);
-      const { width, height } = el.getBoundingClientRect();
+      const { width } = el.getBoundingClientRect();
       if (window.innerWidth >= MOBILE_BREAKPOINT || width >= VIRTUAL_WIDTH) {
         setBox(null);
         return;
       }
       const scale = width / VIRTUAL_WIDTH;
-      setBox({ scale, height: height / scale });
+      setBox({ scale, height: VIRTUAL_HEIGHT });
     };
     update();
     const observer = new ResizeObserver(update);
@@ -113,7 +114,7 @@ export function CadOnlinePage() {
         </p>
         <div
           ref={frameBoxRef}
-          className="relative h-[70vh] min-h-[480px] w-full overflow-hidden border-y bg-[#22282f] sm:h-[calc(100vh-200px)] sm:min-h-[560px] sm:border"
+          className="relative aspect-[1440/613] w-full overflow-hidden border-y bg-[#22282f] sm:border md:aspect-auto md:h-[calc(100vh-200px)] md:min-h-[560px]"
         >
           {measured && (
             <iframe
