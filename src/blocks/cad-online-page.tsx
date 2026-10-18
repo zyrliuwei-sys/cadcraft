@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Info, Lock, Maximize2, Smartphone } from 'lucide-react';
 
 import { cadcraftLinks } from '@/config/cadcraft';
@@ -9,9 +9,45 @@ import { CodeBlock } from '@/components/code-block';
 
 type Renderer = '' | '?webgl' | '?cpu';
 
+// Phones get the full desktop UI: render the app at this width, then scale it
+// down to fit, instead of letting the toolbars and panels collapse onto each other.
+const MOBILE_BREAKPOINT = 768;
+const VIRTUAL_WIDTH = 1024;
+
+function useFitScale() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [box, setBox] = useState<{ scale: number; height: number } | null>(
+    null
+  );
+  // Hold the iframe until measured so phones don't boot the app twice.
+  const [measured, setMeasured] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const update = () => {
+      setMeasured(true);
+      const { width, height } = el.getBoundingClientRect();
+      if (window.innerWidth >= MOBILE_BREAKPOINT || width >= VIRTUAL_WIDTH) {
+        setBox(null);
+        return;
+      }
+      const scale = width / VIRTUAL_WIDTH;
+      setBox({ scale, height: height / scale });
+    };
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return { ref, box, measured };
+}
+
 export function CadOnlinePage() {
   const [renderer, setRenderer] = useState<Renderer>('');
   const src = `${cadcraftLinks.app}${renderer}`;
+  const { ref: frameBoxRef, box, measured } = useFitScale();
 
   const renderers: [Renderer, string][] = [
     ['', m['cad.online.render_auto']()],
@@ -75,14 +111,32 @@ export function CadOnlinePage() {
           <Smartphone className="size-4 shrink-0" />
           {m['cad.online.mobile_note']()}
         </p>
-        <iframe
-          key={src}
-          src={src}
-          title="CADCraft"
-          className="block h-[70vh] min-h-[480px] w-full border-y bg-[#22282f] sm:h-[calc(100vh-200px)] sm:min-h-[560px] sm:border"
-          allow="fullscreen; clipboard-read; clipboard-write"
-          allowFullScreen
-        />
+        <div
+          ref={frameBoxRef}
+          className="relative h-[70vh] min-h-[480px] w-full overflow-hidden border-y bg-[#22282f] sm:h-[calc(100vh-200px)] sm:min-h-[560px] sm:border"
+        >
+          {measured && (
+            <iframe
+              key={`${src}${box ? '#fit' : ''}`}
+              src={src}
+              data-fit={box ? '1' : undefined}
+              title="CADCraft"
+              className="absolute top-0 left-0 block h-full w-full"
+              style={
+                box
+                  ? {
+                      width: VIRTUAL_WIDTH,
+                      height: box.height,
+                      transform: `scale(${box.scale})`,
+                      transformOrigin: '0 0',
+                    }
+                  : undefined
+              }
+              allow="fullscreen; clipboard-read; clipboard-write"
+              allowFullScreen
+            />
+          )}
+        </div>
         <p className="text-muted-foreground px-4 pt-2 text-xs sm:px-0">
           {m['cad.online.loading_note']()} {m['cad.online.license']()}
         </p>
