@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Info, Lock, Maximize2, Smartphone } from 'lucide-react';
+import { Info, Lock, Maximize2, Minus, Plus, Smartphone } from 'lucide-react';
 
 import { cadcraftLinks } from '@/config/cadcraft';
 import { ctaPrimary } from '@/lib/cta';
@@ -9,11 +9,9 @@ import { CodeBlock } from '@/components/code-block';
 
 type Renderer = '' | '?webgl' | '?cpu';
 
-// Phones get the full desktop UI: render the app at this width, then scale it
-// down to fit, instead of letting the toolbars and panels collapse onto each other.
-const MOBILE_BREAKPOINT = 768;
-const VIRTUAL_WIDTH = 1440;
-const VIRTUAL_HEIGHT = 613;
+// Keep the reference desktop layout and scale the entire editor on every screen.
+const VIRTUAL_WIDTH = 1280;
+const VIRTUAL_HEIGHT = (VIRTUAL_WIDTH * 1358) / 2182;
 
 function useFitScale() {
   const ref = useRef<HTMLDivElement>(null);
@@ -28,13 +26,9 @@ function useFitScale() {
     if (!el) return;
     const update = () => {
       setMeasured(true);
-      const { width } = el.getBoundingClientRect();
-      if (window.innerWidth >= MOBILE_BREAKPOINT || width >= VIRTUAL_WIDTH) {
-        setBox(null);
-        return;
-      }
-      const scale = width / VIRTUAL_WIDTH;
-      setBox({ scale, height: VIRTUAL_HEIGHT });
+      const scale = el.clientWidth / VIRTUAL_WIDTH;
+      if (!scale) return;
+      setBox({ scale, height: el.clientHeight / scale });
     };
     update();
     const observer = new ResizeObserver(update);
@@ -47,7 +41,8 @@ function useFitScale() {
 
 export function CadOnlinePage() {
   const [renderer, setRenderer] = useState<Renderer>('');
-  const src = `${cadcraftLinks.app}${renderer}`;
+  const [uiZoom, setUiZoom] = useState(1);
+  const src = `${cadcraftLinks.app}${renderer}${renderer ? '&' : '?'}ui=2`;
   const { ref: frameBoxRef, box, measured } = useFitScale();
 
   const renderers: [Renderer, string][] = [
@@ -76,6 +71,38 @@ export function CadOnlinePage() {
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
+            <div
+              className="flex items-center border"
+              role="group"
+              aria-label={m['cad.online.ui_zoom']()}
+            >
+              <button
+                type="button"
+                className="flex size-10 items-center justify-center disabled:opacity-40"
+                aria-label={m['cad.online.zoom_out']()}
+                disabled={uiZoom <= 1}
+                onClick={() => setUiZoom((zoom) => Math.max(1, zoom - 0.25))}
+              >
+                <Minus className="size-4" />
+              </button>
+              <button
+                type="button"
+                className="h-10 min-w-14 px-2 text-xs font-semibold"
+                onClick={() => setUiZoom(1)}
+                aria-label={m['cad.online.zoom_fit']()}
+              >
+                {Math.round(uiZoom * 100)}%
+              </button>
+              <button
+                type="button"
+                className="flex size-10 items-center justify-center disabled:opacity-40"
+                aria-label={m['cad.online.zoom_in']()}
+                disabled={uiZoom >= 3}
+                onClick={() => setUiZoom((zoom) => Math.min(3, zoom + 0.25))}
+              >
+                <Plus className="size-4" />
+              </button>
+            </div>
             <div className="flex border p-0.5" role="group">
               {renderers.map(([value, label]) => (
                 <button
@@ -114,28 +141,37 @@ export function CadOnlinePage() {
         </p>
         <div
           ref={frameBoxRef}
-          className="relative aspect-[1440/613] w-full overflow-hidden border-y bg-[#22282f] sm:border md:aspect-auto md:h-[calc(100vh-200px)] md:min-h-[560px]"
+          className="relative w-full overflow-auto border-y bg-[#22282f] sm:border"
+          style={{ aspectRatio: `${VIRTUAL_WIDTH} / ${VIRTUAL_HEIGHT}` }}
         >
-          {measured && (
-            <iframe
-              key={`${src}${box ? '#fit' : ''}`}
-              src={src}
-              data-fit={box ? '1' : undefined}
-              title="CADCraft"
-              className="absolute top-0 left-0 block h-full w-full"
-              style={
-                box
-                  ? {
-                      width: VIRTUAL_WIDTH,
-                      height: box.height,
-                      transform: `scale(${box.scale})`,
-                      transformOrigin: '0 0',
-                    }
-                  : undefined
-              }
-              allow="fullscreen; clipboard-read; clipboard-write"
-              allowFullScreen
-            />
+          {measured && box && (
+            <div
+              className="relative"
+              style={{
+                width: VIRTUAL_WIDTH * box.scale * uiZoom,
+                height: box.height * box.scale * uiZoom,
+              }}
+            >
+              <iframe
+                key={`${src}${box ? '#fit' : ''}`}
+                src={src}
+                data-fit={box ? '1' : undefined}
+                title="CADCraft"
+                className="absolute top-0 left-0 block h-full w-full"
+                style={
+                  box
+                    ? {
+                        width: VIRTUAL_WIDTH,
+                        height: box.height,
+                        transform: `scale(${box.scale * uiZoom})`,
+                        transformOrigin: '0 0',
+                      }
+                    : undefined
+                }
+                allow="fullscreen; clipboard-read; clipboard-write"
+                allowFullScreen
+              />
+            </div>
           )}
         </div>
         <p className="text-muted-foreground px-4 pt-2 text-xs sm:px-0">

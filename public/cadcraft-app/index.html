@@ -4,16 +4,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
   <title>CADCraft</title>
-  <script>
-    // Local patch: the /online page scales this frame down on phones and marks
-    // it with data-fit. The app sizes its UI by devicePixelRatio, so pin it to 1
-    // there or the desktop layout is zoomed 3x and the panels collide.
-    try {
-      if (window.frameElement && window.frameElement.dataset.fit === '1') {
-        Object.defineProperty(window, 'devicePixelRatio', { get: () => 1 });
-      }
-    } catch (e) {}
-  </script>
   
 <script type="module">
 import init, * as bindings from './cadcraft-web-d269cf8fb65cf85.js';
