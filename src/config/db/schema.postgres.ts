@@ -666,3 +666,34 @@ export const hotelPreview = table(
 
 export type HotelPreview = typeof hotelPreview.$inferSelect;
 export type NewHotelPreview = typeof hotelPreview.$inferInsert;
+
+// First-party funnel events (modules/analytics). See schema.sqlite.ts.
+
+export const analyticsEvent = table(
+  'analytics_event',
+  {
+    id: text('id').primaryKey(),
+    name: text('name').notNull(),
+    visitorId: text('visitor_id').notNull(),
+    userId: text('user_id'),
+    path: text('path'),
+    props: text('props'),
+    source: text('source'),
+    referrer: text('referrer'),
+    landing: text('landing'),
+    country: text('country'),
+    build: text('build'),
+    variant: text('variant'),
+    internal: integer('internal').notNull().default(0),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (t) => [
+    index('idx_analytics_event_created').on(t.createdAt),
+    index('idx_analytics_event_visitor').on(t.visitorId, t.createdAt),
+    index('idx_analytics_event_name').on(t.name, t.createdAt),
+    index('idx_analytics_event_user').on(t.userId),
+  ]
+);
+
+export type AnalyticsEvent = typeof analyticsEvent.$inferSelect;
+export type NewAnalyticsEvent = typeof analyticsEvent.$inferInsert;

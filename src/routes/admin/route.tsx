@@ -3,6 +3,7 @@ import {
   BadgeCheck,
   CreditCard,
   FolderOpen,
+  Funnel,
   Home,
   LayoutDashboard,
   Radar,
@@ -31,6 +32,11 @@ function AdminLayout() {
       label: m['admin.nav.overview'](),
       icon: LayoutDashboard,
       group,
+    },
+    {
+      href: '/admin/analytics',
+      label: m['admin.nav.analytics'](),
+      icon: Funnel,
     },
     {
       href: '/admin/users',

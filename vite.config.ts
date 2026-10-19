@@ -1,3 +1,4 @@
+import { execSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { tanstackStart } from '@tanstack/react-start/plugin/vite';
@@ -47,6 +48,22 @@ function workersDbProvider(): string {
   return process.env.DATABASE_PROVIDER || 'd1';
 }
 
+// Git commit the bundle is built from, stamped on every analytics event so the
+// funnel can be split by release (modules/analytics). Cloudflare Builds
+// exposes the sha as WORKERS_CI_COMMIT_SHA; local builds ask git. A dirty
+// tree gets a "+" so uncommitted local builds don't pose as a release.
+function buildVersion(): string {
+  const ci = process.env.WORKERS_CI_COMMIT_SHA;
+  if (ci) return ci.slice(0, 7);
+  try {
+    const sha = execSync('git rev-parse --short=7 HEAD').toString().trim();
+    const dirty = execSync('git status --porcelain').toString().trim();
+    return dirty ? `${sha}+` : sha;
+  } catch {
+    return 'dev';
+  }
+}
+
 const workersDb = isCloudflareBuild ? workersDbProvider() : '';
 const keepPostgres = workersDb === 'postgresql' || workersDb === 'postgres';
 
@@ -54,6 +71,7 @@ export default defineConfig({
   define: {
     // Versions the homepage HTML edge cache (src/server.ts) per build.
     __BUILD_ID__: JSON.stringify(Date.now().toString(36)),
+    __BUILD_VERSION__: JSON.stringify(buildVersion()),
   },
   server: {
     port: 3000,

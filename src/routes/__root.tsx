@@ -23,6 +23,7 @@ import { getLocale } from '@/paraglide/runtime.js';
 import { Ads } from '@/components/analytics/ads';
 import { Clarity } from '@/components/analytics/clarity';
 import { GoogleAnalytics } from '@/components/analytics/google-analytics';
+import { PageViewTracker } from '@/components/analytics/page-view-tracker';
 import { Plausible } from '@/components/analytics/plausible';
 import { PurchaseTracker } from '@/components/analytics/purchase-tracker';
 import { CustomerService } from '@/components/customer-service';
@@ -114,6 +115,7 @@ function RootComponent() {
         <Toaster position="top-center" richColors />
         <GoogleOneTap />
         <PurchaseTracker />
+        <PageViewTracker />
         {analytics?.gaId ? (
           <GoogleAnalytics measurementId={analytics.gaId} />
         ) : null}

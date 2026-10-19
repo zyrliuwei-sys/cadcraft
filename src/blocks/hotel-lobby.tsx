@@ -336,6 +336,14 @@ export function HotelLobbyPage() {
   // its close animation and later opens behave as before.
   const [paywallMounted, setPaywallMounted] = useState(false);
   if (paywall && !paywallMounted) setPaywallMounted(true);
+  useEffect(() => {
+    track('hl_view');
+  }, []);
+  // Both photos in (picked or restored from a draft): the "upload" step.
+  const photosReady = !!photoA && !!photoB;
+  useEffect(() => {
+    if (photosReady) track('hl_upload');
+  }, [photosReady]);
 
   // Survive the sign-in / checkout round trip and reloads mid-generation:
   // the preview and task ids live in localStorage, photos aren't needed again.
@@ -516,6 +524,7 @@ export function HotelLobbyPage() {
     );
   };
   const startGenerate = () => {
+    track('hl_generate_click', { signed_in: user ? 1 : 0 });
     // New visitors must choose a paid plan before any generation request is
     // submitted. Existing signed-in users with enough credits can still use
     // their balance directly.

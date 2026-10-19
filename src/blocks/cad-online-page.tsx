@@ -3,6 +3,7 @@ import { Info, Lock, Maximize2, Minus, Plus, Smartphone } from 'lucide-react';
 
 import { cadcraftLinks } from '@/config/cadcraft';
 import { ctaPrimary } from '@/lib/cta';
+import { track } from '@/lib/track';
 import { cn } from '@/lib/utils';
 import { m } from '@/paraglide/messages.js';
 import { CodeBlock } from '@/components/code-block';
@@ -160,6 +161,7 @@ export function CadOnlinePage() {
                 src={src}
                 data-fit={box ? '1' : undefined}
                 title="CADCraft"
+                onLoad={() => track('online_app_loaded')}
                 className="absolute top-0 left-0 block h-full w-full"
                 style={
                   box

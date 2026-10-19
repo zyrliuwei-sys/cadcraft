@@ -275,6 +275,11 @@ export function Pricing({
   }
 
   async function handleCheckout(plan: PricingPlan) {
+    track('plan_click', {
+      plan: plan.productId ?? '',
+      value: (plan.priceInCents ?? 0) / 100,
+      signed_in: session?.user ? 1 : 0,
+    });
     if (!session?.user) {
       const callbackUrl = encodeURIComponent(currentPathWithQuery('/pricing'));
       router.push(`/sign-in?callbackUrl=${callbackUrl}`);

@@ -730,3 +730,41 @@ export const hotelPreview = table(
 
 export type HotelPreview = typeof hotelPreview.$inferSelect;
 export type NewHotelPreview = typeof hotelPreview.$inferInsert;
+
+// First-party funnel events (modules/analytics). One row per tracked step;
+// `visitorId` is the browser's long-lived id, `userId` is filled server-side
+// from the session. `source`/`referrer`/`landing` are the visitor's first
+// touch (kept in the browser, sent with every event); `country` comes from
+// the edge header; `build` is the git commit the page was built from.
+// `internal` marks admin/test traffic so the funnel can exclude it.
+
+export const analyticsEvent = table(
+  'analytics_event',
+  {
+    id: text('id').primaryKey(),
+    name: text('name').notNull(),
+    visitorId: text('visitor_id').notNull(),
+    userId: text('user_id'),
+    path: text('path'),
+    props: text('props'),
+    source: text('source'),
+    referrer: text('referrer'),
+    landing: text('landing'),
+    country: text('country'),
+    build: text('build'),
+    variant: text('variant'),
+    internal: integer('internal').notNull().default(0),
+    createdAt: integer('created_at', { mode: 'timestamp_ms' })
+      .default(sqliteNowMs)
+      .notNull(),
+  },
+  (t) => [
+    index('idx_analytics_event_created').on(t.createdAt),
+    index('idx_analytics_event_visitor').on(t.visitorId, t.createdAt),
+    index('idx_analytics_event_name').on(t.name, t.createdAt),
+    index('idx_analytics_event_user').on(t.userId),
+  ]
+);
+
+export type AnalyticsEvent = typeof analyticsEvent.$inferSelect;
+export type NewAnalyticsEvent = typeof analyticsEvent.$inferInsert;
