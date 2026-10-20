@@ -28,35 +28,27 @@ const clock = (t: number) =>
     minute: '2-digit',
   });
 
-const barButton =
-  'hover:border-foreground flex items-center gap-1.5 border px-2 py-1 font-medium transition-colors disabled:opacity-60';
+const chip =
+  'hover:border-foreground bg-background flex h-9 items-center gap-2 border px-3 transition-colors disabled:opacity-60';
 
 /**
  * Strip above the online editor: auto-save status, recent drawings in this
- * browser, and cloud drawings (Pro) or the way to get them.
+ * browser, and where the drawing lives (this browser, or synced to cloud).
  */
 export function EditorFilesBar({
   recent,
   savedAt,
   onRestore,
   pro,
-  hasCloud,
   cloudSavedAt,
   cloudSaving,
-  onSaveCloud,
-  onShowCloud,
 }: {
   recent: StoredDrawing[];
   savedAt: number | null;
   onRestore: (drawing: StoredDrawing) => Promise<boolean>;
   pro: boolean;
-  /** Has cloud drawings (still listed after Pro ends). */
-  hasCloud: boolean;
   cloudSavedAt: number | null;
   cloudSaving: boolean;
-  /** Free users get the upsell from here too. */
-  onSaveCloud: () => void;
-  onShowCloud: () => void;
 }) {
   const [opening, setOpening] = useState<string | null>(null);
 
@@ -67,16 +59,16 @@ export function EditorFilesBar({
   };
 
   return (
-    <div className="hidden flex-wrap items-center gap-x-4 gap-y-2 border-x border-t px-3 py-2 text-xs md:flex">
+    <div className="bg-muted/50 hidden flex-wrap items-center gap-x-5 gap-y-2 border-x border-t px-4 py-2.5 text-sm md:flex">
       {savedAt ? (
         <span className="text-muted-foreground flex items-center gap-1.5">
-          <Check className="size-3.5" />
+          <Check className="size-4" />
           {m['cad.online.files_saved']({ time: clock(savedAt) })}
         </span>
       ) : (
         !recent.length && (
           <span className="text-muted-foreground flex items-center gap-1.5">
-            <Check className="size-3.5" />
+            <Check className="size-4" />
             {m['cad.online.files_autosave_on']()}
           </span>
         )
@@ -85,7 +77,7 @@ export function EditorFilesBar({
       {recent.length > 0 && (
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-muted-foreground flex items-center gap-1.5">
-            <History className="size-3.5" />
+            <History className="size-4" />
             {m['cad.online.files_recent']()}
           </span>
           {recent.map((d) => (
@@ -95,12 +87,9 @@ export function EditorFilesBar({
               onClick={() => open(d)}
               disabled={opening !== null}
               title={m['cad.online.files_open']()}
-              className={cn(
-                'hover:border-foreground flex items-center gap-1.5 border px-2 py-1 transition-colors disabled:opacity-60',
-                opening === d.name && 'animate-pulse'
-              )}
+              className={cn(chip, opening === d.name && 'animate-pulse')}
             >
-              <FileText className="size-3.5" />
+              <FileText className="size-4" />
               <span className="max-w-40 truncate font-medium">{d.name}</span>
               <span className="text-muted-foreground">{ago(d.savedAt)}</span>
             </button>
@@ -111,33 +100,66 @@ export function EditorFilesBar({
       <div className="ml-auto flex items-center gap-2">
         {pro && (cloudSaving || cloudSavedAt) && (
           <span className="text-muted-foreground flex items-center gap-1.5">
-            <Cloud className="size-3.5" />
+            <Cloud className="size-4" />
             {cloudSaving
               ? m['cad.cloud.syncing']()
               : m['cad.cloud.synced']({ time: clock(cloudSavedAt!) })}
           </span>
         )}
-        <button
-          type="button"
-          onClick={onSaveCloud}
-          disabled={cloudSaving}
-          className={barButton}
-        >
-          <CloudUpload className="size-3.5" />
-          {m['cad.cloud.save']()}
-          {!pro && (
-            <span className="bg-primary text-primary-foreground px-1.5 py-0.5 text-[10px] font-semibold">
-              PRO
-            </span>
-          )}
-        </button>
-        {(pro || hasCloud) && (
-          <button type="button" onClick={onShowCloud} className={barButton}>
-            <FolderOpen className="size-3.5" />
-            {m['cad.cloud.title']()}
-          </button>
+        {!pro && (
+          <span className="text-muted-foreground">
+            {m['cad.cloud.local_hint']()}
+          </span>
         )}
       </div>
     </div>
+  );
+}
+
+/**
+ * Cloud buttons beside the editor controls: Save to cloud (the upsell for
+ * free users) and, once there are cloud drawings, the list.
+ */
+export function CloudActions({
+  pro,
+  hasCloud,
+  saving,
+  onSave,
+  onShowList,
+}: {
+  pro: boolean;
+  /** Has cloud drawings (still listed after Pro ends). */
+  hasCloud: boolean;
+  saving: boolean;
+  onSave: () => void;
+  onShowList: () => void;
+}) {
+  return (
+    <>
+      {(pro || hasCloud) && (
+        <button
+          type="button"
+          onClick={onShowList}
+          className="hover:border-foreground hidden h-9 items-center gap-2 border px-3 text-sm font-semibold transition-colors md:inline-flex"
+        >
+          <FolderOpen className="size-4" />
+          {m['cad.cloud.title']()}
+        </button>
+      )}
+      <button
+        type="button"
+        onClick={onSave}
+        disabled={saving}
+        className="bg-primary text-primary-foreground hover:bg-primary/85 hidden h-9 items-center gap-2 px-4 text-sm font-semibold transition-colors active:translate-y-px disabled:opacity-60 md:inline-flex"
+      >
+        <CloudUpload className="size-4" />
+        {m['cad.cloud.save']()}
+        {!pro && (
+          <span className="bg-signal px-1.5 py-0.5 text-[11px] leading-none font-bold text-white">
+            PRO
+          </span>
+        )}
+      </button>
+    </>
   );
 }

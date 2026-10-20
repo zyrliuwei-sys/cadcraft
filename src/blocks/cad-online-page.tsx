@@ -3,7 +3,7 @@ import { Info, Lock, Maximize2, Minus, Plus, Smartphone } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { cadcraftLinks } from '@/config/cadcraft';
-import { ctaPrimary } from '@/lib/cta';
+import { ctaSecondary } from '@/lib/cta';
 import { downloadSharedDrawing } from '@/lib/drawings-client';
 import { track } from '@/lib/track';
 import { cn } from '@/lib/utils';
@@ -11,7 +11,7 @@ import { m } from '@/paraglide/messages.js';
 import { useEditorFiles } from '@/hooks/use-editor-files';
 import { CloudDrawingsDialog } from '@/blocks/cloud-drawings-dialog';
 import { DwgGateDialog } from '@/blocks/dwg-gate-dialog';
-import { EditorFilesBar } from '@/blocks/editor-files-bar';
+import { CloudActions, EditorFilesBar } from '@/blocks/editor-files-bar';
 import { ProUpsellDialog } from '@/blocks/pro-upsell-dialog';
 import { CodeBlock } from '@/components/code-block';
 
@@ -102,8 +102,8 @@ export function CadOnlinePage() {
   return (
     <>
       <section className="bg-sheet-grid border-b">
-        <div className="mx-auto flex max-w-[1600px] flex-col gap-4 px-4 py-5 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
-          <div>
+        <div className="mx-auto flex max-w-[1600px] flex-col gap-4 px-4 py-5 sm:px-6 xl:flex-row xl:items-center xl:justify-between xl:gap-8">
+          <div className="min-w-0">
             <h1 className="font-display text-2xl font-semibold sm:text-3xl">
               {m['cad.online.h1']()}
             </h1>
@@ -111,7 +111,7 @@ export function CadOnlinePage() {
               {m['cad.online.lead']()}
             </p>
           </div>
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2 xl:shrink-0 xl:flex-nowrap">
             <div
               className="flex items-center border"
               role="group"
@@ -167,13 +167,20 @@ export function CadOnlinePage() {
               target="_blank"
               rel="noopener"
               className={cn(
-                ctaPrimary,
+                ctaSecondary,
                 'hidden h-9 px-4 text-sm md:inline-flex'
               )}
             >
               <Maximize2 className="size-4" />
               {m['cad.online.fullscreen']()}
             </a>
+            <CloudActions
+              pro={files.pro}
+              hasCloud={files.cloud.length > 0}
+              saving={files.cloudSaving}
+              onSave={saveToCloud}
+              onShowList={() => setCloudOpen(true)}
+            />
           </div>
         </div>
       </section>
@@ -188,11 +195,8 @@ export function CadOnlinePage() {
           savedAt={files.savedAt}
           onRestore={files.restore}
           pro={files.pro}
-          hasCloud={files.cloud.length > 0}
           cloudSavedAt={files.cloudSavedAt}
           cloudSaving={files.cloudSaving}
-          onSaveCloud={saveToCloud}
-          onShowCloud={() => setCloudOpen(true)}
         />
         <div
           ref={frameBoxRef}
