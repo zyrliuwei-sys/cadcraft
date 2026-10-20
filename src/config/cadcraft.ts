@@ -1,6 +1,6 @@
 // Facts about the upstream CADCraft project (github.com/storytold/cadcraft).
 // Bump CADCRAFT_VERSION + the hosted web build in public/cadcraft-app/ together.
-export const CADCRAFT_VERSION = '0.6.2';
+export const CADCRAFT_VERSION = '0.8.0';
 
 const REPO = 'https://github.com/storytold/cadcraft';
 const RELEASE = `${REPO}/releases/download/v${CADCRAFT_VERSION}`;

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Info, Lock, Maximize2, Minus, Plus, Smartphone } from 'lucide-react';
 import { toast } from 'sonner';
 
-import { cadcraftLinks } from '@/config/cadcraft';
+import { CADCRAFT_VERSION, cadcraftLinks } from '@/config/cadcraft';
 import { ctaSecondary } from '@/lib/cta';
 import { downloadSharedDrawing } from '@/lib/drawings-client';
 import { track } from '@/lib/track';
@@ -83,7 +83,8 @@ export function CadOnlinePage() {
     if (ok) toast.success(m['cad.cloud.saved']());
     else toast.error(m['cad.cloud.save_failed']());
   };
-  const src = `${cadcraftLinks.app}${renderer}${renderer ? '&' : '?'}ui=2`;
+  // v= busts a cached index.html that still points at the previous build's files
+  const src = `${cadcraftLinks.app}${renderer}${renderer ? '&' : '?'}ui=2&v=${CADCRAFT_VERSION}`;
   const { ref: frameBoxRef, box, measured } = useFitScale();
 
   const renderers: [Renderer, string][] = [
