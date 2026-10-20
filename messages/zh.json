@@ -1539,5 +1539,6 @@
   "cad.cloud.upsell_title": "把图纸保存到云端",
   "cad.cloud.upsell_desc": "现在你的图纸只保存在这个浏览器里。Pro 会自动把它们保存到你的账户。",
   "cad.cloud.upsell_cta": "查看 Pro 方案",
-  "cad.cloud.welcome": "欢迎升级 Pro！你的图纸现在会自动同步到云端。"
+  "cad.cloud.welcome": "欢迎升级 Pro！你的图纸现在会自动同步到云端。",
+  "cad.cloud.local_hint": "目前只保存在本浏览器"
 }
