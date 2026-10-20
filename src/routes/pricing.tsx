@@ -1,43 +1,34 @@
-import { createFileRoute, notFound } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 
+import { pageHead } from '@/lib/page-head';
 import { m } from '@/paraglide/messages.js';
 import { getLocale } from '@/paraglide/runtime.js';
+import { CadPricingPage } from '@/blocks/cad-pricing-page';
 import { Footer } from '@/blocks/footer';
 import { Header } from '@/blocks/header';
-import { Pricing } from '@/blocks/pricing';
 
 export const Route = createFileRoute('/pricing')({
-  // Hidden: left over from the Hotel Lobby AI project, not part of CADCraft.
-  beforeLoad: () => {
-    throw notFound();
-  },
   loader: () => {
     const locale = getLocale();
     return {
-      title: m['landing.pricing.title']({}, { locale }),
-      description: m['landing.pricing.description']({}, { locale }),
+      locale,
+      title: m['cad.page.pricing.title']({}, { locale }),
+      description: m['cad.page.pricing.description']({}, { locale }),
     };
   },
-  head: ({ loaderData }) => ({
-    meta: loaderData
-      ? [
-          { title: loaderData.title },
-          { name: 'description', content: loaderData.description },
-          { name: 'robots', content: 'noindex,follow' },
-        ]
-      : [],
-  }),
-  component: PricingPage,
+  head: ({ loaderData }) =>
+    loaderData ? pageHead({ path: '/pricing', ...loaderData }) : {},
+  component: Page,
 });
 
-function PricingPage() {
+function Page() {
   return (
-    <div className="bg-background text-foreground flex min-h-screen flex-col">
+    <>
       <Header />
-      <main className="flex-1">
-        <Pricing />
+      <main>
+        <CadPricingPage />
       </main>
       <Footer />
-    </div>
+    </>
   );
 }

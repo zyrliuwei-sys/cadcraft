@@ -697,3 +697,42 @@ export const analyticsEvent = table(
 
 export type AnalyticsEvent = typeof analyticsEvent.$inferSelect;
 export type NewAnalyticsEvent = typeof analyticsEvent.$inferInsert;
+
+// ─── CADCraft Online cloud drawings (Pro) ───────────────────────────────────
+// File bytes live in the private R2 bucket (binding DRAWINGS) under
+// `objectKey`; these rows hold ownership, names and version history.
+// `shareToken` set = anyone with /online?share=<token> can open the drawing.
+
+export const cadDrawing = table(
+  'cad_drawing',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    name: text('name').notNull(),
+    currentVersionId: text('current_version_id'),
+    size: integer('size').notNull().default(0),
+    shareToken: text('share_token').unique(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (t) => [index('idx_cad_drawing_user').on(t.userId, t.updatedAt)]
+);
+
+export const cadDrawingVersion = table(
+  'cad_drawing_version',
+  {
+    id: text('id').primaryKey(),
+    drawingId: text('drawing_id')
+      .notNull()
+      .references(() => cadDrawing.id, { onDelete: 'cascade' }),
+    objectKey: text('object_key').notNull(),
+    size: integer('size').notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (t) => [index('idx_cad_drawing_version').on(t.drawingId, t.createdAt)]
+);
+
+export type CadDrawing = typeof cadDrawing.$inferSelect;
+export type CadDrawingVersion = typeof cadDrawingVersion.$inferSelect;

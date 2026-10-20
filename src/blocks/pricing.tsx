@@ -1,7 +1,6 @@
 'use client';
 
-import { lazy, Suspense, useMemo, useState } from 'react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import {
   CalendarClock,
   Film,
@@ -10,30 +9,18 @@ import {
   Sparkles,
   XCircle,
 } from 'lucide-react';
-import { toast } from 'sonner';
 
-import { useSession } from '@/core/auth/client';
-import { useRouter } from '@/core/i18n/navigation';
 import { duetCredits } from '@/config/hotel-lobby-pricing';
 import { pricingCatalog } from '@/config/pricing';
-import { apiGet, apiPost } from '@/lib/api-client';
-import { currentPathWithQuery } from '@/lib/redirect';
-import { track } from '@/lib/track';
+import { apiGet } from '@/lib/api-client';
 import { m } from '@/paraglide/messages.js';
-import { usePublicConfig } from '@/hooks/use-public-config';
-import type { PaymentProvider } from '@/components/payment-provider-modal';
+import { useCheckout } from '@/hooks/use-checkout';
 import {
   PricingTable,
   type PricingFeature,
   type PricingGroup,
   type PricingPlan,
 } from '@/components/pricing-table';
-
-const PaymentProviderModal = lazy(() =>
-  import('@/components/payment-provider-modal').then((mod) => ({
-    default: mod.PaymentProviderModal,
-  }))
-);
 
 // $9.9 rather than $9.90; whole dollars stay $23.
 function usd(cents: number) {
@@ -43,15 +30,6 @@ function usd(cents: number) {
   })}`;
 }
 
-const ALL_PROVIDERS: PaymentProvider[] = [
-  'stripe',
-  'creem',
-  'waffo',
-  'paypal',
-  'alipay',
-  'wechat',
-];
-
 export function Pricing({
   title,
   variant = 'section',
@@ -60,23 +38,7 @@ export function Pricing({
   /** `dialog` drops the page-section chrome for use inside a modal. */
   variant?: 'section' | 'dialog';
 } = {}) {
-  const router = useRouter();
-  const { data: session } = useSession();
-
-  const { data: configsData, refetch: refetchConfigs } = usePublicConfig();
-  const configs = configsData ?? {};
-  const [modalOpen, setModalOpen] = useState(false);
-  // The provider picker (a dialog) loads on first open and stays mounted.
-  const [modalMounted, setModalMounted] = useState(false);
-  if (modalOpen && !modalMounted) setModalMounted(true);
-  const [pendingPlan, setPendingPlan] = useState<PricingPlan | null>(null);
-  const [loadingProvider, setLoadingProvider] =
-    useState<PaymentProvider | null>(null);
-
-  const enabledProviders = useMemo<PaymentProvider[]>(
-    () => ALL_PROVIDERS.filter((p) => configs[`${p}_enabled`] === 'true'),
-    [configs]
-  );
+  const { checkout, modal } = useCheckout({ backTo: '/pricing' });
 
   // Live per-video price so "≈ N videos" matches what generation charges.
   const { data: priceData } = useQuery({
@@ -228,88 +190,6 @@ export function Pricing({
     },
   ];
 
-  const checkoutMutation = useMutation({
-    mutationFn: ({
-      plan,
-      provider,
-    }: {
-      plan: PricingPlan;
-      provider?: PaymentProvider;
-    }) =>
-      apiPost<{ checkout_url?: string }>('/api/payment/checkout', {
-        product_id: plan.productId,
-        product_name: plan.productName || plan.name,
-        plan_name: plan.plan?.name || plan.name,
-        price: plan.priceInCents,
-        currency: plan.currency || 'usd',
-        type: plan.plan ? 'subscription' : 'one-time',
-        description: plan.name,
-        plan: plan.plan,
-        credits: plan.credits,
-        credits_valid_days: plan.creditsValidDays,
-        payment_provider: provider,
-        // Come back to the page the user paid from.
-        redirect: currentPathWithQuery('/settings/billing'),
-      }),
-    onSuccess: (data) => {
-      if (!data?.checkout_url) {
-        toast.error('Checkout failed');
-        setLoadingProvider(null);
-        return;
-      }
-      window.location.href = data.checkout_url;
-    },
-    onError: (err: any) => {
-      toast.error(err?.message || 'Checkout failed');
-      setLoadingProvider(null);
-    },
-  });
-
-  function startCheckout(plan: PricingPlan, provider?: PaymentProvider) {
-    track('begin_checkout', {
-      plan: plan.productId ?? '',
-      value: (plan.priceInCents ?? 0) / 100,
-    });
-    setLoadingProvider(provider ?? null);
-    checkoutMutation.mutate({ plan, provider });
-  }
-
-  async function handleCheckout(plan: PricingPlan) {
-    track('plan_click', {
-      plan: plan.productId ?? '',
-      value: (plan.priceInCents ?? 0) / 100,
-      signed_in: session?.user ? 1 : 0,
-    });
-    if (!session?.user) {
-      const callbackUrl = encodeURIComponent(currentPathWithQuery('/pricing'));
-      router.push(`/sign-in?callbackUrl=${callbackUrl}`);
-      return;
-    }
-
-    // A click can land before public config has loaded — fetch it first
-    // instead of guessing a provider that may not be configured.
-    const cfg = configsData ?? (await refetchConfigs()).data ?? {};
-    const enabled = ALL_PROVIDERS.filter((p) => cfg[`${p}_enabled`] === 'true');
-    const selectEnabled = cfg.select_payment_enabled === 'true';
-    // Unknown → omit it; the server falls back to the admin default provider.
-    const defaultProvider = (cfg.default_payment_provider || enabled[0]) as
-      | PaymentProvider
-      | undefined;
-
-    if (selectEnabled && enabled.length > 1) {
-      setPendingPlan(plan);
-      setModalOpen(true);
-      return;
-    }
-
-    await startCheckout(plan, defaultProvider);
-  }
-
-  function handleProviderSelect(provider: PaymentProvider) {
-    if (!pendingPlan) return;
-    startCheckout(pendingPlan, provider);
-  }
-
   const dialog = variant === 'dialog';
   const Wrapper = dialog ? 'div' : 'section';
 
@@ -344,29 +224,11 @@ export function Pricing({
         <PricingTable
           groups={groups}
           defaultGroup="one-time"
-          onCheckout={handleCheckout}
+          onCheckout={checkout}
         />
       </div>
 
-      {modalMounted && (
-        <Suspense fallback={null}>
-          <PaymentProviderModal
-            open={modalOpen}
-            onOpenChange={(open) => {
-              setModalOpen(open);
-              if (!open) {
-                setPendingPlan(null);
-                setLoadingProvider(null);
-              }
-            }}
-            providers={enabledProviders.length ? enabledProviders : ['stripe']}
-            loadingProvider={loadingProvider}
-            onSelect={handleProviderSelect}
-            planName={pendingPlan?.name}
-            price={pendingPlan?.price}
-          />
-        </Suspense>
-      )}
+      {modal}
     </Wrapper>
   );
 }

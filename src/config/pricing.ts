@@ -40,6 +40,30 @@ export type PricingProduct = {
  * Keys MUST match what the pricing UI sends as product_id.
  */
 export const pricingCatalog: Record<string, PricingProduct> = {
+  // CADCraft Online Pro: cloud drawings, no credits. First prices, set
+  // 2026-10-20 for a mostly IT/IN/BR/DE audience — compare paid orders/day.
+  cad_pro_monthly: {
+    productId: 'cad_pro_monthly',
+    productName: 'CADCraft Online Pro',
+    planName: 'Pro Monthly',
+    description: 'CADCraft Online Pro (monthly)',
+    type: PaymentType.SUBSCRIPTION,
+    priceInCents: 490,
+    currency: 'usd',
+    credits: 0,
+    plan: { name: 'Pro', interval: PaymentInterval.MONTH, intervalCount: 1 },
+  },
+  cad_pro_yearly: {
+    productId: 'cad_pro_yearly',
+    productName: 'CADCraft Online Pro',
+    planName: 'Pro Yearly',
+    description: 'CADCraft Online Pro (yearly)',
+    type: PaymentType.SUBSCRIPTION,
+    priceInCents: 2900,
+    currency: 'usd',
+    credits: 0,
+    plan: { name: 'Pro', interval: PaymentInterval.YEAR, intervalCount: 1 },
+  },
   pack_single: {
     productId: 'pack_single',
     productName: 'Single Video',
