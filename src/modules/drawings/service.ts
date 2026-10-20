@@ -45,8 +45,12 @@ const summaryColumns = {
   updatedAt: cadDrawing.updatedAt,
 };
 
-/** A paid, unexpired CADCraft Online Pro subscription. */
+/**
+ * A paid CADCraft Online Pro subscription. A canceled one stays Pro until
+ * the end of the period already paid for.
+ */
 export async function hasProSubscription(userId: string) {
+  const now = new Date();
   const [row] = await db()
     .select({ id: subscription.id })
     .from(subscription)
@@ -54,11 +58,19 @@ export async function hasProSubscription(userId: string) {
       and(
         eq(subscription.userId, userId),
         like(subscription.productId, `${PRO_PRODUCT_PREFIX}%`),
-        inArray(subscription.status, PRO_STATUSES),
         isNull(subscription.deletedAt),
         or(
-          isNull(subscription.currentPeriodEnd),
-          gt(subscription.currentPeriodEnd, new Date())
+          and(
+            inArray(subscription.status, PRO_STATUSES),
+            or(
+              isNull(subscription.currentPeriodEnd),
+              gt(subscription.currentPeriodEnd, now)
+            )
+          ),
+          and(
+            eq(subscription.status, 'canceled'),
+            gt(subscription.currentPeriodEnd, now)
+          )
         )
       )
     )

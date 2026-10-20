@@ -40,6 +40,7 @@ export function EditorFilesBar({
   savedAt,
   onRestore,
   pro,
+  hasCloud,
   cloudSavedAt,
   cloudSaving,
   onSaveCloud,
@@ -49,6 +50,8 @@ export function EditorFilesBar({
   savedAt: number | null;
   onRestore: (drawing: StoredDrawing) => Promise<boolean>;
   pro: boolean;
+  /** Has cloud drawings (still listed after Pro ends). */
+  hasCloud: boolean;
   cloudSavedAt: number | null;
   cloudSaving: boolean;
   /** Free users get the upsell from here too. */
@@ -128,7 +131,7 @@ export function EditorFilesBar({
             </span>
           )}
         </button>
-        {pro && (
+        {(pro || hasCloud) && (
           <button type="button" onClick={onShowCloud} className={barButton}>
             <FolderOpen className="size-3.5" />
             {m['cad.cloud.title']()}

@@ -31,7 +31,15 @@ const ALL_PROVIDERS: PaymentProvider[] = [
  * provider when the admin enabled several, then redirects to the provider.
  * Render `modal` once next to the pricing table.
  */
-export function useCheckout({ backTo }: { backTo: string }) {
+export function useCheckout({
+  backTo,
+  returnTo,
+}: {
+  /** Page to come back to after signing in. */
+  backTo: string;
+  /** Page to land on after paying; defaults to the current page. */
+  returnTo?: string;
+}) {
   const router = useRouter();
   const { data: session } = useSession();
   const { data: configsData, refetch: refetchConfigs } = usePublicConfig();
@@ -69,7 +77,7 @@ export function useCheckout({ backTo }: { backTo: string }) {
         credits_valid_days: plan.creditsValidDays,
         payment_provider: provider,
         // Come back to the page the user paid from.
-        redirect: currentPathWithQuery('/settings/billing'),
+        redirect: returnTo ?? currentPathWithQuery('/settings/billing'),
       }),
     onSuccess: (data) => {
       if (!data?.checkout_url) {

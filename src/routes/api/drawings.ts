@@ -9,14 +9,15 @@ import { respData, respErr } from '@/lib/resp';
 
 import { drawingName, drawingsUser, needPro } from './drawings/-shared';
 
-// Cloud drawings (CADCraft Online Pro). GET lists them; POST uploads a DXF
-// as the raw request body: `?name=` and, to add a version, `?id=`.
+// Cloud drawings (CADCraft Online Pro). GET lists them — also after Pro
+// ends, so people keep access to what they saved; POST (Pro only) uploads a
+// DXF as the raw request body: `?name=` and, to add a version, `?id=`.
 
 async function GET({ request }: { request: Request }) {
   try {
     const u = await drawingsUser(request);
     if (!u) return respErr('Unauthorized');
-    const items = u.pro ? await listDrawings(u.userId) : [];
+    const items = await listDrawings(u.userId);
     return respData({ pro: u.pro, items });
   } catch (error: any) {
     return respErr(error.message || 'Failed to list drawings');

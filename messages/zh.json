@@ -1229,7 +1229,7 @@
   "cad.online.render_desc": "CADCraft 优先使用 WebGPU，不支持时回退到 WebGL2。如果显示异常，可以强制指定渲染方式：",
   "cad.online.render_webgl": "强制 WebGL2",
   "cad.online.render_cpu": "CPU 模式（兼容性最好）",
-  "cad.online.privacy": "你的图纸只保存在浏览器中。自动保存会把最近的图纸留在本设备上，“保存”和“导出”会把文件下载到你的电脑，不会上传到我们的服务器。",
+  "cad.online.privacy": "免费版的图纸只保存在你的浏览器中：自动保存会把最近的图纸留在本设备上，“保存”和“导出”会把文件下载到你的电脑，不会上传任何内容。开通 Pro 后，图纸还会同步到你账户下的私有云存储。",
   "cad.online.mobile_note": "CADCraft 是为鼠标和键盘设计的。手机上体验有限，建议使用电脑。",
   "cad.online.license": "基于官方 v0.6.2 Web 版本托管，MIT 或 Apache-2.0 协议。",
   "cad.tut.h1": "CADCraft 教程",
@@ -1538,5 +1538,6 @@
   "cad.cloud.shared_opened": "已打开分享图纸的副本。",
   "cad.cloud.upsell_title": "把图纸保存到云端",
   "cad.cloud.upsell_desc": "现在你的图纸只保存在这个浏览器里。Pro 会自动把它们保存到你的账户。",
-  "cad.cloud.upsell_cta": "查看 Pro 方案"
+  "cad.cloud.upsell_cta": "查看 Pro 方案",
+  "cad.cloud.welcome": "欢迎升级 Pro！你的图纸现在会自动同步到云端。"
 }

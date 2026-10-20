@@ -15,12 +15,13 @@ type Ctx = { request: Request; params: { id: string } };
 
 // GET returns the DXF (`?version=` for an older one). PATCH renames and/or
 // turns the view-only share link on or off. DELETE removes every version.
+// Reading, unsharing and deleting stay open after Pro ends; the owner check
+// is in the service.
 
 async function GET({ request, params }: Ctx) {
   try {
     const u = await drawingsUser(request);
     if (!u) return respErr('Unauthorized');
-    if (!u.pro) return needPro();
     const version = new URL(request.url).searchParams.get('version');
     const file = await readDrawing(u.userId, params.id, version);
     return file ? fileResponse(file) : respErr('Drawing not found');
@@ -38,9 +39,10 @@ async function PATCH({ request, params }: Ctx) {
   try {
     const u = await drawingsUser(request);
     if (!u) return respErr('Unauthorized');
-    if (!u.pro) return needPro();
     const body = patchSchema.safeParse(await request.json().catch(() => null));
     if (!body.success) return respErr('Invalid request');
+    if (!u.pro && (body.data.name !== undefined || body.data.share))
+      return needPro();
     if (body.data.name !== undefined) {
       await renameDrawing(u.userId, params.id, drawingName(body.data.name));
     }
@@ -58,7 +60,6 @@ async function DELETE({ request, params }: Ctx) {
   try {
     const u = await drawingsUser(request);
     if (!u) return respErr('Unauthorized');
-    if (!u.pro) return needPro();
     const ok = await deleteDrawing(u.userId, params.id);
     return ok ? respOk() : respErr('Drawing not found');
   } catch (error: any) {

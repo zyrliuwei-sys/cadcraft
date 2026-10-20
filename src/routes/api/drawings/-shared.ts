@@ -32,6 +32,9 @@ export function fileResponse(file: { name: string; data: ArrayBuffer }) {
       'content-type': 'application/dxf',
       'cache-control': 'private, no-store',
       'x-drawing-name': encodeURIComponent(file.name),
+      // Uploads are arbitrary bytes: never render them inline on our origin.
+      'content-disposition': 'attachment',
+      'x-content-type-options': 'nosniff',
     },
   });
 }

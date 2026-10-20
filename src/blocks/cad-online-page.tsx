@@ -59,7 +59,12 @@ export function CadOnlinePage() {
 
   // /online?share=<token>: open a copy of someone's shared cloud drawing.
   useEffect(() => {
-    const token = new URLSearchParams(window.location.search).get('share');
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('pro') === 'welcome') {
+      track('pro_welcome');
+      toast.success(m['cad.cloud.welcome']());
+    }
+    const token = params.get('share');
     if (!token) return;
     track('cloud_share_open');
     downloadSharedDrawing(token)
@@ -183,6 +188,7 @@ export function CadOnlinePage() {
           savedAt={files.savedAt}
           onRestore={files.restore}
           pro={files.pro}
+          hasCloud={files.cloud.length > 0}
           cloudSavedAt={files.cloudSavedAt}
           cloudSaving={files.cloudSaving}
           onSaveCloud={saveToCloud}
@@ -298,7 +304,7 @@ export function CadOnlinePage() {
 
       <DwgGateDialog open={dwgOpen} onOpenChange={setDwgOpen} />
       <ProUpsellDialog open={upsellOpen} onOpenChange={setUpsellOpen} />
-      {files.pro && (
+      {(files.pro || files.cloud.length > 0) && (
         <CloudDrawingsDialog
           open={cloudOpen}
           onOpenChange={setCloudOpen}

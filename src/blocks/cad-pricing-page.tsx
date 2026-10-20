@@ -27,7 +27,10 @@ const FREE_ID = 'free';
 
 export function CadPricingPage() {
   const router = useRouter();
-  const { checkout, modal } = useCheckout({ backTo: '/pricing' });
+  const { checkout, modal } = useCheckout({
+    backTo: '/pricing',
+    returnTo: '/online?pro=welcome',
+  });
 
   const freePlan: PricingPlan = {
     id: FREE_ID,

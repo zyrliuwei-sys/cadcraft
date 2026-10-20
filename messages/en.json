@@ -1229,7 +1229,7 @@
   "cad.online.render_desc": "CADCraft uses WebGPU when available and falls back to WebGL2. If it misbehaves, force a renderer:",
   "cad.online.render_webgl": "Force WebGL2",
   "cad.online.render_cpu": "CPU mode (most compatible)",
-  "cad.online.privacy": "Your drawings stay in your browser. Auto-save keeps your recent drawings on this device, and Save and Export download files to your computer. Nothing is uploaded to our servers.",
+  "cad.online.privacy": "On the free plan your drawings stay in your browser: auto-save keeps recent drawings on this device, and Save and Export download files to your computer. Nothing is uploaded. With Pro, your drawings also sync to private cloud storage in your account.",
   "cad.online.mobile_note": "CADCraft is designed for a mouse and keyboard. For the best experience, open it on a computer rather than a phone.",
   "cad.online.license": "Hosted from the official v0.6.2 web build, MIT OR Apache-2.0.",
   "cad.tut.h1": "CADCraft tutorials",
@@ -1538,5 +1538,6 @@
   "cad.cloud.shared_opened": "Opened a copy of the shared drawing.",
   "cad.cloud.upsell_title": "Keep your drawings in the cloud",
   "cad.cloud.upsell_desc": "Right now your drawings live only in this browser. Pro saves them to your account automatically.",
-  "cad.cloud.upsell_cta": "See Pro plans"
+  "cad.cloud.upsell_cta": "See Pro plans",
+  "cad.cloud.welcome": "Welcome to Pro! Your drawings now sync to the cloud automatically."
 }
