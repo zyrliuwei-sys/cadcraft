@@ -45,6 +45,7 @@ async function POST({ request }: { request: Request }) {
     });
     return respData(drawing);
   } catch (error: any) {
+    console.error('[drawings] save failed', error);
     return respErr(error.message || 'Failed to save drawing');
   }
 }

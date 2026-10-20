@@ -11,6 +11,7 @@ import {
 import {
   listDrawings,
   putDrawing,
+  setDrawingCloudId,
   type StoredDrawing,
 } from '@/lib/drawing-store';
 import {
@@ -24,15 +25,17 @@ import { track } from '@/lib/track';
 const AUTOSAVE_EVERY = 15_000;
 const IDLE_BEFORE_SAVE = 3_000;
 const READY_WAIT = 30_000;
-// Which cloud drawing each editor file name saves into: { name: id }.
-const CLOUD_IDS_KEY = 'cc_cloud_ids';
 
-function loadCloudIds(): Record<string, string> {
-  try {
-    return JSON.parse(localStorage.getItem(CLOUD_IDS_KEY) || '{}');
-  } catch {
-    return {};
-  }
+/**
+ * Where an editor file saves to: its row in this browser and, for Pro, its
+ * cloud drawing. Tracked per page load by file name, because the editor
+ * names every new drawing "Drawing1.dxf": a new session's Drawing1 gets new
+ * slots instead of overwriting the old one. Restoring or opening a stored
+ * drawing re-links its slots.
+ */
+interface Slot {
+  localId: string;
+  cloudId?: string;
 }
 
 export const CLOUD_QUERY_KEY = ['cloud-drawings'];
@@ -50,11 +53,12 @@ export function useEditorFiles({ onDwg }: { onDwg: () => void }) {
   const dirty = useRef(false);
   const lastInput = useRef(0);
   const trackedAutosave = useRef(false);
-  const cloudIds = useRef<Record<string, string> | null>(null);
+  const slots = useRef(new Map<string, Slot>());
   const [recent, setRecent] = useState<StoredDrawing[]>([]);
   const [savedAt, setSavedAt] = useState<number | null>(null);
   const [cloudSavedAt, setCloudSavedAt] = useState<number | null>(null);
   const [cloudSaving, setCloudSaving] = useState(false);
+  const [cloudFailed, setCloudFailed] = useState(false);
 
   const cloudQuery = useQuery({
     queryKey: CLOUD_QUERY_KEY,
@@ -70,28 +74,30 @@ export function useEditorFiles({ onDwg }: { onDwg: () => void }) {
     listDrawings().then(setRecent);
   }, []);
 
-  const rememberCloudId = useCallback((name: string, id: string) => {
-    const ids = (cloudIds.current ??= loadCloudIds());
-    ids[name] = id;
-    try {
-      localStorage.setItem(CLOUD_IDS_KEY, JSON.stringify(ids));
-    } catch {}
+  const slot = useCallback((name: string) => {
+    let s = slots.current.get(name);
+    if (!s) slots.current.set(name, (s = { localId: crypto.randomUUID() }));
+    return s;
   }, []);
 
   const uploadToCloud = useCallback(
     async (file: File, checkpoint: boolean) => {
-      const ids = (cloudIds.current ??= loadCloudIds());
+      const s = slot(file.name);
       setCloudSaving(true);
       try {
         const upload = (id?: string) =>
           uploadCloudDrawing(file, { id, checkpoint });
-        // The remembered drawing may have been deleted in another tab.
-        const saved = await upload(ids[file.name]).catch((e) => {
-          if (ids[file.name] && /not found/i.test(e.message)) return upload();
+        // The linked drawing may have been deleted in another tab.
+        const saved = await upload(s.cloudId).catch((e) => {
+          if (s.cloudId && /not found/i.test(e.message)) return upload();
           throw e;
         });
-        rememberCloudId(file.name, saved.id);
+        if (s.cloudId !== saved.id) {
+          s.cloudId = saved.id;
+          void setDrawingCloudId(s.localId, saved.id);
+        }
         setCloudSavedAt(Date.now());
+        setCloudFailed(false);
         queryClient.setQueryData(
           CLOUD_QUERY_KEY,
           (old: { pro: boolean; items: CloudDrawing[] } | undefined) =>
@@ -108,19 +114,26 @@ export function useEditorFiles({ onDwg }: { onDwg: () => void }) {
             }
         );
         return true;
-      } catch {
+      } catch (e) {
+        console.error('[cloud] sync failed', e);
+        setCloudFailed(true);
         return false;
       } finally {
         setCloudSaving(false);
       }
     },
-    [queryClient, rememberCloudId]
+    [queryClient, slot]
   );
 
   const store = useCallback(
     async (file: File, checkpoint = false) => {
       if (fileExt(file.name) !== 'dxf' || (await isEmptyDxf(file))) return;
-      const rows = await putDrawing(file);
+      const s = slot(file.name);
+      const rows = await putDrawing({
+        id: s.localId,
+        file,
+        cloudId: s.cloudId,
+      });
       if (rows.length) {
         setRecent(rows);
         setSavedAt(Date.now());
@@ -129,9 +142,11 @@ export function useEditorFiles({ onDwg }: { onDwg: () => void }) {
         trackedAutosave.current = true;
         track('online_autosave');
       }
-      if (proRef.current) await uploadToCloud(file, checkpoint);
+      // Failed sync: stay dirty so the next tick retries.
+      if (proRef.current && !(await uploadToCloud(file, checkpoint)))
+        dirty.current = true;
     },
-    [uploadToCloud]
+    [slot, uploadToCloud]
   );
 
   const autosave = useCallback(async () => {
@@ -194,6 +209,10 @@ export function useEditorFiles({ onDwg }: { onDwg: () => void }) {
   const restore = useCallback(
     (drawing: StoredDrawing) => {
       track('online_restore');
+      slots.current.set(drawing.name, {
+        localId: drawing.id,
+        cloudId: drawing.cloudId,
+      });
       return openFile(new File([drawing.data], drawing.name));
     },
     [openFile]
@@ -202,10 +221,13 @@ export function useEditorFiles({ onDwg }: { onDwg: () => void }) {
   /** Open a cloud drawing; later saves of that name go back into it. */
   const openCloud = useCallback(
     (drawing: CloudDrawing, file: File) => {
-      rememberCloudId(file.name, drawing.id);
+      slots.current.set(file.name, {
+        localId: crypto.randomUUID(),
+        cloudId: drawing.id,
+      });
       return openFile(file);
     },
-    [openFile, rememberCloudId]
+    [openFile]
   );
 
   /** Save the active drawing to the cloud now, as a new version. */
@@ -213,9 +235,11 @@ export function useEditorFiles({ onDwg }: { onDwg: () => void }) {
     track('cloud_save_click', { pro: proRef.current ? 1 : 0 });
     const file = await bridge.current?.snapshot();
     if (!file || (await isEmptyDxf(file))) return false;
-    await putDrawing(file).then((rows) => rows.length && setRecent(rows));
+    const s = slot(file.name);
+    const rows = await putDrawing({ id: s.localId, file, cloudId: s.cloudId });
+    if (rows.length) setRecent(rows);
     return uploadToCloud(file, true);
-  }, [uploadToCloud]);
+  }, [slot, uploadToCloud]);
 
   return {
     onFrameLoad,
@@ -230,5 +254,6 @@ export function useEditorFiles({ onDwg }: { onDwg: () => void }) {
     cloud: cloudQuery.data?.items ?? [],
     cloudSavedAt,
     cloudSaving,
+    cloudFailed,
   };
 }

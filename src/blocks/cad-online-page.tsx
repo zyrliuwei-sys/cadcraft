@@ -197,6 +197,7 @@ export function CadOnlinePage() {
           pro={files.pro}
           cloudSavedAt={files.cloudSavedAt}
           cloudSaving={files.cloudSaving}
+          cloudFailed={files.cloudFailed}
         />
         <div
           ref={frameBoxRef}

@@ -5,6 +5,8 @@
  * `r2_buckets`), read from the env that src/server.ts stashes on
  * `globalThis.__CF_ENV__` — no API keys, nothing public. `pnpm dev` runs on
  * Node without bindings, so it falls back to files under `data/<binding>/`.
+ * On Workers a missing binding is an error, never the fallback: the Worker
+ * filesystem is temporary and files written there would silently vanish.
  */
 
 export interface Bucket {
@@ -72,5 +74,10 @@ export function getBucket(binding: string): Bucket {
   const g = globalThis as any;
   const env = g.__CF_ENV__ ?? g.__env__;
   const r2 = env?.[binding] as R2Like | undefined;
-  return r2 ? r2Bucket(r2) : localBucket(binding.toLowerCase());
+  if (r2) return r2Bucket(r2);
+  if (env) {
+    console.error(`[bucket] binding ${binding} missing`, Object.keys(env));
+    throw new Error('Cloud storage is unavailable, please try again');
+  }
+  return localBucket(binding.toLowerCase());
 }

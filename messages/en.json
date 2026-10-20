@@ -1540,5 +1540,6 @@
   "cad.cloud.upsell_desc": "Right now your drawings live only in this browser. Pro saves them to your account automatically.",
   "cad.cloud.upsell_cta": "See Pro plans",
   "cad.cloud.welcome": "Welcome to Pro! Your drawings now sync to the cloud automatically.",
-  "cad.cloud.local_hint": "Saved only in this browser"
+  "cad.cloud.local_hint": "Saved only in this browser",
+  "cad.cloud.sync_failed": "Cloud sync failed, retrying"
 }

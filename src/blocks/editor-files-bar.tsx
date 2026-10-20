@@ -2,6 +2,7 @@ import { useState } from 'react';
 import {
   Check,
   Cloud,
+  CloudOff,
   CloudUpload,
   FileText,
   FolderOpen,
@@ -42,6 +43,7 @@ export function EditorFilesBar({
   pro,
   cloudSavedAt,
   cloudSaving,
+  cloudFailed,
 }: {
   recent: StoredDrawing[];
   savedAt: number | null;
@@ -49,6 +51,7 @@ export function EditorFilesBar({
   pro: boolean;
   cloudSavedAt: number | null;
   cloudSaving: boolean;
+  cloudFailed: boolean;
 }) {
   const [opening, setOpening] = useState<string | null>(null);
 
@@ -82,7 +85,7 @@ export function EditorFilesBar({
           </span>
           {recent.map((d) => (
             <button
-              key={d.name}
+              key={d.id}
               type="button"
               onClick={() => open(d)}
               disabled={opening !== null}
@@ -98,7 +101,13 @@ export function EditorFilesBar({
       )}
 
       <div className="ml-auto flex items-center gap-2">
-        {pro && (cloudSaving || cloudSavedAt) && (
+        {pro && cloudFailed && !cloudSaving && (
+          <span className="text-destructive flex items-center gap-1.5 font-medium">
+            <CloudOff className="size-4" />
+            {m['cad.cloud.sync_failed']()}
+          </span>
+        )}
+        {pro && !cloudFailed && (cloudSaving || cloudSavedAt) && (
           <span className="text-muted-foreground flex items-center gap-1.5">
             <Cloud className="size-4" />
             {cloudSaving
