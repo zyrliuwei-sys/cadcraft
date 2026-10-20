@@ -1,11 +1,18 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Info, Lock, Maximize2, Minus, Plus, Smartphone } from 'lucide-react';
+import { toast } from 'sonner';
 
 import { cadcraftLinks } from '@/config/cadcraft';
 import { ctaPrimary } from '@/lib/cta';
+import { downloadSharedDrawing } from '@/lib/drawings-client';
 import { track } from '@/lib/track';
 import { cn } from '@/lib/utils';
 import { m } from '@/paraglide/messages.js';
+import { useEditorFiles } from '@/hooks/use-editor-files';
+import { CloudDrawingsDialog } from '@/blocks/cloud-drawings-dialog';
+import { DwgGateDialog } from '@/blocks/dwg-gate-dialog';
+import { EditorFilesBar } from '@/blocks/editor-files-bar';
+import { ProUpsellDialog } from '@/blocks/pro-upsell-dialog';
 import { CodeBlock } from '@/components/code-block';
 
 type Renderer = '' | '?webgl' | '?cpu';
@@ -43,6 +50,34 @@ function useFitScale() {
 export function CadOnlinePage() {
   const [renderer, setRenderer] = useState<Renderer>('');
   const [uiZoom, setUiZoom] = useState(1);
+  const [dwgOpen, setDwgOpen] = useState(false);
+  const openDwgGate = useCallback(() => setDwgOpen(true), []);
+  const files = useEditorFiles({ onDwg: openDwgGate });
+  const [cloudOpen, setCloudOpen] = useState(false);
+  const [upsellOpen, setUpsellOpen] = useState(false);
+  const { openFile } = files;
+
+  // /online?share=<token>: open a copy of someone's shared cloud drawing.
+  useEffect(() => {
+    const token = new URLSearchParams(window.location.search).get('share');
+    if (!token) return;
+    track('cloud_share_open');
+    downloadSharedDrawing(token)
+      .then(openFile)
+      .then((ok) => ok && toast.success(m['cad.cloud.shared_opened']()))
+      .catch((e) => toast.error(e.message));
+  }, [openFile]);
+
+  const saveToCloud = async () => {
+    if (!files.pro) {
+      track('cloud_save_click', { pro: 0 });
+      setUpsellOpen(true);
+      return;
+    }
+    const ok = await files.saveToCloud();
+    if (ok) toast.success(m['cad.cloud.saved']());
+    else toast.error(m['cad.cloud.save_failed']());
+  };
   const src = `${cadcraftLinks.app}${renderer}${renderer ? '&' : '?'}ui=2`;
   const { ref: frameBoxRef, box, measured } = useFitScale();
 
@@ -143,6 +178,16 @@ export function CadOnlinePage() {
           <Smartphone className="size-4 shrink-0" />
           {m['cad.online.mobile_note']()}
         </p>
+        <EditorFilesBar
+          recent={files.recent}
+          savedAt={files.savedAt}
+          onRestore={files.restore}
+          pro={files.pro}
+          cloudSavedAt={files.cloudSavedAt}
+          cloudSaving={files.cloudSaving}
+          onSaveCloud={saveToCloud}
+          onShowCloud={() => setCloudOpen(true)}
+        />
         <div
           ref={frameBoxRef}
           className="relative w-full overflow-auto border-y bg-[#22282f] sm:border"
@@ -161,7 +206,10 @@ export function CadOnlinePage() {
                 src={src}
                 data-fit={box ? '1' : undefined}
                 title="CADCraft"
-                onLoad={() => track('online_app_loaded')}
+                onLoad={(e) => {
+                  track('online_app_loaded');
+                  files.onFrameLoad(e.currentTarget);
+                }}
                 className="absolute top-0 left-0 block h-full w-full"
                 style={
                   box
@@ -247,6 +295,17 @@ export function CadOnlinePage() {
           </div>
         </div>
       </section>
+
+      <DwgGateDialog open={dwgOpen} onOpenChange={setDwgOpen} />
+      <ProUpsellDialog open={upsellOpen} onOpenChange={setUpsellOpen} />
+      {files.pro && (
+        <CloudDrawingsDialog
+          open={cloudOpen}
+          onOpenChange={setCloudOpen}
+          drawings={files.cloud}
+          onOpenDrawing={files.openCloud}
+        />
+      )}
     </>
   );
 }
