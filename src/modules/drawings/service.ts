@@ -102,25 +102,22 @@ export async function saveDrawing(
   opts: { id?: string; name: string; data: ArrayBuffer; checkpoint?: boolean }
 ): Promise<DrawingSummary> {
   const now = new Date();
-  let drawing = opts.id ? await ownDrawing(userId, opts.id) : null;
-  if (opts.id && !drawing) throw new Error('Drawing not found');
+  const size = opts.data.byteLength;
+  const existing = opts.id ? await ownDrawing(userId, opts.id) : null;
+  if (opts.id && !existing) throw new Error('Drawing not found');
+  if (!existing && (await listDrawings(userId)).length >= MAX_DRAWINGS)
+    throw new Error('Too many drawings');
 
-  if (!drawing) {
-    const existing = await listDrawings(userId);
-    if (existing.length >= MAX_DRAWINGS) throw new Error('Too many drawings');
-    drawing = {
-      id: getUuid(),
-      userId,
-      name: opts.name,
-      currentVersionId: null,
-      size: 0,
-      shareToken: null,
-      createdAt: now,
-      updatedAt: now,
-    };
-    await db().insert(cadDrawing).values(drawing);
-  }
-
+  const drawing: CadDrawing = existing ?? {
+    id: getUuid(),
+    userId,
+    name: opts.name,
+    currentVersionId: null,
+    size: 0,
+    shareToken: null,
+    createdAt: now,
+    updatedAt: now,
+  };
   const [current] = drawing.currentVersionId
     ? await db()
         .select()
@@ -128,23 +125,30 @@ export async function saveDrawing(
         .where(eq(cadDrawingVersion.id, drawing.currentVersionId))
         .limit(1)
     : [];
-  const size = opts.data.byteLength;
-  let versionId: string;
-  if (
-    current &&
+  const overwrite =
+    !!current &&
     !opts.checkpoint &&
-    now.getTime() - current.createdAt.getTime() < VERSION_WINDOW
-  ) {
-    versionId = current.id;
-    await bucket().put(current.objectKey, opts.data, 'application/dxf');
+    now.getTime() - current.createdAt.getTime() < VERSION_WINDOW;
+  const versionId = overwrite ? current.id : getUuid();
+  const objectKey = overwrite
+    ? current.objectKey
+    : `users/${userId}/drawings/${drawing.id}/${versionId}.dxf`;
+
+  // Bytes first: rows are only written once the file is safely in R2, so a
+  // failed upload never leaves a drawing that points at nothing.
+  await bucket().put(objectKey, opts.data, 'application/dxf');
+
+  if (!existing) {
+    await db()
+      .insert(cadDrawing)
+      .values({ ...drawing, currentVersionId: versionId, size });
+  }
+  if (overwrite) {
     await db()
       .update(cadDrawingVersion)
       .set({ size })
       .where(eq(cadDrawingVersion.id, versionId));
   } else {
-    versionId = getUuid();
-    const objectKey = `users/${userId}/drawings/${drawing.id}/${versionId}.dxf`;
-    await bucket().put(objectKey, opts.data, 'application/dxf');
     await db().insert(cadDrawingVersion).values({
       id: versionId,
       drawingId: drawing.id,
@@ -153,15 +157,17 @@ export async function saveDrawing(
       createdAt: now,
     });
   }
-  await db()
-    .update(cadDrawing)
-    .set({
-      name: opts.name,
-      currentVersionId: versionId,
-      size,
-      updatedAt: now,
-    })
-    .where(eq(cadDrawing.id, drawing.id));
+  if (existing) {
+    await db()
+      .update(cadDrawing)
+      .set({
+        name: opts.name,
+        currentVersionId: versionId,
+        size,
+        updatedAt: now,
+      })
+      .where(eq(cadDrawing.id, drawing.id));
+  }
 
   await pruneVersions(drawing.id, versionId);
   return {

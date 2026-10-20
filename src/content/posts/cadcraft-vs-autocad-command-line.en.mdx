@@ -56,7 +56,7 @@ This is one of the practical differences that does not show up in a feature chec
 
 ## Treat file compatibility as a review step
 
-CADCraft reads and writes DXF across the common R12–2018 range and can open and save DWG through its open-source library. That does not mean every object survives a round trip unchanged. If CADCraft does not model an entity yet, it may not be preserved on save. I therefore keep the original file, run `info` first, and inspect an exported preview before replacing anything. This is a better habit than assuming a successful exit code means the drawing is semantically identical.
+CADCraft reads DXF across the common R12–2018 range, writes it in versions 2000 to 2018, and in the desktop app can open and save DWG through its open-source library. That does not mean every object survives a round trip unchanged. If CADCraft does not model an entity yet, it may not be preserved on save. I therefore keep the original file, run `info` first, and inspect an exported preview before replacing anything. This is a better habit than assuming a successful exit code means the drawing is semantically identical.
 
 ## Where agents fit
 

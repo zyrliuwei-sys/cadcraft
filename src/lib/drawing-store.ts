@@ -1,26 +1,45 @@
 /**
  * Recent drawings kept in this browser (IndexedDB) by the online editor's
- * auto-save. Keyed by file name, newest first, capped at FREE_DRAWING_LIMIT.
+ * auto-save, newest first, capped at FREE_DRAWING_LIMIT. Rows are keyed by
+ * an id, not the file name: the editor names every new drawing
+ * "Drawing1.dxf", and a new one must not overwrite yesterday's.
  * Every call fails soft: private windows and blocked storage just get [].
  */
 
 export const FREE_DRAWING_LIMIT = 3;
 
 export interface StoredDrawing {
+  id: string;
   name: string;
   savedAt: number;
   size: number;
   data: Blob;
+  /** The cloud drawing this one syncs into (Pro). */
+  cloudId?: string;
 }
 
 const DB_NAME = 'cadcraft';
+const DB_VERSION = 2;
 const STORE = 'drawings';
 
 function openDb(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
-    const req = indexedDB.open(DB_NAME, 1);
-    req.onupgradeneeded = () =>
-      req.result.createObjectStore(STORE, { keyPath: 'name' });
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = (e) => {
+      const db = req.result;
+      if (e.oldVersion < 1) {
+        db.createObjectStore(STORE, { keyPath: 'id' });
+        return;
+      }
+      // v1 keyed rows by file name: re-key them by id.
+      const old = req.transaction!.objectStore(STORE).getAll();
+      old.onsuccess = () => {
+        db.deleteObjectStore(STORE);
+        const store = db.createObjectStore(STORE, { keyPath: 'id' });
+        for (const row of old.result)
+          store.put({ ...row, id: crypto.randomUUID() });
+      };
+    };
     req.onsuccess = () => resolve(req.result);
     req.onerror = () => reject(req.error);
   });
@@ -56,21 +75,39 @@ export async function listDrawings(): Promise<StoredDrawing[]> {
   }
 }
 
-export async function putDrawing(file: File): Promise<StoredDrawing[]> {
+/** Save (or replace) one drawing; returns the recent list after pruning. */
+export async function putDrawing(row: {
+  id: string;
+  file: File;
+  cloudId?: string;
+}): Promise<StoredDrawing[]> {
   try {
-    const row: StoredDrawing = {
-      name: file.name,
+    const stored: StoredDrawing = {
+      id: row.id,
+      name: row.file.name,
       savedAt: Date.now(),
-      size: file.size,
-      data: file,
+      size: row.file.size,
+      data: row.file,
+      cloudId: row.cloudId,
     };
-    await run('readwrite', (s) => s.put(row));
+    await run('readwrite', (s) => s.put(stored));
     const rows = await listDrawings();
     for (const old of rows.slice(FREE_DRAWING_LIMIT)) {
-      await run('readwrite', (s) => s.delete(old.name));
+      await run('readwrite', (s) => s.delete(old.id));
     }
     return rows.slice(0, FREE_DRAWING_LIMIT);
   } catch {
     return [];
   }
+}
+
+/** Link a stored drawing to the cloud drawing it now syncs into. */
+export async function setDrawingCloudId(id: string, cloudId: string) {
+  try {
+    const row = (await run('readonly', (s) => s.get(id))) as
+      | StoredDrawing
+      | undefined;
+    if (row && row.cloudId !== cloudId)
+      await run('readwrite', (s) => s.put({ ...row, cloudId }));
+  } catch {}
 }

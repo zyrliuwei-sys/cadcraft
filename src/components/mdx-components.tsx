@@ -91,6 +91,16 @@ export const mdxComponents: MDXComponents = {
       {...props}
     />
   ),
+  // Long shell commands scroll inside the block instead of widening the page
+  pre: ({ className, ...props }: HTMLAttributes<HTMLPreElement>) => (
+    <pre
+      className={cn(
+        'border-border bg-muted my-4 overflow-x-auto rounded-xl border p-4 [&_code]:bg-transparent [&_code]:p-0',
+        className
+      )}
+      {...props}
+    />
+  ),
   hr: ({ className, ...props }: HTMLAttributes<HTMLHRElement>) => (
     <hr className={cn('border-border my-8', className)} {...props} />
   ),
