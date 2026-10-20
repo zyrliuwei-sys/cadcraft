@@ -1517,7 +1517,7 @@
   "cad.online.files_saved": "Auto-saved at {time}",
   "cad.online.files_recent": "Continue:",
   "cad.online.files_open": "Open in a new tab",
-  "cad.cloud.title": "Cloud drawings",
+  "cad.cloud.title": "My drawings",
   "cad.cloud.desc": "Your drawings saved to your account. Open them on any computer.",
   "cad.cloud.empty": "No cloud drawings yet. Draw something and it syncs automatically, or click “Save to cloud”.",
   "cad.cloud.open": "Open",
