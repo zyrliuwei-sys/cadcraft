@@ -40,6 +40,13 @@ interface Slot {
 
 export const CLOUD_QUERY_KEY = ['cloud-drawings'];
 
+/** Outcome of an explicit "Save to cloud". */
+export type CloudSaveResult =
+  | { ok: true }
+  | { ok: false; reason: 'not_ready' }
+  | { ok: false; reason: 'empty' }
+  | { ok: false; reason: 'error'; message: string };
+
 /**
  * Wires the online editor iframe: logs opened/saved file types (extension
  * and size only), auto-saves the active drawing into this browser — and,
@@ -80,8 +87,9 @@ export function useEditorFiles({ onDwg }: { onDwg: () => void }) {
     return s;
   }, []);
 
+  /** Upload to the cloud; resolves to the error message, or null on success. */
   const uploadToCloud = useCallback(
-    async (file: File, checkpoint: boolean) => {
+    async (file: File, checkpoint: boolean): Promise<string | null> => {
       const s = slot(file.name);
       setCloudSaving(true);
       try {
@@ -113,11 +121,11 @@ export function useEditorFiles({ onDwg }: { onDwg: () => void }) {
               ],
             }
         );
-        return true;
+        return null;
       } catch (e) {
         console.error('[cloud] sync failed', e);
         setCloudFailed(true);
-        return false;
+        return (e instanceof Error && e.message) || 'Unknown error';
       } finally {
         setCloudSaving(false);
       }
@@ -143,7 +151,7 @@ export function useEditorFiles({ onDwg }: { onDwg: () => void }) {
         track('online_autosave');
       }
       // Failed sync: stay dirty so the next tick retries.
-      if (proRef.current && !(await uploadToCloud(file, checkpoint)))
+      if (proRef.current && (await uploadToCloud(file, checkpoint)) !== null)
         dirty.current = true;
     },
     [slot, uploadToCloud]
@@ -231,14 +239,19 @@ export function useEditorFiles({ onDwg }: { onDwg: () => void }) {
   );
 
   /** Save the active drawing to the cloud now, as a new version. */
-  const saveToCloud = useCallback(async () => {
+  const saveToCloud = useCallback(async (): Promise<CloudSaveResult> => {
     track('cloud_save_click', { pro: proRef.current ? 1 : 0 });
+    // null: editor still booting, or an auto-save snapshot is in flight.
     const file = await bridge.current?.snapshot();
-    if (!file || (await isEmptyDxf(file))) return false;
+    if (!file) return { ok: false, reason: 'not_ready' };
+    if (await isEmptyDxf(file)) return { ok: false, reason: 'empty' };
     const s = slot(file.name);
     const rows = await putDrawing({ id: s.localId, file, cloudId: s.cloudId });
     if (rows.length) setRecent(rows);
-    return uploadToCloud(file, true);
+    const message = await uploadToCloud(file, true);
+    return message === null
+      ? { ok: true }
+      : { ok: false, reason: 'error', message };
   }, [slot, uploadToCloud]);
 
   return {

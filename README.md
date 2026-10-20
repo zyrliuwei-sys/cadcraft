@@ -106,8 +106,12 @@ pushed. Cloudflare Workers Builds runs `pnpm cf:ci:build`, then
 `pnpm exec wrangler deploy`.
 
 [`wrangler.production.json`](./wrangler.production.json) is the tracked source
-for the Worker name, D1 binding, domain, and public app settings. The CI build
-recreates the ignored `wrangler.jsonc` and `.env.production` files from it.
+for the Worker name, D1 + R2 (`DRAWINGS`) bindings, domain, and public app
+settings. The CI build recreates the ignored `wrangler.jsonc` and
+`.env.production` files from it, so a binding added only to a local
+`wrangler.jsonc` is dropped on the next push — add it here too. `cf:build`
+ends with `scripts/check-worker-config.mjs`, which fails the build if a
+required binding is missing.
 Keep credentials in Cloudflare runtime secrets; never add them to this file.
 Database migrations still require a separate review and apply step.
 

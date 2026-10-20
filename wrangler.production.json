@@ -10,7 +10,7 @@
     "DATABASE_PROVIDER": "d1",
     "VITE_APP_URL": "https://cadcraft.org",
     "VITE_APP_NAME": "CADCraft AI",
-    "VITE_APP_DESCRIPTION": "CADCraft download and installation guide, Autodesk AutoCAD feature comparison and user experience",
+    "VITE_APP_DESCRIPTION": "CADCraft download and installation guide, online version, tutorials and Autodesk AutoCAD comparison",
     "VITE_APP_LOGO": "/logo.svg",
     "VITE_DEFAULT_LOCALE": "en"
   },
@@ -20,6 +20,12 @@
       "database_name": "cadcraft-ai",
       "database_id": "e3f6fa92-0a2e-46dd-9102-4f5a62dba48f",
       "migrations_dir": "drizzle"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "DRAWINGS",
+      "bucket_name": "cadcraft-drawings"
     }
   ],
   "triggers": {

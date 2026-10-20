@@ -79,9 +79,13 @@ export function CadOnlinePage() {
       setUpsellOpen(true);
       return;
     }
-    const ok = await files.saveToCloud();
-    if (ok) toast.success(m['cad.cloud.saved']());
-    else toast.error(m['cad.cloud.save_failed']());
+    const result = await files.saveToCloud();
+    if (result.ok) toast.success(m['cad.cloud.saved']());
+    else if (result.reason === 'empty')
+      toast.error(m['cad.cloud.save_empty']());
+    else if (result.reason === 'not_ready')
+      toast.error(m['cad.cloud.save_not_ready']());
+    else toast.error(m['cad.cloud.save_failed']({ error: result.message }));
   };
   // v= busts a cached index.html that still points at the previous build's files
   const src = `${cadcraftLinks.app}${renderer}${renderer ? '&' : '?'}ui=2&v=${CADCRAFT_VERSION}`;
