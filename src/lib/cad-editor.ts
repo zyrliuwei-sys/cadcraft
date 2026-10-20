@@ -44,6 +44,14 @@ export function attachEditor(
     const press = (key: string, keyCode: number) => {
       const canvas = doc.getElementById('cadcraft_canvas');
       if (!canvas) return false;
+      // The editor ignores keys while it's unfocused (e.g. right after a
+      // click on our "Save to cloud" button): focus it for the keystroke,
+      // then hand focus back so auto-save never steals it.
+      const host = frame.ownerDocument;
+      const prev = host.activeElement as HTMLElement | null;
+      const refocus =
+        prev && prev !== frame && prev !== host.body ? prev : null;
+      canvas.focus({ preventScroll: true });
       for (const type of ['keydown', 'keyup']) {
         canvas.dispatchEvent(
           new win.KeyboardEvent(type, {
@@ -56,6 +64,7 @@ export function attachEditor(
           })
         );
       }
+      refocus?.focus({ preventScroll: true });
       return true;
     };
 
