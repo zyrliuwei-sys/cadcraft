@@ -310,8 +310,7 @@ export async function getFunnelReport(opts: {
     // The funnel derives it from `user.createdAt`, so exclude the raw event
     // here and add the canonical count below to keep both views consistent.
     for (const n of v.names) {
-      if (n !== 'sign_up')
-        eventCounts.set(n, (eventCounts.get(n) ?? 0) + 1);
+      if (n !== 'sign_up') eventCounts.set(n, (eventCounts.get(n) ?? 0) + 1);
     }
     for (const p of v.pages) pageCounts.set(p, (pageCounts.get(p) ?? 0) + 1);
     for (const d of DIMENSIONS) {
