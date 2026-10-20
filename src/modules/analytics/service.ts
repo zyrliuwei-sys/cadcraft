@@ -12,6 +12,8 @@
  * - Visitors that ever sent an `internal` event (admins, test devices) are
  *   dropped, along with their sign-ups and orders.
  * - A user seen on several devices counts once, on their earliest visitor.
+ * - `sign_up` is a canonical registration metric sourced from user creation;
+ *   the browser `sign_up` event is not used for that count.
  */
 
 import { and, desc, eq, gte, isNotNull, lt, sql } from 'drizzle-orm';
@@ -304,7 +306,13 @@ export async function getFunnelReport(opts: {
   for (const v of visitors.values()) {
     addVisitor(totals, v);
     for (const s of FUNNEL_STEPS) if (reached(v, s)) stepCounts[s]++;
-    for (const n of v.names) eventCounts.set(n, (eventCounts.get(n) ?? 0) + 1);
+    // Registration is a business fact, not a best-effort browser event.
+    // The funnel derives it from `user.createdAt`, so exclude the raw event
+    // here and add the canonical count below to keep both views consistent.
+    for (const n of v.names) {
+      if (n !== 'sign_up')
+        eventCounts.set(n, (eventCounts.get(n) ?? 0) + 1);
+    }
     for (const p of v.pages) pageCounts.set(p, (pageCounts.get(p) ?? 0) + 1);
     for (const d of DIMENSIONS) {
       const value = v.attrs[d];
@@ -333,6 +341,12 @@ export async function getFunnelReport(opts: {
 
   const byVisitors = (a: { visitors: number }, b: { visitors: number }) =>
     b.visitors - a.visitors;
+  // Expose the same user-creation-based registration count in the events
+  // table. This prevents the dashboard from comparing a durable business
+  // record with a lossy client beacon.
+  if (stepCounts.sign_up > 0) {
+    eventCounts.set('sign_up', stepCounts.sign_up);
+  }
   return {
     totals,
     steps: FUNNEL_STEPS.map((key) => ({ key, visitors: stepCounts[key] })),
