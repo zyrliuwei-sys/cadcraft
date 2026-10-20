@@ -1517,7 +1517,7 @@
   "cad.online.files_saved": "已于 {time} 自动保存",
   "cad.online.files_recent": "继续上次的图：",
   "cad.online.files_open": "在新标签页中打开",
-  "cad.cloud.title": "云端图纸",
+  "cad.cloud.title": "我的图纸",
   "cad.cloud.desc": "保存在你账户里的图纸，在任何电脑上都能打开。",
   "cad.cloud.empty": "还没有云端图纸。画点东西会自动同步，也可以点“保存到云端”。",
   "cad.cloud.open": "打开",
