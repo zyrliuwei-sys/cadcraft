@@ -11,7 +11,13 @@ import { baseLocale } from '@/paraglide/runtime.js';
  * fetched through the server functions in ./server.ts and merged with the
  * local posts via the pure helpers below.
  */
-export const BLOG_POST_SLUGS = ['cadcraft-vs-autocad-command-line'] as const;
+export const BLOG_POST_SLUGS = [
+  'cadcraft-vs-autocad-command-line',
+  'how-to-open-dwg-file',
+  'dxf-vs-dwg',
+  'cad-file-formats',
+  'open-source-cad',
+] as const;
 
 export type BlogPostMeta = {
   title: string;
@@ -20,6 +26,8 @@ export type BlogPostMeta = {
   author_name?: string;
   author_image?: string;
   image?: string;
+  /** [question, answer] pairs: rendered by <PostFaq> and emitted as FAQPage JSON-LD */
+  faq?: [string, string][];
 };
 
 type PostModule = {
@@ -42,6 +50,7 @@ export type BlogPost = {
 export type BlogPostDetail = BlogPost & {
   /** Raw markdown — set for database posts */
   content?: string;
+  faq?: [string, string][];
 };
 
 // Eagerly bundle the local MDX posts (small markdown files), mirroring the

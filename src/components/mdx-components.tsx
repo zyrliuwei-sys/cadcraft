@@ -1,4 +1,8 @@
-import type { AnchorHTMLAttributes, HTMLAttributes } from 'react';
+import type {
+  AnchorHTMLAttributes,
+  HTMLAttributes,
+  ImgHTMLAttributes,
+} from 'react';
 import type { MDXComponents } from 'mdx/types';
 
 import { cn } from '@/lib/utils';
@@ -103,5 +107,44 @@ export const mdxComponents: MDXComponents = {
   ),
   hr: ({ className, ...props }: HTMLAttributes<HTMLHRElement>) => (
     <hr className={cn('border-border my-8', className)} {...props} />
+  ),
+  // Wide comparison tables scroll inside their wrapper on phones
+  table: ({ className, ...props }: HTMLAttributes<HTMLTableElement>) => (
+    <div className="border-border my-5 overflow-x-auto rounded-xl border">
+      <table
+        className={cn('w-full border-collapse text-left text-sm', className)}
+        {...props}
+      />
+    </div>
+  ),
+  th: ({ className, ...props }: HTMLAttributes<HTMLTableCellElement>) => (
+    <th
+      className={cn(
+        'border-border bg-muted text-foreground border-b px-3 py-2 align-bottom font-semibold',
+        className
+      )}
+      {...props}
+    />
+  ),
+  td: ({ className, ...props }: HTMLAttributes<HTMLTableCellElement>) => (
+    <td
+      className={cn(
+        'border-border text-foreground/90 border-b px-3 py-2 align-top leading-6',
+        className
+      )}
+      {...props}
+    />
+  ),
+  img: ({ className, alt, ...props }: ImgHTMLAttributes<HTMLImageElement>) => (
+    <img
+      alt={alt}
+      loading="lazy"
+      decoding="async"
+      className={cn(
+        'border-border my-5 h-auto w-full rounded-xl border',
+        className
+      )}
+      {...props}
+    />
   ),
 };

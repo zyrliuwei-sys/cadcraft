@@ -31,13 +31,28 @@ export const Route = createFileRoute('/blog/$slug')({
       locale,
       title: `${post.title} | ${envConfigs.app_name}`,
       description: post.description,
-      jsonLd: {
-        '@context': 'https://schema.org',
-        '@type': 'Article',
-        headline: post.title,
-        description: post.description,
-        datePublished: new Date(post.createdAt).toISOString(),
-      },
+      jsonLd: [
+        {
+          '@context': 'https://schema.org',
+          '@type': 'Article',
+          headline: post.title,
+          description: post.description,
+          datePublished: new Date(post.createdAt).toISOString(),
+        },
+        ...(post.faq?.length
+          ? [
+              {
+                '@context': 'https://schema.org',
+                '@type': 'FAQPage',
+                mainEntity: post.faq.map(([q, a]) => ({
+                  '@type': 'Question',
+                  name: q,
+                  acceptedAnswer: { '@type': 'Answer', text: a },
+                })),
+              },
+            ]
+          : []),
+      ],
     });
     return {
       ...head,
