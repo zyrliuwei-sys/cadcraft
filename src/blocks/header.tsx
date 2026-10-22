@@ -1,4 +1,3 @@
-import { cadcraftLinks } from '@/config/cadcraft';
 import { m } from '@/paraglide/messages.js';
 import { SiteHeader } from '@/components/site-header';
 
@@ -9,10 +8,6 @@ export function Header() {
     { href: '/tutorials', label: m['cad.nav.tutorials']() },
     { href: '/vs-autocad', label: m['cad.nav.compare']() },
     { href: '/pricing', label: m['cad.nav.pricing']() },
-    { href: '/blog', label: m['cad.nav.blog']() },
-    { href: '/about', label: m['cad.nav.about']() },
-    { href: '/contact', label: m['cad.nav.contact']() },
-    { href: cadcraftLinks.repo, label: m['cad.nav.github']() },
   ];
 
   return (

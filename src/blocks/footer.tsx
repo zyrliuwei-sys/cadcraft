@@ -27,7 +27,6 @@ export function Footer() {
         { label: m['cad.footer.github'](), href: cadcraftLinks.repo },
         { label: m['cad.footer.releases'](), href: cadcraftLinks.releases },
         { label: m['cad.footer.official'](), href: cadcraftLinks.official },
-        { label: m['cad.footer.wiki'](), href: cadcraftLinks.wiki },
       ],
     },
     {
