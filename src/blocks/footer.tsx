@@ -31,6 +31,31 @@ export function Footer() {
       ],
     },
     {
+      title: m['cad.footer.guides'](),
+      links: [
+        {
+          label: m['cad.footer.guide_wordcraft'](),
+          href: 'https://wordcraftapp.com',
+        },
+        {
+          label: m['cad.footer.guide_gridcraft'](),
+          href: 'https://gridcraft.me',
+        },
+        {
+          label: m['cad.footer.guide_deckcraft'](),
+          href: 'https://deckcraft.me',
+        },
+        {
+          label: m['cad.footer.guide_pdfcraft'](),
+          href: 'https://pdfcrafttool.org',
+        },
+        {
+          label: m['cad.footer.guide_photocraft'](),
+          href: 'https://photocraftartcraft.com',
+        },
+      ],
+    },
+    {
       title: m['cad.footer.legal'](),
       links: [
         { label: m['cad.nav.about'](), href: '/about' },
