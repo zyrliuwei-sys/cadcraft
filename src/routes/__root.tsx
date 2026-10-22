@@ -7,6 +7,7 @@ import {
   HeadContent,
   Outlet,
   Scripts,
+  useRouterState,
   type ErrorComponentProps,
 } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
@@ -139,14 +140,36 @@ function RootComponent() {
   );
 }
 
+// Pages that must not load the AdSense script: no publisher content, or
+// behind sign-in. The optional /zh prefix covers localized URLs.
+const NO_ADS_PATH =
+  /^(?:\/zh)?\/(?:admin|settings|sign-in|sign-up|forgot-password|reset-password|verify-email|auth-callback|redeem-invite)(?:\/|$)/;
+
 function RootDocument({ children }: { children: ReactNode }) {
   const analytics = Route.useLoaderData();
+  const adsenseCode = analytics?.adsenseCode || DEFAULT_ADSENSE_CODE;
+  // 404 and error pages keep the account <meta> (site verification) but skip
+  // the ad loader, so Auto ads never fill a page without content.
+  const loadAds = useRouterState({
+    select: (s) =>
+      !NO_ADS_PATH.test(s.location.pathname) &&
+      !s.matches.some(
+        (match) =>
+          match.status === 'notFound' ||
+          match.status === 'error' ||
+          match.globalNotFound
+      ),
+  });
 
   return (
     <html lang={getLocale()} suppressHydrationWarning>
       <head>
         <HeadContent />
-        <Ads code={analytics?.adsenseCode || DEFAULT_ADSENSE_CODE} />
+        {loadAds ? (
+          <Ads code={adsenseCode} />
+        ) : (
+          <meta name="google-adsense-account" content={adsenseCode} />
+        )}
       </head>
       <body className="font-sans antialiased">
         {children}
