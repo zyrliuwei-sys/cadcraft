@@ -10,6 +10,7 @@ const STATIC_PATHS = [
   '/online',
   '/tutorials',
   '/vs-autocad',
+  '/pricing',
   '/blog',
   '/about',
   '/contact',

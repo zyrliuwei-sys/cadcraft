@@ -150,21 +150,25 @@ function RootDocument({ children }: { children: ReactNode }) {
   const adsenseCode = analytics?.adsenseCode || DEFAULT_ADSENSE_CODE;
   // 404 and error pages keep the account <meta> (site verification) but skip
   // the ad loader, so Auto ads never fill a page without content.
-  const loadAds = useRouterState({
+  const isNotFound = useRouterState({
     select: (s) =>
-      !NO_ADS_PATH.test(s.location.pathname) &&
-      !s.matches.some(
-        (match) =>
-          match.status === 'notFound' ||
-          match.status === 'error' ||
-          match.globalNotFound
+      s.matches.some(
+        (match) => match.status === 'notFound' || match.globalNotFound
       ),
   });
+  const isError = useRouterState({
+    select: (s) => s.matches.some((match) => match.status === 'error'),
+  });
+  const isNoAdsPath = useRouterState({
+    select: (s) => NO_ADS_PATH.test(s.location.pathname),
+  });
+  const loadAds = !isNotFound && !isError && !isNoAdsPath;
 
   return (
     <html lang={getLocale()} suppressHydrationWarning>
       <head>
         <HeadContent />
+        {isNotFound && <meta name="robots" content="noindex" />}
         {loadAds ? (
           <Ads code={adsenseCode} />
         ) : (

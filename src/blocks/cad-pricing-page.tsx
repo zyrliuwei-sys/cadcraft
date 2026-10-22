@@ -52,7 +52,6 @@ export function CadPricingPage() {
     m['cad.pricing.f_unlimited'](),
     m['cad.pricing.f_history'](),
     m['cad.pricing.f_share'](),
-    m['cad.pricing.f_dwg'](),
   ];
 
   function pro(productId: string): PricingPlan {
@@ -121,6 +120,9 @@ export function CadPricingPage() {
           }
         />
         <p className="text-muted-foreground mx-auto mt-10 max-w-2xl text-center text-sm leading-relaxed">
+          {m['cad.pricing.dwg_note']()}
+        </p>
+        <p className="text-muted-foreground mx-auto mt-4 max-w-2xl text-center text-sm leading-relaxed">
           {m['cad.pricing.note']()}
         </p>
       </section>
