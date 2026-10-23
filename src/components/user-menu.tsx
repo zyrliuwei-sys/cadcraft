@@ -13,14 +13,8 @@ import { useTheme } from 'next-themes';
 
 import { signOut } from '@/core/auth/client';
 import { useRouter } from '@/core/i18n/navigation';
-import { localeNames } from '@/config/locale';
 import { m } from '@/paraglide/messages.js';
-import {
-  getLocale,
-  locales,
-  localizeHref,
-  setLocale,
-} from '@/paraglide/runtime.js';
+import { localizeHref } from '@/paraglide/runtime.js';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -53,18 +47,12 @@ export function UserMenu({
   profileHref?: string;
 }) {
   const router = useRouter();
-  const locale = getLocale();
   const { theme, setTheme } = useTheme();
   const { isMobile } = useSidebar();
 
   async function handleSignOut() {
     await signOut();
     router.push('/');
-  }
-
-  function handleLocaleSwitch(newLocale: string) {
-    // Writes the locale cookie and reloads on the localized URL.
-    setLocale(newLocale as typeof locale);
   }
 
   return (
@@ -127,23 +115,11 @@ export function UserMenu({
                 {m['common.nav.profile']()}
               </DropdownMenuItem>
             )}
-            <DropdownMenuSub>
-              <DropdownMenuSubTrigger className="gap-2 px-2 py-2">
-                <LanguagesIcon className="size-4" />
-                <span className="flex-1">{localeNames[locale] || locale}</span>
-              </DropdownMenuSubTrigger>
-              <DropdownMenuSubContent>
-                {locales.map((loc) => (
-                  <DropdownMenuItem
-                    key={loc}
-                    onClick={() => handleLocaleSwitch(loc)}
-                  >
-                    <span className="flex-1">{localeNames[loc] || loc}</span>
-                    {loc === locale && <CheckIcon className="size-3.5" />}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuSubContent>
-            </DropdownMenuSub>
+            {/* English-only site: language is shown, not switchable. */}
+            <DropdownMenuItem disabled>
+              <LanguagesIcon className="size-4" />
+              <span className="flex-1">English</span>
+            </DropdownMenuItem>
             <DropdownMenuSub>
               <DropdownMenuSubTrigger className="gap-2 px-2 py-2">
                 <PaletteIcon className="size-4" />

@@ -3,6 +3,9 @@ import { m } from '@/paraglide/messages.js';
 import { FooterBadgeList } from '@/components/footer-badge-list';
 import { SiteFooter, type FooterColumn } from '@/components/site-footer';
 
+// 姊妹站导流栏暂时下线：不渲染进 HTML，避免被爬虫抓到。恢复时改回 true。
+const SHOW_SISTER_GUIDES = false;
+
 export function Footer() {
   const columns: FooterColumn[] = [
     {
@@ -29,31 +32,35 @@ export function Footer() {
         { label: m['cad.footer.official'](), href: cadcraftLinks.official },
       ],
     },
-    {
-      title: m['cad.footer.guides'](),
-      links: [
-        {
-          label: m['cad.footer.guide_wordcraft'](),
-          href: 'https://wordcraftapp.com',
-        },
-        {
-          label: m['cad.footer.guide_gridcraft'](),
-          href: 'https://gridcraft.me',
-        },
-        {
-          label: m['cad.footer.guide_deckcraft'](),
-          href: 'https://deckcraft.me',
-        },
-        {
-          label: m['cad.footer.guide_pdfcraft'](),
-          href: 'https://pdfcrafttool.org',
-        },
-        {
-          label: m['cad.footer.guide_photocraft'](),
-          href: 'https://photocraftartcraft.com',
-        },
-      ],
-    },
+    ...(SHOW_SISTER_GUIDES
+      ? [
+          {
+            title: m['cad.footer.guides'](),
+            links: [
+              {
+                label: m['cad.footer.guide_wordcraft'](),
+                href: 'https://wordcraftapp.com',
+              },
+              {
+                label: m['cad.footer.guide_gridcraft'](),
+                href: 'https://gridcraft.me',
+              },
+              {
+                label: m['cad.footer.guide_deckcraft'](),
+                href: 'https://deckcraft.me',
+              },
+              {
+                label: m['cad.footer.guide_pdfcraft'](),
+                href: 'https://pdfcrafttool.org',
+              },
+              {
+                label: m['cad.footer.guide_photocraft'](),
+                href: 'https://photocraftartcraft.com',
+              },
+            ],
+          },
+        ]
+      : []),
     {
       title: m['cad.footer.legal'](),
       links: [

@@ -47,8 +47,8 @@ function xmlEscape(value: string): string {
 }
 
 // One <url> per language version, each listing every alternate (Google's
-// recommended hreflang form) — so /zh pages are real <loc>s that crawlers and
-// the IndexNow sitemap submit pick up, not just alternates of the en page.
+// recommended hreflang form). The site is English-only, so this yields one
+// <loc> per page with en + x-default alternates.
 function entryXml(e: Entry): string {
   const alternates = [
     ...locales.map(

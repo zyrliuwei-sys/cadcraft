@@ -180,7 +180,7 @@ async function sendWelcomeEmail(
       react: WelcomeEmail({
         appName,
         logoUrl: getEmailLogoUrl(configs, appUrl),
-        url: `${appUrl}${zh ? '/zh' : ''}/online`,
+        url: `${appUrl}/online`,
         name: user.name || undefined,
         credits,
         locale: zh ? 'zh' : 'en',

@@ -141,9 +141,9 @@ function RootComponent() {
 }
 
 // Pages that must not load the AdSense script: no publisher content, or
-// behind sign-in. The optional /zh prefix covers localized URLs.
+// behind sign-in.
 const NO_ADS_PATH =
-  /^(?:\/zh)?\/(?:admin|settings|sign-in|sign-up|forgot-password|reset-password|verify-email|auth-callback|redeem-invite)(?:\/|$)/;
+  /^\/(?:admin|settings|sign-in|sign-up|forgot-password|reset-password|verify-email|auth-callback|redeem-invite)(?:\/|$)/;
 
 function RootDocument({ children }: { children: ReactNode }) {
   const analytics = Route.useLoaderData();

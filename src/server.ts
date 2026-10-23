@@ -32,7 +32,7 @@ function ensureCloudflareEnv(): Promise<void> {
 // that points at the previous build's assets. Query strings (utm_*, …) and
 // other paths always render fresh; admin settings show up within 5 minutes.
 declare const __BUILD_ID__: string;
-const HTML_CACHE_PATHS = new Set(['/', '/zh', '/zh/']);
+const HTML_CACHE_PATHS = new Set(['/']);
 const HTML_CACHE_SECONDS = 300;
 
 function htmlEdgeCache(req: Request): Cache | undefined {
@@ -79,6 +79,12 @@ export default {
     // Canonical host: permanently redirect www.<domain> to the bare domain.
     if (url.hostname.startsWith('www.')) {
       url.hostname = url.hostname.slice(4);
+      return Response.redirect(url.toString(), 301);
+    }
+    // The Chinese mirror is retired: /zh and /zh/* permanently redirect to
+    // the matching English page (/zh → /, /zh/download → /download).
+    if (/^\/zh(?:\/|$)/.test(url.pathname)) {
+      url.pathname = url.pathname.replace(/^\/zh/, '') || '/';
       return Response.redirect(url.toString(), 301);
     }
     const origin = req.headers.get('Origin');
