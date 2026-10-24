@@ -43,10 +43,14 @@ If you have the CLI, `cadcraft-cli info drawing.dwg` lists the layouts as JSON b
 
 This is the step that decides whether your 0.50 mm walls come out as 0.50 mm.
 
+![The CADCraft Plot dialog: Layout Model, Printer/plotter None, Paper size ANSI A 8.50 x 11.00 inches, Landscape, Plot area Extents, Fit to paper, Center the plot, Plot object lineweights ticked, Plot transparency unticked, Plot style table None](/imgs/blog/dwg-to-pdf-plot-dialog.webp)
+
+_The Plot dialog (File ▸ Print…) in the web build of CADCraft 0.8.0, with its defaults for a model-space plot of an imperial drawing._
+
 In **File ▸ Print…** (the Plot dialog):
 
 - **Printer/plotter:** `CADCraft PDF`. `CADCraft PNG` and `CADCraft SVG` also appear here; PNG is raster.
-- **Paper size:** ISO A0–A6 and B0–B5, ANSI A–E, ARCH A–E and E1, or Letter/Legal. Without a choice, a model-space plot uses Letter landscape for imperial drawings and A4 landscape for metric ones.
+- **Paper size:** ISO A0–A6 and B0–B5, ANSI A–E, ARCH A–E and E1, or Letter/Legal. Without a choice, a model-space plot uses ANSI A (8.5 × 11 in) landscape for imperial drawings and A4 landscape for metric ones.
 - **Plot object lineweights:** on. Off, every line is written as a 0-width hairline.
 - **Plot style table:** `default.ctb` keeps object colours, `monochrome.ctb` prints every colour black, and `grayscale.ctb` prints colours as grey. `None` plots object colours.
 
@@ -61,6 +65,10 @@ CADCraft does **not** read binary `.ctb` or `.stb` files. The project says it ha
 3. Edit the pens you need. Each style has **Color**, **Grayscale**, **Screening**, **Linetype** and **Lineweight**.
 4. Tick **Keep an editable copy of this table in the drawing** so it travels with the DXF or DWG, then **Use for this layout**.
 
+![The CADCraft Plot Style Manager with default.ctb selected, buttons Copy, New CTB, New STB and Delete, and rows Color_1 to Color_11 with Color, Grayscale, Screening, Linetype and Lineweight columns](/imgs/blog/dwg-to-pdf-plot-style-manager.webp)
+
+_File ▸ Plot Styles… opens the Plot Style Manager. Each `Color_n` row is one pen of a colour-dependent table._
+
 | AutoCAD plot-style setting      | CADCraft field                 | Note                                                             |
 | ------------------------------- | ------------------------------ | ---------------------------------------------------------------- |
 | Color                           | `color` (`#rrggbb`)            | Colour 7 prints black                                            |
@@ -73,6 +81,10 @@ CADCraft does **not** read binary `.ctb` or `.stb` files. The project says it ha
 | Dither, pen number, virtual pen | not in CADCraft's table format | Ignored                                                          |
 
 A colour-dependent table chooses by the object's index colour; a true colour uses the nearest index colour. A named table chooses by the object's **PlotStyle** property, and a missing name prints as `Normal`.
+
+![The same bracket drawing plotted twice by CADCraft at 300 dpi: on the left with no plot style table, in its object colours; on the right with monochrome.ctb, all black](/imgs/blog/dwg-to-pdf-ctb-compare.webp)
+
+_Same drawing, same plot settings, two tables. Plotted with cadcraft-cli 0.8.0 to the CADCraft PNG device at 300 dpi._
 
 **The trap:** if the page setup or your command names a table CADCraft can't find (for example `office.ctb` from the sender's office), the plot goes ahead **without a warning** and prints object colours. We plotted the same drawing with `"plotStyleTable":"missing.ctb"` and with no table, and the two PDFs had identical colours and line widths. After you rebuild the table under the same name, the plot uses it. In our test, `Color_1` set to black at 0.5 mm came out as a 1.417 pt stroke, which is 0.5 mm.
 
@@ -96,8 +108,6 @@ Notes from running these on 0.8.0:
 ```text
 invalid parameters for `exportpdf`: no layout `Sheet9`
 ```
-
-![The CADCraft File menu with Print, Export to PDF, Plot Styles, Plotter Manager, Batch Publish and Sheet Books to PDF](/imgs/blog/online-file-menu.webp)
 
 ## Step 4: Batch-convert a folder with cadcraft-cli
 

@@ -93,9 +93,17 @@ These are failures we produced on purpose with CADCraft 0.8.0, so you know what 
 | Inch vs millimetre                         | An imperial drawing reads `120` as 120 inches                                                                                                        | Start with `new_drawing {"metric": true}`                 |
 | Missing manufacturing intent               | Tolerances, threads, finishes and datums aren't drawn unless asked for                                                                               | A human review; nothing automatic replaces it             |
 
+![The same plate drawn twice: on the left with circle 10,10 d 6 giving four 6 mm corner holes; on the right with circle 10,10 6 giving four 12 mm holes](/imgs/blog/text-to-cad-radius-mistake.webp)
+
+_One missing letter. Both drawings came from the same script; on the right the `d` was dropped from the four corner-hole lines._
+
 ## How CADCraft's MCP server and JSON channel fit in
 
 CADCraft doesn't include a language model. It gives an agent **hands and eyes**: every menu item, tool and prompt is a command that can be typed or called with JSON. The MCP server exposes 12 tools in 0.8.0: `command_line`, `script`, `execute`, `list_commands`, `inspect_drawing`, `query_entities`, `render`, `find_text`, `new_drawing`, `open`, `save` and `cancel`. `render` returns a PNG the model can look at, and `save` to a `.pdf`, `.svg` or `.png` path exports.
+
+![Text to CAD loop: you write the prompt, a language model writes commands, the CADCraft MCP server runs them, the agent checks the result with query_entities and render, fixes and retries, then saves DXF or PDF](/imgs/blog/text-to-cad-agent-loop.svg)
+
+_Where each piece sits. The checking step is the one people skip._
 
 **Connect it to an MCP client.** Install the desktop download, which includes `cadcraft-cli` (on macOS it's a separate zip on the release page). Then add it to your client. For Claude Code:
 

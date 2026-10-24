@@ -49,6 +49,10 @@ If the recipient uses AutoCAD and will send the file back, send the DWG instead.
 
 Under the hood, CADCraft has already converted the DWG to DXF to open it (through the open-source acadrust library). Saving writes CADCraft's own DXF.
 
+![How CADCraft desktop handles a DWG: the file is converted to DXF by the acadrust library, read by the DXF reader, and on save written as DXF and converted back to DWG](/imgs/blog/dxf-vs-dwg-cadcraft-bridge.svg)
+
+_In CADCraft, DWG goes through DXF in both directions, so what DXF can’t hold, the conversion can’t keep._
+
 ## Path B: a whole folder from the command line
 
 `cadcraft-cli` ships with the desktop downloads; on macOS it's a separate universal zip on the release page.
@@ -81,6 +85,10 @@ Each run prints a confirmation such as `{"binary":false,"bytes":41298,"path":"a.
 ## Which DXF version is the safest?
 
 CADCraft writes DXF 2000, 2004, 2007, 2010, 2013 and 2018, ASCII or binary. The content is the same for every version: an R2000 structure with that version's `$ACADVER` code. Later versions only add optional data. So the version mainly decides **who will accept the file**. One real difference: from 2007 on, text is stored as UTF-8. Before 2007, non-ASCII characters are written as `\U+` escapes, which is valid but less friendly to simple parsers.
+
+![Decision chart: AutoCAD 2018 or later gets DXF 2018, unknown recipients 2013 or 2010, old software 2004 or 2000, and R12-only CNC tools need another converter](/imgs/blog/dwg-to-dxf-version-picker.svg)
+
+_Pick the version for the person or machine that opens the file._
 
 | Recipient                                    | Choose                         | Why                                                                              |
 | -------------------------------------------- | ------------------------------ | -------------------------------------------------------------------------------- |
@@ -137,6 +145,10 @@ cmp a1.png a2.png && echo identical
 ```
 
 Our two 2400×1600 PNGs were byte-identical. If yours differ, view them side by side. Different framing usually means an object was lost or added far from the drawing.
+
+![The mounting bracket rendered from the original DWG and from the converted DXF 2013 side by side, both reporting 46 entities and 0 skipped records](/imgs/blog/dwg-to-dxf-render-compare.webp)
+
+_Left: `cadcraft-cli convert a.dwg a1.png`. Right: the same for the converted DXF. The two PNG files were byte-identical._
 
 **3. Audit the DXF.**
 

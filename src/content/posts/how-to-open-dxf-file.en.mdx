@@ -35,6 +35,10 @@ _cadcraft.org is an independent guide, not the official site. CADCraft is made b
 
 You can answer both questions without CAD software.
 
+![An ASCII DXF starts with group code 0, SECTION, 2, HEADER and shows the version code AC1032 after $ACADVER; a binary DXF starts with the sentinel AutoCAD Binary DXF; two terminal commands check both](/imgs/blog/open-dxf-ascii-vs-binary.svg)
+
+_What to look for in the first bytes. The ASCII lines are the real start of a DXF saved by CADCraft._
+
 **ASCII or binary.** Look at the first line.
 
 ```bash
@@ -121,6 +125,10 @@ invalid parameters for `open`: line 2085: bad group code `abc`
 Open the file in a text editor, go to that line, and you'll usually find a cut-off download or a hand edit. A truncated **binary** DXF fails with `unexpected end of file`.
 
 The dangerous case is a **truncated ASCII** DXF. We cut a 16-object file in the middle of its ENTITIES section. It opened **without any error**, showed 5 objects and reported nothing as skipped. If a drawing looks incomplete, ask for the file again. Before trusting it, compare `cadcraft-cli info drawing.dxf` (the `entityCount` and `counts` fields) with what the sender expects.
+
+![Left: a floor plan DXF with walls, door swing, room names and furniture, 16 objects. Right: the same file cut off in the middle of its ENTITIES section opens with only the walls, 5 objects, and no error](/imgs/blog/open-dxf-truncated-compare.webp)
+
+_Rendered with cadcraft-cli 0.8.0. The right-hand file opened without an error message, which is why counting objects matters._
 
 ### "Version too new" or "unsupported version"
 
