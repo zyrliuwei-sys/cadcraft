@@ -12,6 +12,12 @@ import { baseLocale } from '@/paraglide/runtime.js';
  * local posts via the pure helpers below.
  */
 export const BLOG_POST_SLUGS = [
+  'autocad-shortcuts',
+  'autocad-commands',
+  'text-to-cad',
+  'dwg-to-pdf',
+  'how-to-open-dxf-file',
+  'dwg-to-dxf',
   'cadcraft-vs-autocad-command-line',
   'how-to-open-dwg-file',
   'dxf-vs-dwg',
