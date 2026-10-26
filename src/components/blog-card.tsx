@@ -1,6 +1,7 @@
 import { Calendar } from 'lucide-react';
 
 import { Link } from '@/core/i18n/navigation';
+import { cn } from '@/lib/utils';
 
 export type BlogCardProps = {
   href: string;
@@ -33,7 +34,11 @@ export function BlogCard({
           width={640}
           height={360}
           loading="lazy"
-          className="aspect-video w-full object-cover object-center"
+          className={cn(
+            'aspect-video w-full object-center',
+            // Diagrams carry text edge to edge: letterbox instead of cropping
+            image.endsWith('.svg') ? 'bg-white object-contain' : 'object-cover'
+          )}
         />
       )}
       <div className="flex flex-1 flex-col gap-3 p-6">

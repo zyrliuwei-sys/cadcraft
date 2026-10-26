@@ -66,7 +66,7 @@ function BlogPage() {
                   href={`/blog/${post.slug}`}
                   title={post.title}
                   description={post.description}
-                  image={post.image}
+                  image={post.cover ?? post.image}
                   date={formatPostDate(post.createdAt, locale)}
                   authorName={post.authorName}
                   authorImage={post.authorImage}

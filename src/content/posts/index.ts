@@ -12,6 +12,9 @@ import { baseLocale } from '@/paraglide/runtime.js';
  * local posts via the pure helpers below.
  */
 export const BLOG_POST_SLUGS = [
+  'free-autocad-alternatives',
+  'dxf-to-svg-png',
+  'how-to-scale-in-autocad',
   'autocad-shortcuts',
   'autocad-commands',
   'text-to-cad',
@@ -32,6 +35,8 @@ export type BlogPostMeta = {
   author_name?: string;
   author_image?: string;
   image?: string;
+  /** Card thumbnail on blog listings only (not shown on the post page) */
+  cover?: string;
   /** [question, answer] pairs: rendered by <PostFaq> and emitted as FAQPage JSON-LD */
   faq?: [string, string][];
 };
@@ -46,6 +51,8 @@ export type BlogPost = {
   title: string;
   description: string;
   image?: string;
+  /** Listing thumbnail; falls back to `image` */
+  cover?: string;
   /** ISO date string — serializable across loader/server-fn boundaries */
   createdAt: string;
   authorName?: string;
@@ -82,6 +89,7 @@ function localPostToItem(slug: string, meta: BlogPostMeta): BlogPost {
     title: meta.title,
     description: meta.description,
     image: meta.image,
+    cover: meta.cover,
     createdAt: new Date(meta.created_at).toISOString(),
     authorName: meta.author_name,
     authorImage: meta.author_image,
