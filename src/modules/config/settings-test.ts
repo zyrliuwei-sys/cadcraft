@@ -215,7 +215,7 @@ async function testWaffo(
   const order: PaymentOrder = {
     type: PaymentType.ONE_TIME,
     orderNo: getUniSeq('TEST'),
-    productId: inputs.productId,
+    productId: resolveWaffoProductId(inputs.productId, configs),
     // amount 0 = no price override, the product's stored price is used
     price: { amount: 0, currency: inputs.currency || 'USD' },
     successUrl: configuredSuccessUrl('waffo', configs),
@@ -231,6 +231,31 @@ async function testWaffo(
       'Checkout URL': session.checkoutInfo.checkoutUrl,
     },
   };
+}
+
+// Accepts a PROD_ id, a waffo_product_ids_mapping key, or empty (first mapped id)
+function resolveWaffoProductId(
+  input: string | undefined,
+  configs: Record<string, string>
+): string {
+  const value = (input || '').trim();
+  if (value.startsWith('PROD_')) return value;
+
+  let mapping: Record<string, string> = {};
+  try {
+    mapping = JSON.parse(configs.waffo_product_ids_mapping || '{}');
+  } catch {
+    // invalid mapping JSON — fall through to the raw input
+  }
+
+  if (value && mapping[value]) return mapping[value];
+  if (!value) {
+    const first = Object.values(mapping).find((id) =>
+      String(id).startsWith('PROD_')
+    );
+    if (first) return first;
+  }
+  return value;
 }
 
 // --- PayPal ---------------------------------------------------------------

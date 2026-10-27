@@ -88,8 +88,7 @@ export const testSpecs: Record<string, TestSpec> = {
         name: 'productId',
         label: 'Waffo product ID',
         type: 'text',
-        placeholder: 'PROD_xxx',
-        required: true,
+        placeholder: 'PROD_xxx or mapping key (empty = first mapped product)',
       },
       {
         name: 'currency',
