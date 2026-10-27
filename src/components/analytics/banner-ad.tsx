@@ -1,0 +1,122 @@
+import { useEffect, useRef, useState } from 'react';
+import { useRouterState } from '@tanstack/react-router';
+
+import { NO_ADS_PATH } from '@/lib/ads';
+import { cn } from '@/lib/utils';
+
+const BANNER_HOST = 'https://bellnewyork.org/22';
+
+export const BANNERS = {
+  rect300x250: {
+    key: '9b516e5489f5a83c9efad20c40c6e0cd',
+    width: 300,
+    height: 250,
+  },
+  mobile320x50: {
+    key: '589a78938651891b89beed23b60fcd17',
+    width: 320,
+    height: 50,
+  },
+  leaderboard728x90: {
+    key: '54cf0bcfbde6f8edf384186687476f67',
+    width: 728,
+    height: 90,
+  },
+} as const;
+
+type Banner = (typeof BANNERS)[keyof typeof BANNERS];
+
+declare global {
+  interface Window {
+    atOptions?: Record<string, unknown>;
+  }
+}
+
+// Every invoke script reads the global `atOptions` when it runs, so banners
+// load one at a time: set options → append script → wait for it → next.
+let queue: Promise<void> = Promise.resolve();
+
+function loadBanner(
+  el: HTMLElement,
+  banner: Banner,
+  isCancelled: () => boolean
+) {
+  queue = queue.then(
+    () =>
+      new Promise<void>((resolve) => {
+        if (isCancelled() || !el.isConnected) return resolve();
+        window.atOptions = {
+          key: banner.key,
+          format: 'iframe',
+          height: banner.height,
+          width: banner.width,
+          params: {},
+        };
+        const script = document.createElement('script');
+        script.src = `${BANNER_HOST}/${banner.key}`;
+        script.onload = script.onerror = () => resolve();
+        // Don't stall the queue if the network hangs.
+        setTimeout(resolve, 5000);
+        el.appendChild(script);
+      })
+  );
+}
+
+// Fixed-size iframe banner. The invoke script renders next to itself, so it
+// is injected into this container on mount (and again on each client-side
+// navigation, since the component remounts) instead of living in <head>.
+export function BannerAd({
+  banner,
+  className,
+}: {
+  banner: Banner;
+  className?: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const isNoAdsPath = useRouterState({
+    select: (s) => NO_ADS_PATH.test(s.location.pathname),
+  });
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || isNoAdsPath) return;
+    let cancelled = false;
+    loadBanner(el, banner, () => cancelled);
+    return () => {
+      cancelled = true;
+      el.replaceChildren();
+    };
+  }, [banner, isNoAdsPath]);
+
+  if (isNoAdsPath) return null;
+  return (
+    <div
+      ref={ref}
+      style={{ width: banner.width, height: banner.height }}
+      className={cn('mx-auto max-w-full overflow-hidden', className)}
+    />
+  );
+}
+
+// 728×90 on md+ screens, 320×50 below. Picked on the client so only one of
+// the two scripts ever loads.
+export function ResponsiveBannerAd({ className }: { className?: string }) {
+  const [wide, setWide] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 768px)');
+    setWide(mq.matches);
+    const onChange = (e: MediaQueryListEvent) => setWide(e.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+
+  if (wide === null) return null;
+  return (
+    <BannerAd
+      key={wide ? 'wide' : 'narrow'}
+      banner={wide ? BANNERS.leaderboard728x90 : BANNERS.mobile320x50}
+      className={className}
+    />
+  );
+}

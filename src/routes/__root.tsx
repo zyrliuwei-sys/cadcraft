@@ -17,6 +17,7 @@ import { ThemeProvider } from 'next-themes';
 
 import { Link } from '@/core/i18n/navigation';
 import { DEFAULT_ADSENSE_CODE, envConfigs } from '@/config';
+import { NO_ADS_PATH } from '@/lib/ads';
 import { getQueryClient } from '@/lib/query-client';
 import { cn } from '@/lib/utils';
 import { m } from '@/paraglide/messages.js';
@@ -139,11 +140,6 @@ function RootComponent() {
     </QueryClientProvider>
   );
 }
-
-// Pages that must not load the AdSense script: no publisher content, or
-// behind sign-in.
-const NO_ADS_PATH =
-  /^\/(?:admin|settings|sign-in|sign-up|forgot-password|reset-password|verify-email|auth-callback|redeem-invite)(?:\/|$)/;
 
 function RootDocument({ children }: { children: ReactNode }) {
   const analytics = Route.useLoaderData();
