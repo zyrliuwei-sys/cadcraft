@@ -12,6 +12,7 @@ import { Header } from '@/blocks/header';
 import {
   BannerAd,
   BANNERS,
+  NativeAd,
   ResponsiveBannerAd,
 } from '@/components/analytics/banner-ad';
 import { MarkdownContent } from '@/components/markdown-content';
@@ -138,6 +139,8 @@ function BlogPostPage() {
             ) : (
               <MarkdownContent content={post.content || ''} />
             )}
+
+            <NativeAd className="mt-12" />
           </article>
           <aside className="mt-12 xl:mt-0">
             <BannerAd

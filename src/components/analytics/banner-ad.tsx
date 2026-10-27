@@ -120,3 +120,30 @@ export function ResponsiveBannerAd({ className }: { className?: string }) {
     />
   );
 }
+
+const NATIVE_KEY = 'e05076ad36c19b6a72f58dc67a180409';
+
+// Native banner: the script fills `#container-<key>` on load and doesn't read
+// `atOptions`, so it skips the queue. Re-injected on each mount so it renders
+// again after client-side navigation.
+export function NativeAd({ className }: { className?: string }) {
+  const isNoAdsPath = useRouterState({
+    select: (s) => NO_ADS_PATH.test(s.location.pathname),
+  });
+
+  useEffect(() => {
+    if (isNoAdsPath) return;
+    const script = document.createElement('script');
+    script.async = true;
+    script.dataset.cfasync = 'false';
+    script.src = `https://bellnewyork.org/21/${NATIVE_KEY}`;
+    document.body.appendChild(script);
+    return () => {
+      script.remove();
+      document.getElementById(`container-${NATIVE_KEY}`)?.replaceChildren();
+    };
+  }, [isNoAdsPath]);
+
+  if (isNoAdsPath) return null;
+  return <div id={`container-${NATIVE_KEY}`} className={className} />;
+}
