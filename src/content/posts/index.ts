@@ -12,6 +12,9 @@ import { baseLocale } from '@/paraglide/runtime.js';
  * local posts via the pure helpers below.
  */
 export const BLOG_POST_SLUGS = [
+  'free-online-cad-software',
+  'cad-in-rust',
+  'autocad-ai-agent-mcp',
   'how-to-draw-a-floor-plan-in-autocad',
   'how-to-hatch-in-autocad',
   'autocad-layers-off-freeze-lock',
