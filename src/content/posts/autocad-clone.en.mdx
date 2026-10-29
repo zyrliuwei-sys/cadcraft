@@ -1,0 +1,115 @@
+import { PostFaq } from '@/components/post-faq';
+
+export const meta = {
+  title: 'The Open-Source AutoCAD Clone Built with AI Agents',
+  description:
+    'CADCraft is an open-source AutoCAD clone on GitHub, built largely by AI coding agents in a few weeks. How the clean-room rules keep it legal, what the git history shows, how close it really is to AutoCAD, and where to get the source.',
+  created_at: '2026-10-29',
+  author_name: 'CADCraft AI Editorial',
+  author_image: '/logo.svg',
+  cover: '/imgs/blog/autocad-clone-timeline.svg',
+  faq: [
+    [
+      'Is there an open-source AutoCAD clone?',
+      'Yes. CADCraft (github.com/storytold/cadcraft) is an open-source 2D CAD program that copies AutoCAD’s workflow: the command names, prompts, aliases, object snaps, layers, layouts and plotting. It is MIT OR Apache-2.0 licensed and runs on Windows, macOS, Linux, FreeBSD and in the browser. It is pre-alpha.',
+    ],
+    [
+      'Is it legal to clone AutoCAD?',
+      'Copying how software behaves (its commands and workflow) is generally allowed; copying its code, artwork, fonts or other files is not. CADCraft follows clean-room rules: contributors may watch AutoCAD run, but never read or copy anything inside it, and file formats come from public specifications. This is not legal advice.',
+    ],
+    [
+      'Was CADCraft really built by AI?',
+      'Largely. Its first commit is dated 5 October 2026, and 521 of its first 897 commits on main carry a Co-authored-by trailer for a Claude model. Humans set direction, review and contribute too: git records 97 authors. The project credits AI models in its About window.',
+    ],
+    [
+      'Can the AutoCAD clone replace AutoCAD?',
+      'Not yet for most professionals. By the project’s own measure it is about 38% ready for real work, and the biggest gap is saving DWG files that AutoCAD reopens without loss. It is useful today for 2D sketches, DXF work, scripting and AI-agent drawing.',
+    ],
+  ],
+};
+
+**Short answer:** the open-source AutoCAD clone people mean is **CADCraft**, at [github.com/storytold/cadcraft](https://github.com/storytold/cadcraft). It recreates AutoCAD's 2D workflow (type `L`, click two points, `@5<45`, Enter) in pure Rust, under MIT OR Apache-2.0. What makes it unusual is how it was made: **mostly by AI coding agents, in about three weeks, under strict clean-room rules**. Its first commit is dated 5 October 2026; version 0.14.0 shipped on 28 October with Windows, macOS, Linux, FreeBSD and browser builds.
+
+It isn't a finished replacement. Its own roadmap calls it pre-alpha, about 38% ready for real work.
+
+_cadcraft.org is an independent guide, not the official site and not affiliated with Autodesk. CADCraft is made by the ArtCraft team ([getartcraft.com/apps/cadcraft](https://getartcraft.com/apps/cadcraft)). Figures below come from the project's git history and documents as of 29 October 2026._
+
+## What the git history shows
+
+![Bar chart of CADCraft commits per day from 5 to 28 October 2026 with 12 releases from v0.1.0 on 7 October to v0.14.0 on 28 October; 897 commits, 97 git authors, 521 co-authored by Claude models](/imgs/blog/autocad-clone-timeline.svg)
+
+Counted from a full clone of the repository:
+
+| Measure                                           | Value                                       |
+| ------------------------------------------------- | ------------------------------------------- |
+| First commit                                      | 5 October 2026                              |
+| Commits on main                                   | 897                                         |
+| Commits with a `Co-authored-by: Claude …` trailer | 521 (58%)                                   |
+| Distinct git authors                              | 97                                          |
+| Tagged releases                                   | 12, from v0.1.0 (7 Oct) to v0.14.0 (28 Oct) |
+| Rust source                                       | about 216,000 lines in 12 crates and 3 apps |
+| Pull request numbers reached                      | #2425                                       |
+
+The trailers name several models (Claude Opus, Sonnet, Haiku and Fable versions). The project doesn't hide this: its About window has a **Models** tab that credits every AI model named in the commit trailers, next to a **Contributors** tab for people.
+
+The commit bursts (155 and 160 commits on 10 and 11 October) are what agent-driven development looks like: many agents working in parallel on separate commands and fixes, each change landing as its own commit after checks pass. The roadmap even estimates remaining work in **agent hours** rather than developer months.
+
+## How you clone AutoCAD legally: clean-room rules
+
+Cloning a commercial program's **behaviour** is old practice: compatible spreadsheets, office suites, and the PC BIOS were all built this way. Copying its **code or assets** is not allowed. CADCraft writes the line down in its `AGENTS.md`, the instructions every contributor and every AI agent works under:
+
+![Clean-room rules for cloning AutoCAD. Allowed: observe AutoCAD running, use public DXF and DWG specifications, match command names, draw all assets from scratch, permissive licence. Never: read or copy the AutoCAD bundle, copy SHX fonts, hatch patterns, linetypes or templates, commit AutoCAD output, read GPL CAD code, use Autodesk artwork](/imgs/blog/autocad-clone-clean-room.svg)
+
+The rules worth noticing:
+
+- **Observe, never open.** AutoCAD may be run as a black box with synthetic drawings to see how a command behaves. Nothing inside its application bundle may be read, disassembled or copied; file names may be listed, nothing more.
+- **Formats from public specs.** DXF comes from Autodesk's own published DXF Reference; DWG from the Open Design Alliance's public specification. DWG reading and writing goes through the open-source `acadrust` crate.
+- **Every asset is original.** Icons are drawn in code. Hatch patterns, linetypes and the single-stroke drafting font are the project's own definitions; any file asset needs a row in `ATTRIBUTION.md`, and a build task checks it. No SHX fonts, `.pat` or `.lin` files, templates or help text from Autodesk.
+- **No GPL code either.** Agents may not read the source of LibreCAD, QCAD, FreeCAD's solver, LibreDWG or OpenCASCADE, so nothing GPL-licensed can leak into a permissively licensed project.
+- **Same names, on purpose.** Command ids are AutoCAD's command names in lower case (`line`, `dimlinear`, `arraypolar`), so muscle memory, scripts and [cheat sheets](/blog/autocad-commands) carry over.
+
+This is general information, not legal advice; the rules are the project's own approach to staying on the right side of copyright and licences.
+
+## How close is the clone?
+
+The project judges itself against the five workflows an AutoCAD professional does every day. Its verdict, in `docs/roadmap.md`:
+
+![CADCraft against AutoCAD's five core workflows: precise drawing partial, dimensioning passes, blocks partial, layers layouts and plotting partial, lossless DWG save no. About 38 percent ready for real work](/imgs/blog/autocad-clone-alpha-gate.svg)
+
+Other numbers from the same roadmap:
+
+- **50%** of AutoCAD for Mac's menu items have a working command (about 65% of the 2D menus).
+- **≈ 38%** "ready for real work" overall; ≈ 46% for an essentials user, ≈ 28% for a full-time 2D drafter, because file exchange and stability problems multiply.
+- **Remaining work** to alpha is estimated at 125 to 190 agent hours, to full parity 1,300 to 2,100.
+
+The weakest point is the one that matters most to professionals: **saving DWG that AutoCAD reopens without loss.** CADCraft drops what it doesn't model, and its DWG output has never been checked in AutoCAD. Use DXF for exchange today, and read [DXF vs DWG](/blog/dxf-vs-dwg) for why.
+
+## What the clone does that AutoCAD doesn't
+
+- **Free and open.** No account, no subscription, source on GitHub.
+- **Linux, FreeBSD and the browser**, alongside Windows and macOS. Try it at [cadcraft.org/online](/online).
+- **Built for AI agents.** An MCP server lets Claude and other clients type commands, query the drawing and render it; see [AutoCAD AI agent with MCP](/blog/autocad-ai-agent-mcp).
+- **A scriptable CLI** for headless conversion and batch jobs.
+- **Never-crash rules** enforced by the compiler: no `unsafe`, no `unwrap` or `panic!` in production code. [CAD in Rust](/blog/cad-in-rust) covers the architecture.
+
+## Get the source
+
+```sh
+git clone https://github.com/storytold/cadcraft
+cd cadcraft
+cargo run --release -p cadcraft -- --sample
+```
+
+You need Rust 1.95 or newer. Prebuilt, signed installers are on the [download page](/download) and the GitHub releases page.
+
+Searching GitHub for "autocad clone" also turns up other projects. Check how active each one is and what it can actually open and save. The mature open-source 2D tools, LibreCAD and QCAD, follow their own workflow rather than copying AutoCAD's. [Open source CAD compared](/blog/open-source-cad) puts them side by side.
+
+## FAQ
+
+<PostFaq items={meta.faq} />
+
+## Related
+
+- [CAD in Rust](/blog/cad-in-rust): the crates, the never-crash rules and measured speed
+- [AutoCAD AI agent with MCP](/blog/autocad-ai-agent-mcp): connect Claude to CADCraft
+- [Autodesk alternatives](/blog/autodesk-alternatives): a free option for every Autodesk product
