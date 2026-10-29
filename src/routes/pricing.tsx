@@ -28,7 +28,7 @@ function Page() {
       <main>
         <CadPricingPage />
       </main>
-      <Footer />
+      <Footer ad={false} />
     </>
   );
 }

@@ -13,6 +13,7 @@ import { ctaPrimary, ctaSecondary } from '@/lib/cta';
 import { m } from '@/paraglide/messages.js';
 import { PageHero } from '@/blocks/cad-doc';
 import { CadCta, CompareTable, SectionHeading } from '@/blocks/cad-sections';
+import { ResponsiveBannerAd } from '@/components/analytics/banner-ad';
 import { Reveal } from '@/components/reveal';
 
 export function CadComparePage() {
@@ -161,6 +162,8 @@ export function CadComparePage() {
         </h2>
         <CompareTable rows={rows} className="mt-8" />
       </section>
+
+      <ResponsiveBannerAd className="mb-16" />
 
       <section className="bg-muted border-y py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">

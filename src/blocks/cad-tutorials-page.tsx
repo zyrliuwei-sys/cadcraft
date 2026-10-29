@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { Fragment, type ReactNode } from 'react';
 import {
   AlertTriangle,
   ExternalLink as ExternalIcon,
@@ -10,6 +10,7 @@ import { cadcraftLinks } from '@/config/cadcraft';
 import { ctaPrimary } from '@/lib/cta';
 import { m } from '@/paraglide/messages.js';
 import { DocLayout, DocSection, PageHero, Steps } from '@/blocks/cad-doc';
+import { BannerAd, BANNERS } from '@/components/analytics/banner-ad';
 import { CodeBlock } from '@/components/code-block';
 import { SheetFrame } from '@/components/sheet-frame';
 
@@ -182,9 +183,15 @@ export function CadTutorialsPage() {
       </PageHero>
       <DocLayout tocTitle={m['cad.tut.toc']()} toc={toc}>
         {lessons.map((l, i) => (
-          <DocSection key={i} id={`lesson-${i + 1}`} title={l.title}>
-            {l.body}
-          </DocSection>
+          <Fragment key={i}>
+            <DocSection id={`lesson-${i + 1}`} title={l.title}>
+              {l.body}
+            </DocSection>
+            {/* One ad halfway through the lessons. */}
+            {i === Math.floor(lessons.length / 2) - 1 && (
+              <BannerAd banner={BANNERS.rect300x250} />
+            )}
+          </Fragment>
         ))}
         <section className="bg-sheet-grid border-foreground/80 border p-8">
           <h2 className="font-display text-xl font-semibold">

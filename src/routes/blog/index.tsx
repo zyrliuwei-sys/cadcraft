@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 
 import { envConfigs } from '@/config';
@@ -6,6 +7,7 @@ import { m } from '@/paraglide/messages.js';
 import { getLocale } from '@/paraglide/runtime.js';
 import { Footer } from '@/blocks/footer';
 import { Header } from '@/blocks/header';
+import { NativeAd } from '@/components/analytics/banner-ad';
 import { BlogCard } from '@/components/blog-card';
 import { formatPostDate } from '@/content/posts';
 import { getBlogPostsFn } from '@/content/posts/server';
@@ -59,20 +61,30 @@ function BlogPage() {
               {m['blog.no_posts']()}
             </p>
           ) : (
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {posts.map((post) => (
-                <BlogCard
-                  key={post.slug}
-                  href={`/blog/${post.slug}`}
-                  title={post.title}
-                  description={post.description}
-                  image={post.cover ?? post.image}
-                  date={formatPostDate(post.createdAt, locale)}
-                  authorName={post.authorName}
-                  authorImage={post.authorImage}
-                />
+            <>
+              {/* Native ad after the first two rows of cards. */}
+              {[posts.slice(0, 6), posts.slice(6)].map((group, gi) => (
+                <Fragment key={gi}>
+                  {gi === 1 && <NativeAd className="my-10" />}
+                  {group.length > 0 && (
+                    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                      {group.map((post) => (
+                        <BlogCard
+                          key={post.slug}
+                          href={`/blog/${post.slug}`}
+                          title={post.title}
+                          description={post.description}
+                          image={post.cover ?? post.image}
+                          date={formatPostDate(post.createdAt, locale)}
+                          authorName={post.authorName}
+                          authorImage={post.authorImage}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </Fragment>
               ))}
-            </div>
+            </>
           )}
         </div>
       </main>

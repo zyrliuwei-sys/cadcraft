@@ -1,12 +1,15 @@
 import { cadcraftLinks } from '@/config/cadcraft';
 import { m } from '@/paraglide/messages.js';
+import { ResponsiveBannerAd } from '@/components/analytics/banner-ad';
 import { FooterBadgeList } from '@/components/footer-badge-list';
 import { SiteFooter, type FooterColumn } from '@/components/site-footer';
 
 // 姊妹站导流栏暂时下线：不渲染进 HTML，避免被爬虫抓到。恢复时改回 true。
 const SHOW_SISTER_GUIDES = false;
 
-export function Footer() {
+// `ad` puts a banner above the footer; off on pages that already carry
+// their own ads or shouldn't show any (pricing, legal).
+export function Footer({ ad = true }: { ad?: boolean } = {}) {
   const columns: FooterColumn[] = [
     {
       title: m['cad.footer.product'](),
@@ -80,24 +83,27 @@ export function Footer() {
   ];
 
   return (
-    <SiteFooter
-      columns={columns}
-      copyright={m['cad.footer.copyright']({
-        year: String(new Date().getFullYear()),
-      })}
-      badges={<FooterBadgeList className="mt-10" />}
-      disclaimer={m['cad.footer.disclaimer']()}
-      signature={
-        <div
-          aria-hidden="true"
-          className="overflow-hidden border-t px-4 sm:px-6"
-        >
-          <p className="font-display-wide mx-auto flex max-w-7xl items-end justify-between pt-6 text-[clamp(40px,14.2vw,228px)] leading-[0.78] font-semibold select-none">
-            <span>CADCraft</span>
-            <span className="snap-mark mb-[0.06em] hidden size-[0.18em]! border-[0.035em]! sm:inline-block" />
-          </p>
-        </div>
-      }
-    />
+    <>
+      {ad && <ResponsiveBannerAd className="my-12" />}
+      <SiteFooter
+        columns={columns}
+        copyright={m['cad.footer.copyright']({
+          year: String(new Date().getFullYear()),
+        })}
+        badges={<FooterBadgeList className="mt-10" />}
+        disclaimer={m['cad.footer.disclaimer']()}
+        signature={
+          <div
+            aria-hidden="true"
+            className="overflow-hidden border-t px-4 sm:px-6"
+          >
+            <p className="font-display-wide mx-auto flex max-w-7xl items-end justify-between pt-6 text-[clamp(40px,14.2vw,228px)] leading-[0.78] font-semibold select-none">
+              <span>CADCraft</span>
+              <span className="snap-mark mb-[0.06em] hidden size-[0.18em]! border-[0.035em]! sm:inline-block" />
+            </p>
+          </div>
+        }
+      />
+    </>
   );
 }

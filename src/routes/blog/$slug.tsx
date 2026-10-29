@@ -164,7 +164,7 @@ function BlogPostPage() {
           </aside>
         </div>
       </main>
-      <Footer />
+      <Footer ad={false} />
     </div>
   );
 }
