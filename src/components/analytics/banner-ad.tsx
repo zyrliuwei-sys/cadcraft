@@ -77,33 +77,54 @@ function loadBanner(
   );
 }
 
+// null until mounted, then whether the viewport is at least `px` wide.
+function useMinWidth(px: number | undefined) {
+  const [matches, setMatches] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    if (px === undefined) return;
+    const mq = window.matchMedia(`(min-width: ${px}px)`);
+    setMatches(mq.matches);
+    const onChange = (e: MediaQueryListEvent) => setMatches(e.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, [px]);
+
+  return px === undefined ? true : matches;
+}
+
 // Fixed-size iframe banner. The invoke script renders next to itself, so it
 // is injected into this container on mount (and again on each client-side
 // navigation, since the component remounts) instead of living in <head>.
+// With `minWidth`, it only renders (and loads its script) on viewports at
+// least that wide.
 export function BannerAd({
   banner,
   className,
+  minWidth,
 }: {
   banner: Banner;
   className?: string;
+  minWidth?: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const isNoAdsPath = useRouterState({
     select: (s) => NO_ADS_PATH.test(s.location.pathname),
   });
+  const show = useMinWidth(minWidth) && !isNoAdsPath;
 
   useEffect(() => {
     const el = ref.current;
-    if (!el || isNoAdsPath) return;
+    if (!el || !show) return;
     let cancelled = false;
     loadBanner(el, banner, () => cancelled);
     return () => {
       cancelled = true;
       el.replaceChildren();
     };
-  }, [banner, isNoAdsPath]);
+  }, [banner, show]);
 
-  if (isNoAdsPath) return null;
+  if (!show) return null;
   return (
     <div
       ref={ref}
@@ -116,15 +137,7 @@ export function BannerAd({
 // 728×90 on md+ screens, 320×50 below. Picked on the client so only one of
 // the two scripts ever loads.
 export function ResponsiveBannerAd({ className }: { className?: string }) {
-  const [wide, setWide] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    const mq = window.matchMedia('(min-width: 768px)');
-    setWide(mq.matches);
-    const onChange = (e: MediaQueryListEvent) => setWide(e.matches);
-    mq.addEventListener('change', onChange);
-    return () => mq.removeEventListener('change', onChange);
-  }, []);
+  const wide = useMinWidth(768);
 
   if (wide === null) return null;
   return (

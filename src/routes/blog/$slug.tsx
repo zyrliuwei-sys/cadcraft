@@ -140,14 +140,18 @@ function BlogPostPage() {
               <MarkdownContent content={post.content || ''} />
             )}
 
-            <BannerAd banner={BANNERS.banner468x60} className="mt-12" />
+            <BannerAd
+              banner={BANNERS.banner468x60}
+              minWidth={768}
+              className="mt-12"
+            />
 
             <NativeAd className="mt-12" />
           </article>
           <aside className="mt-12 xl:mt-0">
             <div className="flex flex-col gap-6 xl:h-full">
               <BannerAd banner={BANNERS.rect300x250} />
-              <BannerAd banner={BANNERS.skyscraper160x300} />
+              <BannerAd banner={BANNERS.skyscraper160x300} minWidth={1280} />
               <a
                 href="https://ardance.org/4/efe86a83b17ddbc2a61a54b939fac00d"
                 target="_blank"
@@ -158,6 +162,7 @@ function BlogPostPage() {
               </a>
               <BannerAd
                 banner={BANNERS.skyscraper160x600}
+                minWidth={1280}
                 className="xl:sticky xl:top-24"
               />
             </div>
