@@ -17,6 +17,21 @@ export const BANNERS = {
     width: 320,
     height: 50,
   },
+  skyscraper160x300: {
+    key: '0ca1c4743268c33f45c654b937a8059d',
+    width: 160,
+    height: 300,
+  },
+  skyscraper160x600: {
+    key: '36523b800cd31eaef0e6d42e4274bdb1',
+    width: 160,
+    height: 600,
+  },
+  banner468x60: {
+    key: '4288d0c4a01cded89e2eceae1dddc514',
+    width: 468,
+    height: 60,
+  },
   leaderboard728x90: {
     key: '54cf0bcfbde6f8edf384186687476f67',
     width: 728,

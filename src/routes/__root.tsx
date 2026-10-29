@@ -166,7 +166,15 @@ function RootDocument({ children }: { children: ReactNode }) {
         <HeadContent />
         {isNotFound && <meta name="robots" content="noindex" />}
         {loadAds ? (
-          <Ads code={adsenseCode} />
+          <>
+            <Ads code={adsenseCode} />
+            {/* Site-wide bellnewyork ad script (not tied to a slot). */}
+            <script
+              async
+              data-cfasync="false"
+              src="https://bellnewyork.org/14/fce47047e81a209da1feffeb74c48996"
+            />
+          </>
         ) : (
           <meta name="google-adsense-account" content={adsenseCode} />
         )}

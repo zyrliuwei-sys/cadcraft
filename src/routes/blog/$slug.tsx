@@ -140,13 +140,27 @@ function BlogPostPage() {
               <MarkdownContent content={post.content || ''} />
             )}
 
+            <BannerAd banner={BANNERS.banner468x60} className="mt-12" />
+
             <NativeAd className="mt-12" />
           </article>
           <aside className="mt-12 xl:mt-0">
-            <BannerAd
-              banner={BANNERS.rect300x250}
-              className="xl:sticky xl:top-24"
-            />
+            <div className="flex flex-col gap-6 xl:h-full">
+              <BannerAd banner={BANNERS.rect300x250} />
+              <BannerAd banner={BANNERS.skyscraper160x300} />
+              <a
+                href="https://ardance.org/4/efe86a83b17ddbc2a61a54b939fac00d"
+                target="_blank"
+                rel="sponsored nofollow noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground text-center text-sm underline underline-offset-4"
+              >
+                {m['blog.sponsored']()}
+              </a>
+              <BannerAd
+                banner={BANNERS.skyscraper160x600}
+                className="xl:sticky xl:top-24"
+              />
+            </div>
           </aside>
         </div>
       </main>
