@@ -1,0 +1,106 @@
+import { PostFaq } from '@/components/post-faq';
+
+export const meta = {
+  title: 'AutoCAD vs CAD: What’s the Difference?',
+  description:
+    'CAD is a kind of software; AutoCAD is one program of that kind, made by Autodesk. What CAD means, the main types (2D drafting, 3D parametric, BIM), where AutoCAD fits, how it compares with other CAD software, and which skills carry over.',
+  created_at: '2026-10-30',
+  author_name: 'CADCraft AI Editorial',
+  author_image: '/logo.svg',
+  cover: '/imgs/blog/autocad-vs-cad-map.svg',
+  faq: [
+    [
+      'What is the difference between CAD and AutoCAD?',
+      'CAD (computer-aided design) is the general term for software used to make precise technical drawings and models. AutoCAD is one specific CAD program, made by Autodesk since 1982 and focused mainly on 2D drafting. All AutoCAD work is CAD, but most CAD software isn’t AutoCAD.',
+    ],
+    [
+      'Is AutoCAD the same as CAD?',
+      'No, though people often use “AutoCAD” to mean any CAD, the way “Hoover” can mean any vacuum cleaner. When a job ad asks for “CAD skills”, it may mean AutoCAD, or SolidWorks, Revit or another tool, depending on the industry. Ask which one.',
+    ],
+    [
+      'Is AutoCAD 2D or 3D?',
+      'Both, but mainly 2D. AutoCAD can model 3D solids and surfaces, yet most people use it for 2D drafting: plans, sections, details and schematics. Mechanical 3D design usually happens in parametric tools like Inventor, SolidWorks or Fusion, and building models in BIM tools like Revit.',
+    ],
+    [
+      'Is there free CAD software like AutoCAD?',
+      'Yes. CADCraft is free and open source and copies AutoCAD’s commands and workflow; LibreCAD and QCAD Community Edition are mature free 2D programs; FreeCAD is free 3D. Students and teachers can also get AutoCAD itself free through Autodesk’s education plan.',
+    ],
+  ],
+};
+
+**Short answer:** **CAD** (computer-aided design) is a **category** of software for making precise drawings and models. **AutoCAD** is **one product** in that category, made by Autodesk since 1982, used mostly for 2D drafting. Every AutoCAD drawing is CAD; most CAD software isn't AutoCAD. It's the same relationship as "spreadsheet" and "Excel".
+
+People mix them up because AutoCAD was, for decades, the CAD program most offices used, so "do it in CAD" and "do it in AutoCAD" came to mean the same thing.
+
+_cadcraft.org is an independent guide, not affiliated with Autodesk. CADCraft is the ArtCraft team's open-source, AutoCAD-style CAD program ([getartcraft.com/apps/cadcraft](https://getartcraft.com/apps/cadcraft))._
+
+![CAD is the category of computer-aided design software; AutoCAD is one 2D drafting product in it, alongside BricsCAD, DraftSight, CADCraft, LibreCAD and QCAD. Other kinds of CAD include 3D parametric tools such as SolidWorks, Inventor, Fusion and FreeCAD, BIM tools such as Revit and ArchiCAD, and electronics, civil and code CAD](/imgs/blog/autocad-vs-cad-map.svg)
+
+## What CAD means
+
+CAD is any software that replaces the drawing board for technical work: exact lengths and angles, layers, dimensions, standard symbols, and output a workshop or a builder can follow. You'll also see **CADD** (computer-aided design and drafting) and job titles like "CAD technician" or "CAD drafter", which describe the work, not a particular program.
+
+It started long before AutoCAD. Ivan Sutherland's **Sketchpad** (1963) let you draw on a screen with a light pen and constrain lines. Through the 1970s, CAD ran on mainframes and expensive workstations in car, aircraft and electronics companies.
+
+## Where AutoCAD fits
+
+Autodesk released AutoCAD in December 1982. Its breakthrough was running on an ordinary **personal computer**, which put CAD within reach of small architecture and engineering offices. Its file format, **DWG**, became the de facto standard for exchanging 2D drawings, which is a big reason it's still everywhere.
+
+Today AutoCAD is:
+
+- **A 2D drafting program first:** plans, sections, details, schematics, layouts with title blocks, plotting to PDF.
+- **Capable of 3D** (solids, surfaces, meshes), though most 3D design work happens in other tools.
+- **Subscription only.** Autodesk stopped selling new perpetual licences in 2016. AutoCAD LT is the cheaper, 2D-only edition.
+- **The base of a family:** AutoCAD Architecture, Mechanical, Electrical, MEP, Map 3D and Plant 3D are "toolsets" on top of it, and Civil 3D builds on it too.
+
+![CAD versus AutoCAD: CAD is a category of software dating from the 1960s, free to very expensive, in many file formats and kinds; AutoCAD is Autodesk's program, first released in December 1982, sold by subscription, built around DWG and mainly 2D drafting](/imgs/blog/autocad-vs-cad-table.svg)
+
+## The main types of CAD, and where AutoCAD isn't the usual choice
+
+| Type              | What you make                                          | Typical tools                                                   |
+| ----------------- | ------------------------------------------------------ | --------------------------------------------------------------- |
+| **2D drafting**   | Plans, details, schematics, layouts for laser cutting  | AutoCAD, AutoCAD LT, BricsCAD, DraftSight, CADCraft, LibreCAD   |
+| **3D parametric** | Mechanical parts and assemblies, driven by dimensions  | SolidWorks, Inventor, Fusion, CATIA, Creo, NX, FreeCAD, Onshape |
+| **BIM**           | A building model that produces plans, schedules and 3D | Revit, ArchiCAD, Vectorworks, Bonsai, FreeCAD BIM               |
+| **ECAD**          | Circuit schematics and printed circuit boards          | KiCad, Altium, Autodesk's Fusion electronics                    |
+| **Civil / GIS**   | Roads, grading, surveys, maps                          | Civil 3D, QGIS                                                  |
+| **Code CAD**      | Parts defined in a script                              | OpenSCAD, CadQuery                                              |
+
+So "AutoCAD vs CAD" often really means "AutoCAD vs another kind of CAD":
+
+- **AutoCAD vs SolidWorks or Inventor:** AutoCAD draws geometry; parametric tools build parts from features and constraints, then generate the 2D drawings. For machine design, the parametric tool wins.
+- **AutoCAD vs Revit:** AutoCAD draws lines that look like walls; Revit models walls that know they're walls, so sections and schedules update themselves. Architects increasingly use BIM, with AutoCAD for details and for exchange with consultants.
+- **AutoCAD vs other 2D CAD:** here the programs are close. BricsCAD and DraftSight are commercial DWG-based alternatives; CADCraft, LibreCAD and QCAD are free. [Free AutoCAD alternatives](/blog/free-autocad-alternatives) compares them.
+
+## What a 2D CAD drawing looks like
+
+Whatever the program, 2D CAD work is the same kind of thing: exact geometry on layers, hatches, text and dimensions.
+
+![An apartment floor plan drawn entirely with CADCraft commands: hatched walls, door swings, furniture, room labels with areas, a room schedule table and dimensions](/imgs/blog/rust-cad-cli-apartment.webp)
+
+_A floor plan drawn in CADCraft, a free program that uses AutoCAD's commands. The same plan in AutoCAD would look almost identical; see [how to draw a floor plan](/blog/how-to-draw-a-floor-plan-in-autocad)._
+
+## Do AutoCAD skills transfer to other CAD?
+
+Mostly, yes:
+
+- **To other 2D CAD:** almost entirely. Command names, layers, object snaps, blocks and plotting work the same way in BricsCAD, DraftSight and CADCraft. Even the aliases (`L` for LINE, `TR` for TRIM) carry over; see the [AutoCAD commands cheat sheet](/blog/autocad-commands).
+- **To 3D parametric and BIM:** partly. Drafting conventions, scale and precision carry over; the way of working (sketches and features, or walls and families) is new and takes weeks to learn.
+- **The other direction:** someone who knows SolidWorks or Revit usually finds AutoCAD easy to pick up for 2D, and [AutoCAD shortcuts](/blog/autocad-shortcuts) is a quick start.
+
+## Which do you need?
+
+- **A job ad says "CAD":** check the industry. Architecture and construction often mean AutoCAD or Revit; mechanical engineering means SolidWorks, Inventor or similar; electronics means an ECAD tool.
+- **You need 2D drawings and don't want a subscription:** a free 2D CAD program. [CADCraft](/download) feels the most like AutoCAD; [try it in the browser](/online) without installing.
+- **You need to exchange files with AutoCAD users:** any tool that reads and writes **DWG** or **DXF**. [DXF vs DWG](/blog/dxf-vs-dwg) explains the difference.
+- **You're a student:** get the free Autodesk education licence, and learn the concepts (layers, snaps, scale, dimensions) that every CAD program shares.
+
+## FAQ
+
+<PostFaq items={meta.faq} />
+
+## Related
+
+- [Free AutoCAD alternatives](/blog/free-autocad-alternatives): what each one costs you
+- [Open source CAD compared](/blog/open-source-cad): which free tool fits your work
+- [CAD file formats](/blog/cad-file-formats): DWG, DXF, STEP, IFC, STL and more
