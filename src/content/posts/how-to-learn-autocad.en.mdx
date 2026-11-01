@@ -1,0 +1,123 @@
+import { PostFaq } from '@/components/post-faq';
+
+export const meta = {
+  title: 'How to Learn AutoCAD: A Beginner’s Roadmap',
+  description:
+    'A learning order that works: read the command line first, then get around a drawing (coordinates, snaps, zoom), draw and organize (trim, offset, layers), annotate and plot (text, dimensions, layouts). How long it takes, free ways to practice, and practice drawings for each stage.',
+  created_at: '2026-11-01',
+  author_name: 'CADCraft AI Editorial',
+  author_image: '/logo.svg',
+  cover: '/imgs/blog/learn-autocad-roadmap.svg',
+  faq: [
+    [
+      'Is AutoCAD hard to learn?',
+      'The 2D drafting basics are not: the hard part is precision habits, not the software. Learn to read the command line, draw with coordinates and object snaps instead of by eye, and keep to layers, and the rest follows. Most people who struggle skipped one of those three.',
+    ],
+    [
+      'How long does it take to learn AutoCAD?',
+      'Basic 2D competence — drawing accurately, organizing layers, plotting a sheet — takes roughly two to four weeks of regular practice, an hour or so a day. Working fluently, at the speed a job expects, takes a few months of real drawings. 3D modelling and the discipline toolsets (Architecture, Electrical…) are separate skills you learn when you need them.',
+    ],
+    [
+      'Can I learn AutoCAD for free?',
+      'Yes. Students and teachers get AutoCAD itself free through Autodesk’s education plan. Otherwise CADCraft is a free, open-source program that uses AutoCAD’s command names, aliases and prompts, so everything you practise in it transfers — it even runs in a browser. LibreCAD and QCAD are free too, with different workflows.',
+    ],
+    [
+      'Should I learn AutoCAD or a different CAD program?',
+      'Depends on the work you want: architecture and construction mostly want AutoCAD or Revit, mechanical design wants parametric tools like SolidWorks or Fusion, electronics wants KiCad or Altium. See What’s the difference between CAD and AutoCAD for the map — the drafting fundamentals transfer between all of them.',
+    ],
+  ],
+};
+
+**Short answer:** learn in this order: **get around a drawing** (zoom, coordinates, object snaps), then **draw and organize** (the modify commands plus layers), then **annotate and plot** (text, dimensions, layouts). One habit runs through all of it: **read the command line**, not just the ribbon — every command tells you what it wants next. Basic 2D competence takes a few weeks of regular practice, and you can do it for free.
+
+The free [CADCraft](/download) app uses AutoCAD's commands, aliases and prompts, so you can practise everything in this roadmap in it — including [in the browser](/online), with nothing installed.
+
+_cadcraft.org is an independent guide, not affiliated with Autodesk. CADCraft is the ArtCraft team's open-source, AutoCAD-style CAD program ([getartcraft.com/apps/cadcraft](https://getartcraft.com/apps/cadcraft))._
+
+![A roadmap for learning AutoCAD in three stages: stage one, get around — LINE, RECTANG and CIRCLE, the mouse wheel for zoom and pan, coordinates, object snaps and ortho, practised by drawing shapes to exact size; stage two, draw and organize — trim, extend, offset, fillet, copy, move, rotate, mirror and array, grips and layers, practised on a floor plan; stage three, annotate and plot — text, dimensions, hatches, blocks, a layout with a 1:100 viewport and a plotted PDF, practised on an A3 sheet](/imgs/blog/learn-autocad-roadmap.svg)
+
+## The habit that speeds everything up
+
+Before any command: the command line is a **conversation**. You type a command (or its short alias), AutoCAD asks for what it needs, you answer with a click, a number or an option, and Enter or Esc settles it.
+
+![The command line as a conversation: Command L starts LINE, it asks for the first point, you answer with a click, then @2000<0 for a polar coordinate, and the prompt offers [Undo] then [Close/Undo]; typing C closes the shape. Callouts: type the command or alias and press Enter; the prompt states what it wants; bracketed options are chosen by their capital letter; Enter repeats and Esc cancels](/imgs/blog/learn-command-cycle.svg)
+
+Three things beginners miss:
+
+- The **[options] in brackets** change per command and per step — read them before clicking. `C` for Close, `U` for Undo, capital letter takes the option.
+- **Enter repeats the last command.** Drawing forty walls becomes `L` … Enter, `L` … Enter.
+- **Esc cancels** anything, any time. When a command seems stuck, it is usually waiting for input you haven't noticed it ask for.
+
+This loop is identical in every 2D CAD program. Learn it once in AutoCAD and it carries to BricsCAD, DraftSight and CADCraft.
+
+## Stage 1 — get around (the first hours)
+
+You need exactly this much:
+
+- **Draw:** `L` (LINE), `REC` (RECTANG), `C` (CIRCLE). That's enough to discover the command line.
+- **Navigate:** wheel to zoom, wheel-press to pan. No drawing is too big for this; stop scrolling to the edge of the world.
+- **Say where:** absolute coordinates `#4000,0`, relative `@2000,0`, polar `@2000<45`. AutoCAD is a coordinate machine; "by eye" is what it exists to prevent.
+- **Snap:** object snaps on (`F3`) — Endpoint, Midpoint, Intersection. Clicks that land on exact geometry.
+- **Constrain:** `F8` ortho for straight runs.
+
+Practice until it's boring: draw a handful of shapes to exact dimensions, no dimension on the screen wrong by a millimetre. If a line ends "about" where it should, undo and place it with a coordinate or a snap.
+
+## Stage 2 — draw and organize (the weeks)
+
+Half of drafting is fixing what you just drew:
+
+- **Modify:** `TR` (TRIM), `EX` (EXTEND), `O` (OFFSET) — the big three for walls and parallel geometry — then `F` (FILLET, radius 0 to clean corners), `M` (MOVE), `CO` (COPY), `RO` (ROTATE), `MI` (MIRROR), `AR` (ARRAY).
+- **Select:** click-drag **left-to-right** = fully inside; **right-to-left** = anything touched. Plus grips for the quick stuff.
+- **Organize:** layers with real names and per-layer colour and linetype. Draw on the right layer, `MA` (MATCHPROP) when you slip. This is the whole discipline of [how layers behave](/blog/autocad-layers-off-freeze-lock).
+
+Practice: a simple [floor plan](/blog/how-to-draw-a-floor-plan-in-autocad). It exercises offset walls, door openings, trims and layers in one drawing, and it's the drawing every tutorial world is measured against.
+
+## Stage 3 — annotate and plot (a weekend)
+
+- **Text:** `TEXT` for single lines, `MTEXT` for notes; one or two text styles, not ten.
+- **Dimensions:** `DIMLINEAR` and friends; one dimension style set up once.
+- **Hatch:** `H` — and read [how hatch scale works](/blog/how-to-hatch-in-autocad) before the pattern looks solid grey.
+- **Reuse:** make a [block](/blog/autocad-blocks) out of the door and the furniture; insert it everywhere.
+- **Sheet:** a [layout with a viewport](/blog/model-space-vs-paper-space) at 1:100, title block drawn at paper size.
+- **Output:** plot it — [to PDF](/blog/dwg-to-pdf) at 1:1, monochrome.
+
+Practice: one A3 sheet with the plan at 1:100, a detail at 1:20, and a title block. When that prints looking right, you can draft.
+
+## How long, honestly
+
+- **Hours 1–4:** stage 1. Exact shapes, coordinates, snaps.
+- **Weeks 1–4:** stage 2, at an hour a day. The commands are easy; the layer discipline isn't.
+- **A weekend:** stage 3, once stage 2 is comfortable.
+- **Months:** speed. Real fluency — drawing as fast as you think — comes only from real drawings with deadlines.
+
+A steady hour a day beats a Sunday marathon: the command line turns into muscle memory through repetition, not endurance.
+
+## Free ways to practise
+
+- **The education plan.** Students and teachers get AutoCAD free from Autodesk (renewable yearly). If you qualify, practise on the real thing.
+- **CADCraft.** Free and open source, same commands, aliases and prompts as AutoCAD, on Windows, macOS, Linux — and in the browser, so you can do stage 1 on any computer. It's pre-alpha for production work, but for learning the workflow it's faithful; the [commands cheat sheet](/blog/autocad-commands) marks exactly what it supports.
+- **Any DWG you can find.** Open real drawings, measure them, count blocks. Reading good drawings teaches as much as making them.
+
+More options, compared: [free AutoCAD alternatives](/blog/free-autocad-alternatives).
+
+## Practice drawings that teach
+
+1. **Shapes to exact size** (stage 1): a bracket outline, coordinates only.
+2. **A room, then an apartment** (stage 2): walls by offset, openings by trim, everything on layers.
+3. **Furniture symbols as blocks** (stage 3 prep): the same chair inserted thirty times.
+4. **A detailed sheet** (stage 3): plan plus a 1:20 detail on one A3, plotted to PDF.
+5. **A redrawing:** measure a room in your own home and draw it. Real measurements are unforgiving in exactly the right way.
+
+## What to skip for now
+
+Dynamic block authoring, LISP and customization, CAD standards files, sheet sets, 3D — all valuable, none of it in week one. They answer questions you don't have yet; the roadmap above is the part every one of them assumes.
+
+## FAQ
+
+<PostFaq items={meta.faq} />
+
+## Related
+
+- [AutoCAD commands cheat sheet](/blog/autocad-commands): the full command families, aliases and the 20 to learn first
+- [AutoCAD shortcuts](/blog/autocad-shortcuts): the key bindings and aliases worth memorizing
+- [Free AutoCAD alternatives](/blog/free-autocad-alternatives): what to practise on when the education plan isn't an option

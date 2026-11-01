@@ -1,0 +1,100 @@
+import { PostFaq } from '@/components/post-faq';
+
+export const meta = {
+  title: 'Model Space vs Paper Space in AutoCAD (Layouts and Viewports)',
+  description:
+    'What model space and paper space are for: draw everything at 1:1 in model space, put the sheet, title block and viewports on a layout, set each viewport to a scale like 1:100, lock it, and plot at 1:1. With the classic mistakes and how to fix them.',
+  created_at: '2026-11-01',
+  author_name: 'CADCraft AI Editorial',
+  author_image: '/logo.svg',
+  cover: '/imgs/blog/ms-ps-two-spaces.svg',
+  faq: [
+    [
+      'Should I draw in model space or paper space?',
+      'Draw all real-world geometry — walls, parts, wiring — in model space at full size, and put sheet furniture on the layouts: the title block, viewports, sheet notes. The test is simple: if it has a size in the real world, it belongs in model space; if it has a size on the sheet, it belongs on the layout.',
+    ],
+    [
+      'How do I set the scale of a viewport in AutoCAD?',
+      'Select the viewport (click its border) and pick the scale from the dropdown in the status bar or Properties palette — 1:100, 1:50, 1:20. Then lock the display (the padlock next to the dropdown, or VPLOCK). Typing Z 1/50xp inside the viewport does the same thing.',
+    ],
+    [
+      'Why is my drawing the wrong size in the layout?',
+      'The viewport is unlocked and someone zoomed inside it, which changes its scale. Select the viewport, set the scale back from the dropdown, and lock the display so zooming inside can no longer change it. Double-click outside the viewport to get back to paper space.',
+    ],
+    [
+      'Can one sheet show two different scales?',
+      'Yes — that is what viewports are for. Make two viewports with MVIEW, show the whole plan in one at 1:100 and a kitchen detail in the other at 1:20, on the same A3 sheet. Each viewport has its own scale and its own per-viewport layer freezes.',
+    ],
+  ],
+};
+
+**Short answer:** **model space** is the drawing itself, drawn at real size — a wall is 4000 units long, not 40. **Paper space** (a _layout_) is the sheet of paper it will be printed on: the title block, the border, and one or more **viewports** — windows onto the model, each set to a scale like 1:100. You draw in model space; you arrange, annotate the sheet and plot from paper space. `MS` and `PS` (or a double-click) move you between them.
+
+CADCraft works the same way: layouts, viewports, per-viewport layer freeze and plotting layouts to PDF all behave like AutoCAD's, and the examples below come from its sample drawings.
+
+_cadcraft.org is an independent guide, not affiliated with Autodesk. CADCraft is the ArtCraft team's open-source, AutoCAD-style CAD program ([getartcraft.com/apps/cadcraft](https://getartcraft.com/apps/cadcraft)). CADCraft details were checked against its 0.14.0 release._
+
+![Model space versus paper space: on the left the Model tab, where a floor plan is drawn at real size, one unit equals one millimetre, with a 4000 wall dimension. On the right a Layout tab showing an A3 sheet at 420 by 297 with a title block strip and a dashed viewport containing the same plan at 1:100. Double-click inside a viewport to work on the model through it, PS to come back](/imgs/blog/ms-ps-two-spaces.svg)
+
+## Two spaces, one drawing
+
+The tabs at the bottom-left of the window — **Model**, **Layout1**, **Layout2**… — are not files. They are views of the _same_ drawing database. Model space holds the geometry. Each layout is a sheet: it has a paper size, and it can hold viewports plus anything you'd draw on a sheet of paper.
+
+The mistake this division prevents is the one every self-taught drafter makes first: drawing the title block around the plan in model space, then scaling the whole world down to fit an A3. That works until something has to change — and then every dimension, every piece of text and the border all need re-scaling by hand. The layout system exists so the model never has to know what paper is.
+
+## Model space: everything at 1:1
+
+- One unit equals one real unit. In a metric building drawing that's usually **millimetres** (a room is 4000, not 4); in mechanical work it may be metres or inches. Pick the unit once, in `UNITS`, and stay consistent — this is also what [DXF vs DWG](/blog/dxf-vs-dwg) round trips assume.
+- Never draw something "at 1:50". The scale lives on the layout, not in the model.
+- Set up layers for the real things — walls, doors, furniture, dimensions — as in [how AutoCAD layers work](/blog/autocad-layers-off-freeze-lock).
+
+## Paper space: the sheet as itself
+
+A layout **is** the paper. An A3 layout is 420 × 297 units — real millimetres of paper. That's why the title block, drawn on the layout, is the only thing in a CAD drawing that you draw _at the size it prints_: 5 mm text on the title block is 5 mm on paper.
+
+Everything on a layout either belongs to the sheet (border, title block, north arrow, general notes) or is a **viewport**.
+
+## Viewports: windows onto the model
+
+`MV` (MVIEW) draws a rectangle on the layout; inside it, the model appears.
+
+- **Double-click inside** the viewport: you are now in model space, _through_ the viewport — you can pan and edit, and the crosshair shows inside the viewport only. Double-click outside (or `PS`) to return to the sheet. `MS` jumps in without the double-click.
+- **Set the scale:** select the viewport by clicking its border, then choose from the scale dropdown (status bar or Properties): **1:100** for plans, **1:50**, **1:20** for details. The classic keyboard form is `Z` `1/50xp` inside the viewport.
+- **Lock it.** An unlocked viewport loses its scale the moment anyone zooms inside it. Click the padlock by the scale dropdown (or `VPLOCK`) — you can still pan inside a locked viewport, but the scale is fixed.
+
+![A paper-space layout in practice: an A3 sheet with a title block down the right edge and two dashed viewports — the large one shows the apartment plan at 1:100 with its display locked, the lower one shows the kitchen at 1:20. Side notes: both viewports show the same model at different scales; set the scale then lock the display; VP Freeze hides a layer in one viewport only](/imgs/blog/layout-viewports.svg)
+
+One layout can carry as many viewports as the sheet usefully holds — a 1:100 overall plan and a run of 1:20 details on the same sheet is completely normal.
+
+## Text and dimensions: which space?
+
+Two workable schools:
+
+- **Annotate on the layout.** Text and dimensions drawn in paper space are paper-sized — 2.5 mm text is 2.5 mm. Simple, and it suits drawings where the annotation belongs to the sheet rather than the geometry.
+- **Annotate in model space with annotative styles.** AutoCAD's annotative text and dimensions resize themselves to come out right at the viewport scale, and CADCraft supports the same idea. Better when the annotation belongs to the model and several viewports show it.
+
+What doesn't work is plain model-space text at an invented size: that's the hand-scaling trap again. [How to scale in AutoCAD](/blog/how-to-scale-in-autocad) covers the arithmetic if you want to do it by hand.
+
+## Different layers in different viewports
+
+Freeze a layer **per viewport** (the VP Freeze column in the Layer Properties Manager, or `VPLAYER`): the furniture layer can be frozen in the kitchen-detail viewport and visible in the overall plan, from one model. [Off vs Freeze vs Lock](/blog/autocad-layers-off-freeze-lock) has the full picture — this is a Freeze capability, not an Off one.
+
+## Plot from the layout
+
+With the sheet composed, plotting stops being guesswork: `PLOT` (Ctrl+P), paper **A3**, plot scale **1:1** — the sheet is already the right size, so there is nothing left to scale. Add a plot style table such as `monochrome.ctb` for black-line PDF output. The full walk-through, including the dialog settings that matter, is [DWG to PDF](/blog/dwg-to-pdf).
+
+The one thing left that still needs care is **lineweights**: color-dependent plot styles map layer colors to pen widths, so the drawing's layer colors decide the printed line weights.
+
+## When to skip layouts
+
+For a quick print of a sketch, plotting model space with **Fit to paper** is fine — nothing depends on it. The moment a drawing will be issued, measured from, or revised, compose it on a layout: the scale is stated on the sheet, and the sheet is what prints.
+
+## FAQ
+
+<PostFaq items={meta.faq} />
+
+## Related
+
+- [How to scale in AutoCAD](/blog/how-to-scale-in-autocad): drawing scale, viewport scale and the arithmetic
+- [AutoCAD layers: Off vs Freeze vs Lock](/blog/autocad-layers-off-freeze-lock): per-viewport freezing in detail
+- [DWG to PDF](/blog/dwg-to-pdf): plotting a layout to PDF, step by step

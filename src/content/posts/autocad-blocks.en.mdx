@@ -1,0 +1,140 @@
+import { PostFaq } from '@/components/post-faq';
+
+export const meta = {
+  title: 'AutoCAD Blocks: How to Create, Insert and Reuse Them',
+  description:
+    'Blocks in AutoCAD explained: what a block definition and its references are, making one with BLOCK, placing it with INSERT, the layer 0 and ByBlock rule, attributes, sharing with WBLOCK and DesignCenter, editing everything at once with BEDIT, and cleaning up with PURGE.',
+  created_at: '2026-11-01',
+  author_name: 'CADCraft AI Editorial',
+  author_image: '/logo.svg',
+  cover: '/imgs/blog/blocks-one-definition.svg',
+  faq: [
+    [
+      'What is a block in AutoCAD?',
+      'A named set of objects stored once in the drawing, placed as many times as you like. Each placement is a reference to the one definition, so the geometry is stored once, every placement is a single object, and editing the definition updates every placement in the drawing.',
+    ],
+    [
+      'What is the difference between a block and a group in AutoCAD?',
+      'A group (G, GROUP) is a selection convenience: the objects stay independent and simply get picked together. A block is one object backed by one stored definition. Update the block definition and every copy in the drawing changes; groups have no equivalent.',
+    ],
+    [
+      'How do I copy a block into another drawing?',
+      'The simplest way is copy and paste: copy a block reference in one drawing, paste into the other, and the definition travels with it. For blocks you reuse across projects, WBLOCK writes the block to its own DWG file that you INSERT anywhere, or keep a library drawing and drag blocks out of DesignCenter (Ctrl+2).',
+    ],
+    [
+      'Can I use AutoCAD blocks in CADCraft?',
+      'Yes. CADCraft opens DWG files from R13 to 2018, and block references come through as references: BLOCK, INSERT, WBLOCK, BEDIT, REFEDIT, PURGE and COUNT all work with AutoCAD names. Dynamic blocks are partly supported: CADCraft reads their parameters and switches visibility states, but you can’t drag distances or positions yet.',
+    ],
+  ],
+};
+
+**Short answer:** a **block** is a named set of objects stored **once** in the drawing. Make one with `B` (BLOCK): select the objects, give it a name, pick a **base point**. Place it with `I` (INSERT) as many times as you like — each placement is a small _reference_ to the stored definition, not another copy of the geometry. Change the definition once with `BEDIT` and every placement in the drawing updates. That single trick — one definition, many references — is what makes blocks worth learning.
+
+Everything here works the same way in the free [CADCraft](/download) app, which uses AutoCAD's block commands and names. The examples below are drawn with its sample files.
+
+_cadcraft.org is an independent guide, not affiliated with Autodesk. CADCraft is the ArtCraft team's open-source, AutoCAD-style CAD program ([getartcraft.com/apps/cadcraft](https://getartcraft.com/apps/cadcraft)). CADCraft details were checked against its 0.14.0 release._
+
+![What a block is: a DOOR-90 block defined once with BLOCK, with its base point at the hinge, then inserted three times with INSERT at rotation 0, rotation 90 and scale 0.5. Editing the definition once with BEDIT updates every reference, while copy-paste would repeat the geometry in every copy](/imgs/blog/blocks-one-definition.svg)
+
+## What a block actually is
+
+Every DWG file has a **block table**. When you create a block, AutoCAD moves the selected objects into that table under the name you chose, together with the base point. When you insert it, the drawing doesn't copy the geometry — it adds a tiny record saying "one DOOR-90 at this position, rotation and scale".
+
+Three consequences worth knowing:
+
+- **File size.** A plan with sixty doors drawn as separate lines carries sixty doors' worth of geometry. The same plan with a door block carries one door plus sixty references.
+- **Selection.** A block reference is one object: click any part of a door and you get the whole door. `X` (EXPLODE) breaks a reference back into its objects if you really need to.
+- **Counting.** `COUNT` tells you how many references of a block (or of objects like a picked one) are in the drawing — the fastest door schedule you'll ever make.
+
+## Make your first block
+
+Draw the geometry first — a door leaf, its swing arc, maybe a bit of wall — then:
+
+```text
+Command: B
+BLOCK  Name: DOOR-90
+Base point: (pick the hinge)
+Select objects: (pick the door)  1 found
+Select objects: ↵
+Objects: Convert to block
+```
+
+Two choices matter more than they look:
+
+- **The base point** is where the block hangs on your cursor at insertion, and the point object snaps lock onto most usefully. For a door, the **hinge**. For a furniture symbol, its centre or a corner. A base point "somewhere in the middle of nowhere" makes every later placement fiddly.
+- **Retain / Convert to block / Delete** decides what happens to the objects you selected. **Convert to block** (the default) turns them straight into the first reference; **Delete** removes them and the block still exists, ready to insert.
+
+The `-BLOCK` (dash) form asks the same questions at the command line instead of opening a dialog — handy in scripts.
+
+## Place it with INSERT
+
+```text
+Command: I
+INSERT  Block name: DOOR-90
+Insertion point: (pick, with a snap)
+Scale <1.0>: ↵
+Rotation <0.0>: 90
+```
+
+Answer the prompts, or click on screen and drag before committing the rotation. Everything you place is another reference of the same definition — rotate, mirror or scale it freely; the definition doesn't change. This is also why blocks beat copy-paste for repeated content: twelve copies of pasted geometry are twelve things to fix, twelve block references are zero things to fix.
+
+## The layer 0 and ByBlock rule
+
+This is the one piece of block theory that pays off daily. When a block is inserted onto a layer, what layer are its objects on?
+
+- Objects drawn on **layer 0** inside the block **inherit the layer of the reference**. A door built on layer 0 and inserted on `A-DOOR` behaves like an `A-DOOR` object.
+- Objects whose color and linetype are set to **ByBlock** similarly inherit the reference's color and linetype.
+- Objects on any other layer keep that layer, no matter where you insert the block.
+
+So the standard recipe for block geometry: **draw it on layer 0, leave its properties ByLayer or ByBlock**, and let the insertion layer decide. Blocks built on `A-WALL` because that happened to be current at the time are a classic source of "why is this door red".
+
+## Attributes: data that rides on the block
+
+An **attribute** is a text field attached to the block definition: a tag, a prompt and a default. A door block with a `DOOR_NO` attribute tags every door as you place it.
+
+Define one with `ATTDEF` (tag `DOOR_NO`, prompt `Door number`, default `D01`, with its text style and height), include it among the objects when you make the block, and from then on:
+
+![How attributes work: a door block whose DOOR_NO attribute shows as a tag circle reading D07; at every INSERT the command line asks Door number and Fire rating, taking D07 FD60 and D12 FD30; a small schedule table lists the results, the payoff of block data](/imgs/blog/blocks-attributes-door.svg)
+
+- **INSERT asks the prompts.** Each placement gets its own values — that's the difference between a tag and plain text inside the block.
+- **Double-click a reference** to edit its values (`EATTEDIT`); `BATTMAN` manages the definitions themselves.
+- After you edit attribute definitions in a block, **ATTSYNC** brings existing references in line with the new definition.
+- In full AutoCAD, **data extraction** turns the collected values into a table — a door or room schedule that reads straight off the plan and stays in step with it.
+
+Attributes are optional. Plenty of offices use blocks purely as reusable geometry. But if you ever number rooms, doors, panels or equipment, attributes are the mechanism.
+
+## Sharing blocks between drawings
+
+- **Copy and paste.** Copy a reference in one drawing, paste into another: the definition travels with it. Fine for one-offs.
+- **WBLOCK** (`W`) writes a block — or any objects, or the whole drawing — to its own DWG file. That file is your reusable library item: `INSERT` it anywhere, in any project.
+- **DesignCenter** (Ctrl+2) lists every block inside any drawing you point it at; drag them into the current drawing.
+- **Any DWG is a block** the moment you insert it: `INSERT` ▸ Browse ▸ pick a file. The drawing's `BASE` point becomes its base point — set it before sharing a drawing you expect people to insert.
+
+## Edit once, update everywhere
+
+- `BE` (**BEDIT**) opens the block in the Block Editor. Change the geometry, save, and **every reference in the drawing updates** — this is the whole point of blocks.
+- `REFEDIT` edits a block _in place_, in the middle of your drawing, for small fixes.
+- **Redefining from a file:** insert a DWG with the same name as an existing block and AutoCAD offers to redefine the block from that file — the traditional way to roll a library update through a project.
+
+## Dynamic blocks
+
+A **dynamic block** adds parameters and actions to the definition in the Block Editor: a door that flips its swing, a bolt with a stretchable length, a symbol with visibility states that show one of several variants. You author these in full AutoCAD, then anyone can flip, stretch or swap them by grip at insertion time.
+
+In CADCraft, dynamic blocks are partly supported: it reads the parameters, so you can switch **visibility states** on an imported dynamic block, but dragging distances and positions isn't there yet.
+
+## Housekeeping
+
+- `PU` (**PURGE**) deletes block definitions with no references left (run it more than once for blocks nested inside blocks). Good hygiene before archiving or sending a file.
+- Blocks can contain other blocks (**nesting**) — a flat contains chairs; don't nest so deep that editing becomes archaeology.
+- `RENAME` renames a definition; every reference follows.
+- If a block came in at a wildly wrong size, the drawing's **INSUNITS** (units setting) and the block's source units are arguing. Check the drawing units (`UNITS`) before blaming the block.
+
+## FAQ
+
+<PostFaq items={meta.faq} />
+
+## Related
+
+- [How to draw a floor plan in AutoCAD](/blog/how-to-draw-a-floor-plan-in-autocad): door and window blocks in context
+- [AutoCAD commands cheat sheet](/blog/autocad-commands): the block command family on one page
+- [AutoCAD layers: Off vs Freeze vs Lock](/blog/autocad-layers-off-freeze-lock): the layer discipline blocks rely on
