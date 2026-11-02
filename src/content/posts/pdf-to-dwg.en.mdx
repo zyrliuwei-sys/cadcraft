@@ -1,0 +1,130 @@
+import { PostFaq } from '@/components/post-faq';
+
+export const meta = {
+  title: 'How to Convert a PDF to DWG (and What Actually Survives)',
+  description:
+    'Converting PDF to DWG: first check whether the PDF is vector or scanned, ask for the original DWG when it exists, import vector PDFs with PDFIMPORT in AutoCAD, scale the result by reference, or go the free route through Inkscape to DXF and CADCraft. What survives the import, and why scanned drawings cannot convert.',
+  created_at: '2026-11-02',
+  author_name: 'CADCraft AI Editorial',
+  author_image: '/logo.svg',
+  cover: '/imgs/blog/pdf-to-dwg-routes.svg',
+  faq: [
+    [
+      'Can AutoCAD open a PDF file?',
+      'Not as a drawing, but two things come close: ATTACH inserts a PDF as an underlay you can draw over, and PDFIMPORT (in AutoCAD and AutoCAD LT) converts a vector PDF into editable lines, arcs and text inside the DWG. A scanned PDF can only be attached, not converted.',
+    ],
+    [
+      'Why does my PDF to DWG conversion come out as thousands of separate lines?',
+      'Because the PDF only stores drawn geometry. Text that was plotted with an SHX font is stored as stroked paths, so it imports as line segments rather than text — AutoCAD 2024 and later can recognize SHX text back into real text during import. Hatches and dimensions also come in as plain geometry, with no measurement or style behind them.',
+    ],
+    [
+      'Is there a free way to convert a PDF to DWG?',
+      'Yes, for vector PDFs: Inkscape (free) imports a PDF and saves it as DXF, which every CAD program opens — including the free CADCraft app. Expect the same limits as any converter: text becomes outlines, layers and dimensions are lost, and you set the scale yourself. The better free move is asking the sender for the original DWG or DXF.',
+    ],
+    [
+      'How do I scale a drawing after importing a PDF?',
+      'Measure something with a known real size — a door leaf of 900, a parking stall of 5000 — with DIST, then use SCALE with the Reference option: pick the measured distance, type the true one, and the whole import scales into your drawing units.',
+    ],
+  ],
+};
+
+**Short answer:** only **vector** PDFs can become DWG, and the best conversion is no conversion: if the PDF was exported from CAD, **ask for the original DWG or DXF**. Inside AutoCAD, `PDFIMPORT` turns a vector PDF into editable geometry; a free route is Inkscape (PDF to DXF) and then any CAD program, including the free [CADCraft](/download). **Scanned** PDFs cannot convert at all — trace over them or redraw. Either way, you set the scale yourself.
+
+CADCraft itself opens DWG (R13 to 2018) and DXF, but does not import PDF directly — for the free route below you convert to DXF first.
+
+_cadcraft.org is an independent guide, not affiliated with Autodesk. CADCraft is the ArtCraft team's open-source, AutoCAD-style CAD program ([getartcraft.com/apps/cadcraft](https://getartcraft.com/apps/cadcraft))._
+
+![Three routes from a PDF to a DWG: if the PDF is vector and came from CAD, ask for the original DWG or DXF, which keeps layers, blocks and dimensions; if it is vector but there is no original, import with PDFIMPORT in AutoCAD, or free via Inkscape to DXF into CADCraft, then scale by reference; if it is a scan, nothing can convert it — trace over it as an underlay or redraw. Test by zooming: crisp lines at any zoom mean vector, pixels mean a scan](/imgs/blog/pdf-to-dwg-routes.svg)
+
+## First question: where did the PDF come from?
+
+Zoom in hard, to where a line is a few millimetres on screen:
+
+- **Crisp at every zoom level** — a **vector** PDF: the drawing is made of real line coordinates. It can be converted.
+- **Pixels, jagged edges, scanner noise** — a **raster** (scanned or photographed) PDF. No converter on earth can turn this into clean geometry, because the geometry isn't in the file. Tools that claim to are doing pattern guessing; the result usually costs more to fix than redrawing.
+
+If the PDF is vector, it was almost certainly exported from a CAD program at some point. So before anything else: **ask the sender for the original DWG or DXF.** That single message gets you layers, blocks, real text, real dimensions and true scale — everything a conversion will cost you. [DWG vs DXF](/blog/dxf-vs-dwg) explains which one to ask for; [how to open a DWG file](/blog/how-to-open-dwg-file) covers what to do with it.
+
+## Route 1: PDFIMPORT in AutoCAD
+
+`PDFIMPORT` (AutoCAD 2017 and later, included in LT) imports vector PDF content as drawing objects:
+
+```text
+Command: PDFIMPORT
+Select PDF underlay or [File]: F
+Import file: plan.pdf
+(PDF Import dialog: pages, what to import, line joining, layers)
+```
+
+The dialog choices that matter:
+
+- **Import type:** _vector geometry_, not _PDF underlay_ — the underlay is just a reference image you trace over.
+- **Join linework** attempts to rebuild polylines from the PDF's short line segments. Turn it on; you'll join the rest later by hand.
+- **Import as blocks / solid fills / TrueType text:** TrueType text imports as editable text; solid-filled outlines import as hatched or filled geometry.
+- **Layers:** a PDF exported with layers can import onto matching layers. Many aren't.
+
+From AutoCAD 2024 on, there's also SHX **text recognition**: SHX-plotted text (which the PDF stores as pure line work) can be recognized back into real text objects during import. It's good, not magic — proof it against the PDF afterwards.
+
+## What actually survives
+
+A PDF stores _what was printed_, not _what was drawn_. Expect exactly that:
+
+![What survives a PDF import into DWG: lines and arcs import cleanly; TrueType text imports as editable text; SHX text imports as line segments; layers only if the PDF kept them; hatches become solid-filled outlines; dimensions become dead geometry with no measurement; blocks are exploded into pieces; scale is not carried and must be set by reference](/imgs/blog/pdf-import-what-survives.svg)
+
+The pattern: **geometry travels, intelligence doesn't.** A dimension comes in as an arrow and some lines — no measurement, no style, no link to the wall it used to measure. A block arrives exploded into its parts. That's why the original DWG is worth asking for first.
+
+## Scale the result
+
+PDF geometry imports at paper size — an A3 plan arrives 420 units wide — and with no idea of your units. Fix it once, immediately:
+
+1. Find something with a known size: a door leaf (900), a stair tread (250 to 300), a parking stall (5000 by 2500).
+2. Measure it with `DI` (DIST).
+3. Scale everything by reference:
+
+```text
+Command: SC
+SCALE  Select objects: (everything) ↵
+Base point: (anywhere)
+Specify scale factor or [Copy/Reference]: R
+Specify reference length: (pick the two ends of the known object)
+Specify new length: 900
+```
+
+Now check `UNITS` and one more known size before you draw anything on top.
+
+## Clean up
+
+- `JOIN` / `PEDIT` → Join: rebuild polylines from segment soup.
+- `OVERKILL` deletes duplicate, overlapping geometry — imports are full of it.
+- Re-assign layers as you go; the imported mess rarely lands on the layers you want.
+
+## Route 2: free, without AutoCAD
+
+For vector PDFs, [Inkscape](https://inkscape.org) does the same job for nothing:
+
+1. File ▸ Open: the PDF (choose the page, import as vectors).
+2. File ▸ Save As: **DXF** (Desktop Cutting Plotter version keeps simple line work).
+3. Open the DXF in any CAD program — CADCraft, LibreCAD, QCAD, AutoCAD.
+
+The limits are the same as any converter — text becomes outlines, layers and dimensions are gone, units need checking — plus DXF's own quirks, covered in [how to open a DXF file](/blog/how-to-open-dxf-file). For 2D line work this route is completely serviceable; see also [open-source DWG editors](/blog/open-source-dwg-editor) for editing the result without a subscription.
+
+## Scanned drawings: trace or redraw
+
+If the zoom test showed pixels, the drawing has to be re-created by a human:
+
+- **Attach the PDF as an underlay** (`ATTACH`), scale it by reference as above, and trace over it on your own layers. Snapping to the underlay can be toggled with `PDFOSNAP`.
+- Or redraw it outright — often faster than fixing a bad trace, and it forces you to actually understand the drawing.
+
+## Online converters: think twice
+
+Free online PDF-to-DWG sites do exist. Two cautions before you drop a drawing on one: **confidentiality** (you are uploading the drawing to a third party — plans, floor layouts and client work often shouldn't leave the building) and **quality** (most "free" results are locked previews that want payment, and the unlocked result is the same geometry soup PDFIMPORT gives you anyway).
+
+## FAQ
+
+<PostFaq items={meta.faq} />
+
+## Related
+
+- [DWG to PDF](/blog/dwg-to-pdf): the other direction, and how to export PDFs that convert back well
+- [DWG vs DXF](/blog/dxf-vs-dwg): which file to ask for
+- [How to open a DWG file](/blog/how-to-open-dwg-file): free viewers and editors once you have the real thing

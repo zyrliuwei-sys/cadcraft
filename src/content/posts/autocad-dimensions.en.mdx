@@ -1,0 +1,127 @@
+import { PostFaq } from '@/components/post-faq';
+
+export const meta = {
+  title: 'How to Dimension in AutoCAD (DIMLINEAR and Dimension Styles)',
+  description:
+    'Dimensioning in AutoCAD: the parts of a dimension, the commands that matter (DIMLINEAR, DIMALIGNED, continue, baseline, radius), setting up one dimension style properly, sizing text with annotative styles or DIMSCALE, dimensioning in model or paper space, and fixing the usual problems.',
+  created_at: '2026-11-02',
+  author_name: 'CADCraft AI Editorial',
+  author_image: '/logo.svg',
+  cover: '/imgs/blog/dimension-anatomy.svg',
+  faq: [
+    [
+      'Why are my dimensions tiny or huge in AutoCAD?',
+      'The dimension size doesn’t match the drawing scale. Either set DIMSCALE to the viewport scale times your paper text height (2.5 mm text at 1:100 in millimetres is 250), or — the modern fix — use an annotative dimension style and let each viewport scale pick the right size. See how to scale in AutoCAD for the full arithmetic.',
+    ],
+    [
+      'How do I change the text size of dimensions?',
+      'In the dimension style, not on individual dimensions: DIMSTYLE (D), the Text tab, text height — and make sure the style’s text style itself has height 0, or it overrides your setting. Update the style and every dimension using it follows.',
+    ],
+    [
+      'Why does my dimension not update when I stretch the geometry?',
+      'It lost its association to the objects: it was created with DIMASSOC off, exploded, imported from a PDF or DXF, or the original objects were deleted and redrawn. Run DIMREASSOCIATE and re-pick the points it should measure; from then on it follows the geometry again.',
+    ],
+    [
+      'What is the difference between DIMLINEAR and DIMALIGNED?',
+      'DIMLINEAR (DLI) measures the horizontal or vertical distance between two points, whichever you move the cursor toward. DIMALIGNED (DAL) measures parallel to the two points — the true length of an angled wall. On a 45° wall of 3000, DLI reports about 2121 horizontally, DAL reports 3000.',
+    ],
+  ],
+};
+
+**Short answer:** `DLI` (**DIMLINEAR**), pick two points, place the line — the measurement writes itself. Before your first dimension, set up **one dimension style** with `D` (DIMSTYLE): text style, text height, arrow size, precision. Size the text for paper — **2.5 mm printed** is typical — with an **annotative** style or a manual DIMSCALE. Dimensions are **associative**: stretch the wall and the number follows.
+
+The dimension commands and prompts work the same way in the free [CADCraft](/download) app — the [commands cheat sheet](/blog/autocad-commands) marks exactly what it supports — and the examples below come from its sample drawings.
+
+_cadcraft.org is an independent guide, not affiliated with Autodesk. CADCraft is the ArtCraft team's open-source, AutoCAD-style CAD program ([getartcraft.com/apps/cadcraft](https://getartcraft.com/apps/cadcraft))._
+
+![The anatomy of an AutoCAD dimension: extension lines run from the measured object, the dimension line with arrowheads at both ends spans them, and the text in the middle is measured from the geometry. DIMLINEAR reports the horizontal or vertical distance between two points; DIMALIGNED follows the angle of the two points, shown measuring an angled wall at 3000 against a horizontal 2828](/imgs/blog/dimension-anatomy.svg)
+
+## The anatomy of a dimension
+
+Four parts, all one object:
+
+- **Extension lines** run out from the measured geometry.
+- The **dimension line** spans them, with an **arrowhead** (or tick or dot — a style setting) at each end.
+- The **text** is the measured distance, computed from the geometry — never typed. That's the whole value of the tool: change the wall, the number changes.
+
+Dimension points land on the `Defpoints` layer, which never plots — true in AutoCAD and CADCraft alike ([more layer lore](/blog/autocad-layers-off-freeze-lock)).
+
+## The commands you'll actually use
+
+| Command              | Alias     | Measures                                             |
+| -------------------- | --------- | ---------------------------------------------------- |
+| DIMLINEAR            | DLI       | horizontal or vertical distance                      |
+| DIMALIGNED           | DAL       | distance parallel to the two points                  |
+| DIMCONTINUE          | DCO       | chains from the previous dimension                   |
+| DIMBASELINE          | DBA       | shares the previous dimension's first extension line |
+| DIMRADIUS / DIAMETER | DRA / DDI | radius, diameter                                     |
+| DIMANGULAR           | DAN       | the angle between two lines                          |
+| QDIM                 | —         | quick dims for a whole selection at once             |
+
+```text
+Command: DLI
+DIMLINEAR  Specify first extension line origin or select object: (snap to corner)
+Specify second extension line origin: (snap to the other corner)
+Specify dimension line location or [Mtext/Text/Angle/...]: (place it)
+Dimension text = 2400
+```
+
+Pick origins **with object snaps** — the dimension is only as honest as its points. `DCO` after a dimension walks along a wall placing the run of dimensions in one go; `DBA` stacks them all from the same face. [The full command families are on the cheat sheet](/blog/autocad-commands).
+
+## Set up one style, once
+
+`D` (DIMSTYLE) opens the dialog; everything above flows from it. The settings that matter:
+
+- **Text tab:** a text style (whose own height must be **0**, or it wins) and a text height. This is the number people actually came to change.
+- **Symbols and Arrows tab:** arrow size and type — architectural drawings often use tick marks.
+- **Primary Units tab:** precision. Four decimals on a millimetre drawing is noise; 0 is usually right.
+- **Fit tab:** where the size behaviour lives — next section.
+
+The discipline: **one parent style**, variants for scales if you go the manual route, and `DIMOVERRIDE` for the rare one-off instead of a new style. Ten styles with mysterious differences is a self-inflicted wound.
+
+## Getting the size right: two ways
+
+A dimension's text must come out at a sane **printed** size, and the drawing prints at a scale. Two schools:
+
+![Two ways to size dimension text: manually with DIMSCALE, where 2.5 mm paper text becomes 250 in a 1:100 millimetre model and 125 at 1:50, one style per scale; or one annotative style that adapts to each viewport scale so the text prints 2.5 mm everywhere. Start from the paper size and let the setting multiply](/imgs/blog/dimension-scale-two-ways.svg)
+
+- **Manual DIMSCALE** (the traditional way): text height × scale factor. 2.5 mm at 1:100 in millimetres → height 2.5, DIMSCALE 100. One style per scale: `A-DIM-100`, `A-DIM-50`.
+- **Annotative** (the modern way): flag the style annotative and add the scales you use. The same dimension then prints 2.5 mm in a 1:100 viewport and a 1:20 viewport, no variants.
+
+The arithmetic behind both is laid out in [how to scale in AutoCAD](/blog/how-to-scale-in-autocad) — same multiplication, different bookkeeping.
+
+## Where to dimension: model or paper space
+
+Both work, and offices genuinely split:
+
+- **In model space** with an annotative style — the dimensions belong to the geometry and appear in every viewport that shows it.
+- **On the layout**, in paper space — text is simply paper-sized, and it suits sheet-level annotation. [Model space vs paper space](/blog/model-space-vs-paper-space) covers the trade.
+
+What doesn't work is mixing both on one sheet.
+
+## Dimensions that edit themselves
+
+Associativity is the quiet superpower — treat it gently:
+
+- **Stretch the wall**, the dimension and its number follow (`DIMASSOC` 2, the default).
+- **Grips** on a selected dimension move its line and text; `DIMTEDIT` re-places text; `DIMEDIT` rotates or returns it home.
+- **`DIMSPACE`** evens out stacked dimensions; **`DIMBREAK`** cleans crossings.
+- **Never explode a dimension.** It becomes lines and text — measurement, association and style link all die. If a dimension must be re-pointed at different geometry, `DIMREASSOCIATE` it instead.
+
+## When dimensions go wrong
+
+- **Tiny or huge text:** scale mismatch — see the sizing section, or [the full scaling guide](/blog/how-to-scale-in-autocad).
+- **Four decimal places:** Primary Units precision in the style (and check `UNITS` for the drawing).
+- **The height setting does nothing:** the style's text style has a fixed height set — set that text style's height to 0.
+- **A dimension stopped following edits:** it lost associativity (exploded, imported, objects redrawn). `DIMREASSOCIATE` re-picks its points.
+- **Numbers disagree with the geometry:** the origin points were picked by eye, not by snap. Delete and re-pick with snaps on — [the habit list](/blog/how-to-learn-autocad) exists for exactly this.
+
+## FAQ
+
+<PostFaq items={meta.faq} />
+
+## Related
+
+- [How to scale in AutoCAD](/blog/how-to-scale-in-autocad): the arithmetic behind DIMSCALE and annotative sizing
+- [Model space vs paper space](/blog/model-space-vs-paper-space): where to dimension, and why
+- [AutoCAD commands cheat sheet](/blog/autocad-commands): the full DIM command family

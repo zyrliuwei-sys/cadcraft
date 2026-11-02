@@ -12,6 +12,9 @@ import { baseLocale } from '@/paraglide/runtime.js';
  * local posts via the pure helpers below.
  */
 export const BLOG_POST_SLUGS = [
+  'pdf-to-dwg',
+  'autocad-pricing',
+  'autocad-dimensions',
   'autocad-blocks',
   'model-space-vs-paper-space',
   'how-to-learn-autocad',
