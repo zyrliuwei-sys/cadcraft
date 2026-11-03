@@ -25,6 +25,7 @@ import {
   MAX_DXF_BYTES,
   type ImportErrorCode,
 } from '@/lib/dwg-import';
+import { dxfGeometry } from '@/lib/dxf-activity';
 import { track } from '@/lib/track';
 
 // Snapshot at most this often, and only after the user has paused.
@@ -66,6 +67,8 @@ export function useEditorFiles() {
   const dirty = useRef(false);
   const lastInput = useRef(0);
   const trackedAutosave = useRef(false);
+  const trackedFirstDrawing = useRef(false);
+  const geometryByName = useRef(new Map<string, string>());
   const slots = useRef(new Map<string, Slot>());
   const [recent, setRecent] = useState<StoredDrawing[]>([]);
   const [savedAt, setSavedAt] = useState<number | null>(null);
@@ -111,7 +114,11 @@ export function useEditorFiles() {
 
   /** Upload to the cloud; resolves to the error message, or null on success. */
   const uploadToCloud = useCallback(
-    async (file: File, checkpoint: boolean): Promise<string | null> => {
+    async (
+      file: File,
+      checkpoint: boolean,
+      mode: 'manual' | 'autosave' | 'editor_save' = 'autosave'
+    ): Promise<string | null> => {
       const s = slot(file.name);
       setCloudSaving(true);
       try {
@@ -126,6 +133,7 @@ export function useEditorFiles() {
           s.cloudId = saved.id;
           void setDrawingCloudId(s.localId, saved.id);
         }
+        track('cloud_save_success', { mode, checkpoint: checkpoint ? 1 : 0 });
         setCloudSavedAt(Date.now());
         setCloudFailed(false);
         queryClient.setQueryData(
@@ -145,6 +153,7 @@ export function useEditorFiles() {
         );
         return null;
       } catch (e) {
+        track('cloud_save_failed', { mode, stage: 'upload' });
         console.error('[cloud] sync failed', e);
         setCloudFailed(true);
         return (e instanceof Error && e.message) || 'Unknown error';
@@ -157,7 +166,18 @@ export function useEditorFiles() {
 
   const store = useCallback(
     async (file: File, checkpoint = false) => {
-      if (fileExt(file.name) !== 'dxf' || (await isEmptyDxf(file))) return;
+      if (fileExt(file.name) !== 'dxf') return;
+      const geometry = dxfGeometry(await file.text());
+      if (!geometry) return;
+      if (
+        !trackedFirstDrawing.current &&
+        lastInput.current > 0 &&
+        geometryByName.current.get(file.name) !== geometry
+      ) {
+        trackedFirstDrawing.current = true;
+        track('online_first_drawing');
+      }
+      geometryByName.current.set(file.name, geometry);
       const s = slot(file.name);
       const rows = await putDrawing({
         id: s.localId,
@@ -173,7 +193,14 @@ export function useEditorFiles() {
         track('online_autosave');
       }
       // Failed sync: stay dirty so the next tick retries.
-      if (proRef.current && (await uploadToCloud(file, checkpoint)) !== null)
+      if (
+        proRef.current &&
+        (await uploadToCloud(
+          file,
+          checkpoint,
+          checkpoint ? 'editor_save' : 'autosave'
+        )) !== null
+      )
         dirty.current = true;
     },
     [slot, uploadToCloud]
@@ -248,6 +275,10 @@ export function useEditorFiles() {
         if (controller.signal.aborted)
           throw new DrawingImportError('cancelled');
         // Keep the editor's decoded DXF in the existing recent-drawings store.
+        geometryByName.current.set(
+          confirmed.name,
+          dxfGeometry(await confirmed.text())
+        );
         void store(confirmed).catch(() => {});
         track('online_import_success', {
           ext,
@@ -331,17 +362,45 @@ export function useEditorFiles() {
   /** Save the active drawing to the cloud now, as a new version. */
   const saveToCloud = useCallback(async (): Promise<CloudSaveResult> => {
     track('cloud_save_click', { pro: proRef.current ? 1 : 0 });
-    // null: editor still booting, or an auto-save snapshot is in flight.
-    const file = await bridge.current?.snapshot();
-    if (!file) return { ok: false, reason: 'not_ready' };
-    if (await isEmptyDxf(file)) return { ok: false, reason: 'empty' };
-    const s = slot(file.name);
-    const rows = await putDrawing({ id: s.localId, file, cloudId: s.cloudId });
-    if (rows.length) setRecent(rows);
-    const message = await uploadToCloud(file, true);
-    return message === null
-      ? { ok: true }
-      : { ok: false, reason: 'error', message };
+    try {
+      // null: editor still booting, or an auto-save snapshot is in flight.
+      const file = await bridge.current?.snapshot();
+      if (!file) {
+        track('cloud_save_failed', {
+          mode: 'manual',
+          stage: 'snapshot',
+          reason: 'not_ready',
+        });
+        return { ok: false, reason: 'not_ready' };
+      }
+      if (await isEmptyDxf(file)) {
+        track('cloud_save_failed', {
+          mode: 'manual',
+          stage: 'snapshot',
+          reason: 'empty',
+        });
+        return { ok: false, reason: 'empty' };
+      }
+      const s = slot(file.name);
+      const rows = await putDrawing({
+        id: s.localId,
+        file,
+        cloudId: s.cloudId,
+      });
+      if (rows.length) setRecent(rows);
+      const message = await uploadToCloud(file, true, 'manual');
+      return message === null
+        ? { ok: true }
+        : { ok: false, reason: 'error', message };
+    } catch (error) {
+      track('cloud_save_failed', { mode: 'manual', stage: 'local' });
+      setCloudFailed(true);
+      return {
+        ok: false,
+        reason: 'error',
+        message: error instanceof Error ? error.message : 'Save failed',
+      };
+    }
   }, [slot, uploadToCloud]);
 
   return {

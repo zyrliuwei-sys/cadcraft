@@ -27,6 +27,12 @@ type Totals = {
 type Dimension = 'source' | 'country' | 'build' | 'landing';
 type Report = {
   totals: Totals;
+  homeExperiment: {
+    variant: 'control' | 'download_first';
+    exposed: number;
+    downloads: number;
+    editorsReady: number;
+  }[];
   steps: { key: string; visitors: number }[];
   events: { name: string; visitors: number }[];
   pages: { path: string; visitors: number }[];
@@ -81,6 +87,11 @@ function stepLabel(key: string) {
     download_click: m['admin.analytics.step.download_click'],
     view_online: m['admin.analytics.step.view_online'],
     online_app_loaded: m['admin.analytics.step.online_app_loaded'],
+    online_editor_ready: m['admin.analytics.step.online_editor_ready'],
+    online_first_drawing: m['admin.analytics.step.online_first_drawing'],
+    online_import_success: m['admin.analytics.step.online_import_success'],
+    cloud_save_success: m['admin.analytics.step.cloud_save_success'],
+    begin_checkout: m['admin.analytics.step.begin_checkout'],
     view_tutorials: m['admin.analytics.step.view_tutorials'],
     view_compare: m['admin.analytics.step.view_compare'],
     sign_up: m['admin.analytics.step.sign_up'],
@@ -228,6 +239,51 @@ function AnalyticsPage() {
           ))}
         </TabsList>
       </Tabs>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>{m['admin.analytics.experiment.title']()}</CardTitle>
+        </CardHeader>
+        <CardContent className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>
+                  {m['admin.analytics.experiment.variant']()}
+                </TableHead>
+                <TableHead>
+                  {m['admin.analytics.experiment.exposed']()}
+                </TableHead>
+                <TableHead>{m['admin.analytics.card.downloads']()}</TableHead>
+                <TableHead>
+                  {m['admin.analytics.experiment.download_rate']()}
+                </TableHead>
+                <TableHead>
+                  {m['admin.analytics.experiment.editor_rate']()}
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {report?.homeExperiment?.map((row) => (
+                <TableRow key={row.variant}>
+                  <TableCell>
+                    {row.variant === 'control'
+                      ? m['admin.analytics.experiment.control']()
+                      : m['admin.analytics.experiment.download_first']()}
+                  </TableCell>
+                  <TableCell>{row.exposed}</TableCell>
+                  <TableCell>{row.downloads}</TableCell>
+                  <TableCell>{pct(row.downloads, row.exposed)}</TableCell>
+                  <TableCell>{pct(row.editorsReady, row.exposed)}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          <p className="text-muted-foreground mt-3 text-xs">
+            {m['admin.analytics.experiment.note']()}
+          </p>
+        </CardContent>
+      </Card>
 
       <div className="grid gap-6 lg:grid-cols-[3fr_2fr]">
         <Card>

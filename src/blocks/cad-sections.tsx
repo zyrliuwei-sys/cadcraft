@@ -18,6 +18,7 @@ import { ctaPrimary, ctaSecondary } from '@/lib/cta';
 import { cn } from '@/lib/utils';
 import { m } from '@/paraglide/messages.js';
 import { HomeBannerAd } from '@/blocks/home-ads';
+import { HomeHeroActions } from '@/blocks/home-hero-actions';
 import { CodeBlock } from '@/components/code-block';
 import { CommandMarquee } from '@/components/command-marquee';
 import { DimensionLine } from '@/components/dimension-line';
@@ -102,16 +103,7 @@ export function CadHero() {
           <p className="text-muted-foreground max-w-xl text-lg leading-relaxed">
             {m['home.hero.subtitle']()}
           </p>
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <Link href="/online" className={ctaPrimary}>
-              <Globe className="size-4" />
-              {m['home.hero.cta_online']()}
-            </Link>
-            <Link href="/download" className={ctaSecondary}>
-              <Download className="size-4" />
-              {m['home.hero.cta_download']()}
-            </Link>
-          </div>
+          <HomeHeroActions />
         </div>
 
         <HomeBannerAd />

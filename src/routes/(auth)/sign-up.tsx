@@ -53,12 +53,17 @@ function SignUpPage() {
   }, []);
 
   // Already signed in (visited /sign-up directly, or a stale callbackUrl looped
-  // back here) → go home. The auth pages never gate themselves, so this can't loop.
+  // back here) → honor the validated return destination. The auth pages never gate themselves, so this can't loop.
   useEffect(() => {
     if (sessionPending || navigatingRef.current) return;
     if (session?.user) {
       navigatingRef.current = true;
-      router.push('/');
+      const params = new URLSearchParams(window.location.search);
+      const destination = resolveAfterAuthUrl({
+        redirect: params.get('redirect'),
+        callbackUrl: params.get('callbackUrl'),
+      });
+      window.location.replace(localizeHref(destination));
     }
   }, [sessionPending, session?.user, router]);
 
@@ -168,7 +173,7 @@ function SignUpPage() {
     // OAuth leaves the site, and the same button also signs existing users
     // in, so this is the intent, not a confirmed new account.
     track('sign_up_social_click', { method: provider });
-    await signIn.social({ provider, callbackURL: afterLoginUrl });
+    await signIn.social({ provider, callbackURL: localizeHref(afterLoginUrl) });
   }
 
   return (

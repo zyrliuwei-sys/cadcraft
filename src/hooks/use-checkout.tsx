@@ -1,12 +1,23 @@
-import { lazy, Suspense, useMemo, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
-import { useSession } from '@/core/auth/client';
+import { authClient, useSession } from '@/core/auth/client';
 import { useRouter } from '@/core/i18n/navigation';
+import { getPricingProduct } from '@/config/pricing';
 import { apiPost } from '@/lib/api-client';
+import {
+  canResumeCheckout,
+  CHECKOUT_INTENT_KEY,
+  checkoutCallback,
+  checkoutSource,
+  cleanCheckoutPath,
+  parseCheckoutIntent,
+  type CheckoutIntent,
+} from '@/lib/checkout-intent';
 import { currentPathWithQuery } from '@/lib/redirect';
 import { track } from '@/lib/track';
+import { m } from '@/paraglide/messages.js';
 import { usePublicConfig } from '@/hooks/use-public-config';
 import type { PaymentProvider } from '@/components/payment-provider-modal';
 import type { PricingPlan } from '@/components/pricing-table';
@@ -16,7 +27,6 @@ const PaymentProviderModal = lazy(() =>
     default: mod.PaymentProviderModal,
   }))
 );
-
 const ALL_PROVIDERS: PaymentProvider[] = [
   'stripe',
   'creem',
@@ -25,112 +35,245 @@ const ALL_PROVIDERS: PaymentProvider[] = [
   'alipay',
   'wechat',
 ];
+type Context = { source: string; returnTo: string };
 
-/**
- * Checkout for a pricing card: signs the visitor in first, lets them pick a
- * provider when the admin enabled several, then redirects to the provider.
- * Render `modal` once next to the pricing table.
- */
+function catalogPlan(productId: string): PricingPlan | null {
+  const p = getPricingProduct(productId);
+  return p
+    ? {
+        id: p.productId,
+        productId: p.productId,
+        name: p.planName,
+        productName: p.productName,
+        price: new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: p.currency,
+        }).format(p.priceInCents / 100),
+        priceInCents: p.priceInCents,
+        currency: p.currency,
+        credits: p.credits,
+        creditsValidDays: p.creditsValidDays,
+        plan: p.plan,
+        features: [],
+      }
+    : null;
+}
+
+/** Auth return URLs carry only catalog IDs; prices always come from the server. */
 export function useCheckout({
   backTo,
   returnTo,
+  source,
+  resume = false,
 }: {
-  /** Page to come back to after signing in. */
   backTo: string;
-  /** Page to land on after paying; defaults to the current page. */
   returnTo?: string;
+  source?: string;
+  /** Only the destination pricing page consumes a pending checkout. */
+  resume?: boolean;
 }) {
   const router = useRouter();
-  const { data: session } = useSession();
+  const { data: session, isPending: sessionPending } = useSession();
   const { data: configsData, refetch: refetchConfigs } = usePublicConfig();
   const [modalOpen, setModalOpen] = useState(false);
-  // The provider picker (a dialog) loads on first open and stays mounted.
   const [modalMounted, setModalMounted] = useState(false);
-  if (modalOpen && !modalMounted) setModalMounted(true);
   const [pendingPlan, setPendingPlan] = useState<PricingPlan | null>(null);
   const [loadingProvider, setLoadingProvider] =
     useState<PaymentProvider | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [resumePlan, setResumePlan] = useState<PricingPlan | null>(null);
+  const contextRef = useRef<Context>({
+    source: 'pricing',
+    returnTo: '/settings/billing',
+  });
+  const locked = useRef(false);
+  const redirecting = useRef(false);
+  const consumed = useRef(false);
+  const enabledProviders = useMemo(
+    () => ALL_PROVIDERS.filter((p) => configsData?.[`${p}_enabled`] === 'true'),
+    [configsData]
+  );
 
-  const enabledProviders = useMemo<PaymentProvider[]>(() => {
-    const configs = configsData ?? {};
-    return ALL_PROVIDERS.filter((p) => configs[`${p}_enabled`] === 'true');
-  }, [configsData]);
+  function failure(
+    plan: PricingPlan,
+    context: Context,
+    stage: string,
+    provider?: PaymentProvider
+  ) {
+    track('checkout_failed', {
+      plan: plan.productId ?? '',
+      source: context.source,
+      stage,
+      provider: provider ?? 'default',
+    });
+  }
 
-  const checkoutMutation = useMutation({
-    mutationFn: ({
+  const mutation = useMutation({
+    mutationFn: async ({
       plan,
       provider,
+      context,
     }: {
       plan: PricingPlan;
       provider?: PaymentProvider;
-    }) =>
-      apiPost<{ checkout_url?: string }>('/api/payment/checkout', {
-        product_id: plan.productId,
-        product_name: plan.productName || plan.name,
-        plan_name: plan.plan?.name || plan.name,
-        price: plan.priceInCents,
-        currency: plan.currency || 'usd',
-        type: plan.plan ? 'subscription' : 'one-time',
-        description: plan.name,
-        plan: plan.plan,
-        credits: plan.credits,
-        credits_valid_days: plan.creditsValidDays,
-        payment_provider: provider,
-        // Come back to the page the user paid from.
-        redirect: returnTo ?? currentPathWithQuery('/settings/billing'),
-      }),
-    onSuccess: (data) => {
-      if (!data?.checkout_url) {
-        toast.error('Checkout failed');
-        setLoadingProvider(null);
-        return;
-      }
-      window.location.href = data.checkout_url;
+      context: Context;
+    }) => {
+      const data = await apiPost<{ checkout_url?: string }>(
+        '/api/payment/checkout',
+        {
+          product_id: plan.productId,
+          payment_provider: provider,
+          redirect: context.returnTo,
+        }
+      );
+      const url = data?.checkout_url
+        ? new URL(data.checkout_url, window.location.origin)
+        : null;
+      if (!url || !['https:', 'http:'].includes(url.protocol))
+        throw new Error('Invalid checkout response');
+      return url.href;
     },
-    onError: (err: any) => {
-      toast.error(err?.message || 'Checkout failed');
-      setLoadingProvider(null);
+    onSuccess: (url) => {
+      window.location.assign(url);
+      redirecting.current = true;
+    },
+    onError: (_error, { plan, provider, context }) => {
+      failure(plan, context, 'checkout', provider);
+      toast.error(m['common.pricing.checkout_failed']());
     },
   });
 
-  function startCheckout(plan: PricingPlan, provider?: PaymentProvider) {
+  async function startCheckout(
+    plan: PricingPlan,
+    context: Context,
+    provider?: PaymentProvider
+  ) {
+    setLoadingProvider(provider ?? null);
     track('begin_checkout', {
       plan: plan.productId ?? '',
       value: (plan.priceInCents ?? 0) / 100,
+      source: context.source,
+      provider: provider ?? 'default',
     });
-    setLoadingProvider(provider ?? null);
-    checkoutMutation.mutate({ plan, provider });
+    await mutation.mutateAsync({ plan, provider, context });
   }
 
-  async function checkout(plan: PricingPlan) {
-    track('plan_click', {
-      plan: plan.productId ?? '',
-      value: (plan.priceInCents ?? 0) / 100,
-      signed_in: session?.user ? 1 : 0,
+  async function choosePlan(
+    plan: PricingPlan,
+    context: Context,
+    provider?: PaymentProvider
+  ) {
+    if (locked.current) return;
+    locked.current = true;
+    setBusy(true);
+    contextRef.current = context;
+    try {
+      if (provider) {
+        await startCheckout(plan, context, provider);
+        return;
+      }
+      const result = configsData ? null : await refetchConfigs();
+      const cfg = configsData ?? result?.data;
+      if (!cfg || result?.isError) {
+        failure(plan, context, 'config');
+        toast.error(m['common.pricing.checkout_failed']());
+        return;
+      }
+      const enabled = ALL_PROVIDERS.filter(
+        (p) => cfg[`${p}_enabled`] === 'true'
+      );
+      const configuredDefault = ALL_PROVIDERS.find(
+        (p) => p === cfg.default_payment_provider
+      );
+      if (cfg.select_payment_enabled === 'true' && enabled.length > 1) {
+        setPendingPlan(plan);
+        setModalMounted(true);
+        setModalOpen(true);
+        return;
+      }
+      await startCheckout(plan, context, configuredDefault ?? enabled[0]);
+    } catch {
+      // Mutation errors are tracked/toasted by onError; keep retries explicit.
+    } finally {
+      if (!redirecting.current) {
+        locked.current = false;
+        setBusy(false);
+        setLoadingProvider(null);
+      }
+    }
+  }
+  const chooseRef = useRef(choosePlan);
+  chooseRef.current = choosePlan;
+
+  useEffect(() => {
+    if (!resume || sessionPending || !session?.user || consumed.current) return;
+    const path = currentPathWithQuery(backTo);
+    const intent = parseCheckoutIntent(path);
+    if (!intent) return;
+    const plan = catalogPlan(intent.productId);
+    if (!plan) return;
+    consumed.current = true;
+    let trusted = false;
+    try {
+      trusted = canResumeCheckout(
+        intent,
+        window.sessionStorage.getItem(CHECKOUT_INTENT_KEY)
+      );
+      if (trusted) window.sessionStorage.removeItem(CHECKOUT_INTENT_KEY);
+    } catch {}
+    const context = { source: intent.source, returnTo: intent.returnTo };
+    contextRef.current = context;
+    setResumePlan(plan);
+    // Consume before requesting a checkout: refresh/back cannot create another.
+    router.replace(cleanCheckoutPath(path));
+    track('checkout_resumed', {
+      plan: intent.productId,
+      source: intent.source,
+      automatic: trusted ? 1 : 0,
     });
-    if (!session?.user) {
-      const callbackUrl = encodeURIComponent(currentPathWithQuery(backTo));
-      router.push(`/sign-in?callbackUrl=${callbackUrl}`);
+    if (trusted) void chooseRef.current(plan, context);
+  }, [resume, sessionPending, session?.user?.id, backTo]);
+
+  async function checkout(plan: PricingPlan) {
+    if (locked.current || !plan.productId || !getPricingProduct(plan.productId))
+      return;
+    const context: Context = {
+      source: checkoutSource(
+        source ??
+          new URLSearchParams(window.location.search).get('upgrade_from')
+      ),
+      returnTo: cleanCheckoutPath(
+        returnTo ?? currentPathWithQuery('/settings/billing')
+      ),
+    };
+    const currentSession = sessionPending
+      ? (await authClient.getSession()).data
+      : session;
+    track('plan_click', {
+      plan: plan.productId,
+      value: (plan.priceInCents ?? 0) / 100,
+      source: context.source,
+      signed_in: currentSession?.user ? 1 : 0,
+    });
+    if (!currentSession?.user) {
+      const intent: CheckoutIntent = {
+        productId: plan.productId,
+        ...context,
+        token: crypto.randomUUID(),
+        createdAt: Date.now(),
+      };
+      try {
+        window.sessionStorage.setItem(
+          CHECKOUT_INTENT_KEY,
+          JSON.stringify(intent)
+        );
+      } catch {}
+      router.push(
+        `/sign-in?callbackUrl=${encodeURIComponent(checkoutCallback(backTo, intent))}`
+      );
       return;
     }
-
-    // A click can land before public config has loaded — fetch it first
-    // instead of guessing a provider that may not be configured.
-    const cfg = configsData ?? (await refetchConfigs()).data ?? {};
-    const enabled = ALL_PROVIDERS.filter((p) => cfg[`${p}_enabled`] === 'true');
-    const selectEnabled = cfg.select_payment_enabled === 'true';
-    // Unknown → omit it; the server falls back to the admin default provider.
-    const defaultProvider = (cfg.default_payment_provider || enabled[0]) as
-      | PaymentProvider
-      | undefined;
-
-    if (selectEnabled && enabled.length > 1) {
-      setPendingPlan(plan);
-      setModalOpen(true);
-      return;
-    }
-
-    startCheckout(plan, defaultProvider);
+    await choosePlan(plan, context);
   }
 
   const modal = modalMounted && (
@@ -139,15 +282,13 @@ export function useCheckout({
         open={modalOpen}
         onOpenChange={(open) => {
           setModalOpen(open);
-          if (!open) {
-            setPendingPlan(null);
-            setLoadingProvider(null);
-          }
+          if (!open) setPendingPlan(null);
         }}
-        providers={enabledProviders.length ? enabledProviders : ['stripe']}
+        providers={enabledProviders}
         loadingProvider={loadingProvider}
         onSelect={(provider) => {
-          if (pendingPlan) startCheckout(pendingPlan, provider);
+          if (pendingPlan)
+            void choosePlan(pendingPlan, contextRef.current, provider);
         }}
         planName={pendingPlan?.name}
         price={pendingPlan?.price}
@@ -155,5 +296,18 @@ export function useCheckout({
     </Suspense>
   );
 
-  return { checkout, modal };
+  return {
+    checkout,
+    modal,
+    busy: busy || sessionPending,
+    resumePlan,
+    continueCheckout: () => {
+      if (!resumePlan) return;
+      track('checkout_resume_confirm', {
+        plan: resumePlan.productId ?? '',
+        source: contextRef.current.source,
+      });
+      void choosePlan(resumePlan, contextRef.current);
+    },
+  };
 }

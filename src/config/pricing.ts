@@ -157,7 +157,9 @@ export const pricingCatalog: Record<string, PricingProduct> = {
 
 export function getPricingProduct(productId: string): PricingProduct | null {
   if (!productId) return null;
-  return pricingCatalog[productId] ?? null;
+  return Object.hasOwn(pricingCatalog, productId)
+    ? pricingCatalog[productId]
+    : null;
 }
 
 export function listPricingProducts(): PricingProduct[] {

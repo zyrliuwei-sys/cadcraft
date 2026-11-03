@@ -46,7 +46,7 @@ export function ProUpsellDialog({
           ))}
         </ul>
         <Link
-          href="/pricing"
+          href="/pricing?upgrade_from=cloud_dialog"
           onClick={() => track('pro_upsell_click', { from: 'cloud_dialog' })}
           className={cn(ctaPrimary, 'mt-2 h-10 w-full px-4 text-sm')}
         >

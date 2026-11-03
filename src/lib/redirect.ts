@@ -16,7 +16,7 @@ import { deLocalizeHref } from '@/paraglide/runtime.js';
 
 // Never bounce back into an auth page — that loops.
 const AUTH_PATH_RE =
-  /^\/(sign-in|sign-up|verify-email|forgot-password|reset-password|auth-callback)(\/|\?|#|$)/;
+  /^\/(?:[a-z]{2}(?:-[a-z]{2})?\/)?(sign-in|sign-up|verify-email|forgot-password|reset-password|auth-callback)(\/|\?|#|$)/i;
 
 /**
  * Normalize a redirect target to a same-origin path (`/foo?a=1#b`), or null if

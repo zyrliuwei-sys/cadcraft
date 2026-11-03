@@ -1,5 +1,8 @@
+import { Loader2 } from 'lucide-react';
+
 import { useRouter } from '@/core/i18n/navigation';
 import { pricingCatalog } from '@/config/pricing';
+import { ctaPrimary } from '@/lib/cta';
 import { m } from '@/paraglide/messages.js';
 import { useCheckout } from '@/hooks/use-checkout';
 import { PageHero } from '@/blocks/cad-doc';
@@ -27,8 +30,9 @@ const FREE_ID = 'free';
 
 export function CadPricingPage() {
   const router = useRouter();
-  const { checkout, modal } = useCheckout({
+  const { checkout, modal, busy, resumePlan, continueCheckout } = useCheckout({
     backTo: '/pricing',
+    resume: true,
     returnTo: '/online?pro=welcome',
   });
 
@@ -112,9 +116,37 @@ export function CadPricingPage() {
       />
 
       <section className="mx-auto max-w-4xl px-4 py-14 sm:px-6 lg:py-20">
+        {resumePlan && (
+          <div
+            className="bg-muted/30 mb-8 flex flex-wrap items-center justify-between gap-4 border p-5"
+            role="status"
+          >
+            <p className="text-sm">
+              {m['common.pricing.resume_selected']({
+                plan: resumePlan.name,
+                price: resumePlan.price,
+              })}
+            </p>
+            <button
+              type="button"
+              className={ctaPrimary}
+              disabled={busy}
+              onClick={continueCheckout}
+            >
+              {busy && <Loader2 className="size-4 animate-spin" />}
+              {busy
+                ? m['common.pricing.resuming']()
+                : m['common.pricing.continue_checkout']()}
+            </button>
+          </div>
+        )}
         <PricingTable
+          key={resumePlan?.productId ?? 'default'}
+          checkoutPending={busy}
           groups={groups}
-          defaultGroup="yearly"
+          defaultGroup={
+            resumePlan?.plan?.interval === 'month' ? 'monthly' : 'yearly'
+          }
           onCheckout={(plan) =>
             plan.id === FREE_ID ? router.push('/online') : checkout(plan)
           }

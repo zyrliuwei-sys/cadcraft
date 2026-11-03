@@ -1,3 +1,5 @@
+import { homeCtaVariantTag } from '@/lib/home-cta-experiment';
+
 declare const __BUILD_VERSION__: string;
 
 type Props = Record<string, string | number>;
@@ -13,14 +15,18 @@ export function track(
   opts?: { variant?: string }
 ) {
   if (typeof window === 'undefined') return;
+  const variant = opts?.variant ?? homeCtaVariantTag();
+  const eventProps = variant
+    ? { ...props, experiment_variant: variant }
+    : props;
   const w = window as any;
   try {
-    w.gtag?.('event', name, props);
-    w.plausible?.(name, props ? { props } : undefined);
+    w.gtag?.('event', name, eventProps);
+    w.plausible?.(name, eventProps ? { props: eventProps } : undefined);
   } catch {
     // Analytics must never break the page.
   }
-  record(name, props, opts?.variant);
+  record(name, eventProps, variant);
 }
 
 /** Page view for our own funnel only (GA/Plausible count their own). */
@@ -158,7 +164,7 @@ function record(name: string, props?: Props, variant?: string) {
       name,
       path: window.location.pathname.slice(0, 200),
       props,
-      variant,
+      variant: variant ?? homeCtaVariantTag(),
       ts: Date.now(),
     });
     if (queue.length >= 20) flush();

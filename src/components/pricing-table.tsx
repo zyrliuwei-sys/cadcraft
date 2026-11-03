@@ -57,11 +57,13 @@ export function PricingTable({
   groups,
   defaultGroup,
   onCheckout,
+  checkoutPending = false,
 }: {
   groups: PricingGroup[];
   /** Key of the tab shown first; falls back to the first group. */
   defaultGroup?: string;
   onCheckout?: (plan: PricingPlan) => void;
+  checkoutPending?: boolean;
 }) {
   const [activeGroup, setActiveGroup] = useState(
     defaultGroup && groups.some((g) => g.key === defaultGroup)
@@ -219,7 +221,7 @@ export function PricingTable({
               variant={plan.featured || plan.highlight ? 'default' : 'outline'}
               className="h-10 w-full rounded-full text-sm font-medium"
               onClick={() => handleCheckout(plan)}
-              disabled={loadingId === plan.id}
+              disabled={checkoutPending || loadingId === plan.id}
             >
               {loadingId === plan.id
                 ? m['common.pricing.processing']()

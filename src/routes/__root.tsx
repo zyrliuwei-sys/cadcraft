@@ -28,7 +28,6 @@ import { GoogleAnalytics } from '@/components/analytics/google-analytics';
 import { PageViewTracker } from '@/components/analytics/page-view-tracker';
 import { Plausible } from '@/components/analytics/plausible';
 import { PurchaseTracker } from '@/components/analytics/purchase-tracker';
-import { SocialBar } from '@/components/analytics/social-bar';
 import { CustomerService } from '@/components/customer-service';
 import { GoogleOneTap } from '@/components/google-one-tap';
 import { SandboxPreviewBridge } from '@/components/sandbox-preview-bridge';
@@ -184,7 +183,6 @@ function RootDocument({ children }: { children: ReactNode }) {
       <body className="font-sans antialiased">
         {children}
         <Scripts />
-        <SocialBar enabled={loadAds} />
       </body>
     </html>
   );

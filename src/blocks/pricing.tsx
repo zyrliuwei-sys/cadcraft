@@ -38,7 +38,7 @@ export function Pricing({
   /** `dialog` drops the page-section chrome for use inside a modal. */
   variant?: 'section' | 'dialog';
 } = {}) {
-  const { checkout, modal } = useCheckout({ backTo: '/pricing' });
+  const { checkout, modal, busy } = useCheckout({ backTo: '/pricing' });
 
   // Live per-video price so "≈ N videos" matches what generation charges.
   const { data: priceData } = useQuery({
@@ -222,6 +222,7 @@ export function Pricing({
           </p>
         </div>
         <PricingTable
+          checkoutPending={busy}
           groups={groups}
           defaultGroup="one-time"
           onCheckout={checkout}

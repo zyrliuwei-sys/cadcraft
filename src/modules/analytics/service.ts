@@ -14,7 +14,7 @@
  * - A user seen on several devices counts once, on their earliest visitor.
  */
 
-import { and, desc, eq, gte, isNotNull, lt, sql } from 'drizzle-orm';
+import { and, desc, eq, gte, inArray, isNotNull, lt, sql } from 'drizzle-orm';
 
 import { db } from '@/core/db';
 import {
@@ -23,6 +23,10 @@ import {
   user,
   type NewAnalyticsEvent,
 } from '@/config/db/schema';
+import {
+  summarizeHomeExperiment,
+  type HomeExperimentRow,
+} from '@/lib/home-experiment-report';
 
 /**
  * Funnel steps in display order: `visit` is any event, `view_*` a page view
@@ -35,6 +39,11 @@ export const FUNNEL_STEPS = [
   'download_click',
   'view_online',
   'online_app_loaded',
+  'online_editor_ready',
+  'online_first_drawing',
+  'online_import_success',
+  'cloud_save_success',
+  'begin_checkout',
   'view_tutorials',
   'view_compare',
   'sign_up',
@@ -87,6 +96,7 @@ export interface DailyRow extends Totals {
 
 export interface FunnelReport {
   totals: Totals;
+  homeExperiment: HomeExperimentRow[];
   steps: { key: FunnelStep; visitors: number }[];
   events: { name: string; visitors: number }[];
   pages: { path: string; visitors: number }[];
@@ -153,64 +163,89 @@ export async function getFunnelReport(opts: {
     .groupBy(analyticsEvent.visitorId)
     .as('firsts');
 
-  const [internalRows, firstRows, stepRows, userRows, newUsers, paidOrders] =
-    await Promise.all([
-      db()
-        .selectDistinct({ visitorId: analyticsEvent.visitorId })
-        .from(analyticsEvent)
-        .where(and(inRange, eq(analyticsEvent.internal, 1))),
-      db()
-        .select({
-          visitorId: analyticsEvent.visitorId,
-          createdAt: analyticsEvent.createdAt,
-          source: analyticsEvent.source,
-          country: analyticsEvent.country,
-          build: analyticsEvent.build,
-          landing: analyticsEvent.landing,
-        })
-        .from(analyticsEvent)
-        .innerJoin(
-          firsts,
-          and(
-            eq(analyticsEvent.visitorId, firsts.visitorId),
-            eq(analyticsEvent.createdAt, firsts.firstAt)
-          )
-        ),
-      db()
-        .selectDistinct({
-          visitorId: analyticsEvent.visitorId,
-          name: analyticsEvent.name,
-          path: analyticsEvent.path,
-        })
-        .from(analyticsEvent)
-        .where(inRange),
-      db()
-        .selectDistinct({
-          visitorId: analyticsEvent.visitorId,
-          userId: analyticsEvent.userId,
-        })
-        .from(analyticsEvent)
-        .where(and(inRange, isNotNull(analyticsEvent.userId))),
-      db()
-        .select({ id: user.id, createdAt: user.createdAt })
-        .from(user)
-        .where(and(gte(user.createdAt, from), lt(user.createdAt, to))),
-      db()
-        .select({
-          userId: order.userId,
-          amount: order.amount,
-          paidAt: order.paidAt,
-        })
-        .from(order)
-        .where(
-          and(
-            eq(order.status, 'paid'),
-            gte(order.paidAt, from),
-            lt(order.paidAt, to)
-          )
+  const [
+    internalRows,
+    firstRows,
+    stepRows,
+    userRows,
+    newUsers,
+    paidOrders,
+    experimentEvents,
+  ] = await Promise.all([
+    db()
+      .selectDistinct({ visitorId: analyticsEvent.visitorId })
+      .from(analyticsEvent)
+      .where(and(inRange, eq(analyticsEvent.internal, 1))),
+    db()
+      .select({
+        visitorId: analyticsEvent.visitorId,
+        createdAt: analyticsEvent.createdAt,
+        source: analyticsEvent.source,
+        country: analyticsEvent.country,
+        build: analyticsEvent.build,
+        landing: analyticsEvent.landing,
+      })
+      .from(analyticsEvent)
+      .innerJoin(
+        firsts,
+        and(
+          eq(analyticsEvent.visitorId, firsts.visitorId),
+          eq(analyticsEvent.createdAt, firsts.firstAt)
         )
-        .orderBy(desc(order.paidAt)),
-    ]);
+      ),
+    db()
+      .selectDistinct({
+        visitorId: analyticsEvent.visitorId,
+        name: analyticsEvent.name,
+        path: analyticsEvent.path,
+      })
+      .from(analyticsEvent)
+      .where(inRange),
+    db()
+      .selectDistinct({
+        visitorId: analyticsEvent.visitorId,
+        userId: analyticsEvent.userId,
+      })
+      .from(analyticsEvent)
+      .where(and(inRange, isNotNull(analyticsEvent.userId))),
+    db()
+      .select({ id: user.id, createdAt: user.createdAt })
+      .from(user)
+      .where(and(gte(user.createdAt, from), lt(user.createdAt, to))),
+    db()
+      .select({
+        userId: order.userId,
+        amount: order.amount,
+        paidAt: order.paidAt,
+      })
+      .from(order)
+      .where(
+        and(
+          eq(order.status, 'paid'),
+          gte(order.paidAt, from),
+          lt(order.paidAt, to)
+        )
+      )
+      .orderBy(desc(order.paidAt)),
+    db()
+      .select({
+        visitorId: analyticsEvent.visitorId,
+        name: analyticsEvent.name,
+        variant: analyticsEvent.variant,
+        createdAt: analyticsEvent.createdAt,
+      })
+      .from(analyticsEvent)
+      .where(
+        and(
+          inRange,
+          inArray(analyticsEvent.name, [
+            'home_cta_exposure',
+            'download_click',
+            'online_editor_ready',
+          ])
+        )
+      ),
+  ]);
 
   const internal = new Set(
     internalRows.map((r: { visitorId: string }) => r.visitorId)
@@ -335,6 +370,10 @@ export async function getFunnelReport(opts: {
     b.visitors - a.visitors;
   return {
     totals,
+    homeExperiment: summarizeHomeExperiment(
+      experimentEvents,
+      new Set(visitors.keys())
+    ),
     steps: FUNNEL_STEPS.map((key) => ({ key, visitors: stepCounts[key] })),
     events: [...eventCounts]
       .map(([name, n]) => ({ name, visitors: n }))
