@@ -22,7 +22,7 @@ import {
 } from '@/blocks/cad-sections';
 import { Footer } from '@/blocks/footer';
 import { Header } from '@/blocks/header';
-import { NativeAd, ResponsiveBannerAd } from '@/components/analytics/banner-ad';
+import { HomeNativeAd } from '@/blocks/home-ads';
 
 export const Route = createFileRoute('/')({
   loader: () => ({ locale: getLocale() }),
@@ -91,19 +91,18 @@ function HomePage() {
         <CadHero />
         <CadTitleBlock />
         <CadWhatIs />
+        <HomeNativeAd />
         <CadFeatures />
-        <ResponsiveBannerAd className="my-12" />
         <CadMarquee />
         <CadArtCraft />
         <CadAgents />
         <CadCompareTeaser />
         <CadDownload />
         <CadLearn />
-        <NativeAd className="mx-auto my-12 max-w-5xl px-4" />
         <CadFaq />
         <CadCta />
       </main>
-      <Footer />
+      <Footer ad={false} />
     </>
   );
 }

@@ -17,6 +17,7 @@ import { CADCRAFT_VERSION, cadcraftLinks } from '@/config/cadcraft';
 import { ctaPrimary, ctaSecondary } from '@/lib/cta';
 import { cn } from '@/lib/utils';
 import { m } from '@/paraglide/messages.js';
+import { HomeBannerAd } from '@/blocks/home-ads';
 import { CodeBlock } from '@/components/code-block';
 import { CommandMarquee } from '@/components/command-marquee';
 import { DimensionLine } from '@/components/dimension-line';
@@ -112,6 +113,8 @@ export function CadHero() {
             </Link>
           </div>
         </div>
+
+        <HomeBannerAd />
 
         <figure className="rise-in-3 relative mt-12 lg:mt-16">
           <div className="sheet-settle relative">

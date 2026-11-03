@@ -19,6 +19,12 @@ import {
   uploadCloudDrawing,
   type CloudDrawing,
 } from '@/lib/drawings-client';
+import {
+  convertDwg,
+  DrawingImportError,
+  MAX_DXF_BYTES,
+  type ImportErrorCode,
+} from '@/lib/dwg-import';
 import { track } from '@/lib/track';
 
 // Snapshot at most this often, and only after the user has paused.
@@ -52,7 +58,7 @@ export type CloudSaveResult =
  * and size only), auto-saves the active drawing into this browser — and,
  * for Pro, into cloud drawings — and opens files in the editor on request.
  */
-export function useEditorFiles({ onDwg }: { onDwg: () => void }) {
+export function useEditorFiles() {
   const queryClient = useQueryClient();
   const { data: session } = useSession();
   const signedIn = !!session?.user;
@@ -66,6 +72,22 @@ export function useEditorFiles({ onDwg }: { onDwg: () => void }) {
   const [cloudSavedAt, setCloudSavedAt] = useState<number | null>(null);
   const [cloudSaving, setCloudSaving] = useState(false);
   const [cloudFailed, setCloudFailed] = useState(false);
+  const [importPhase, setImportPhase] = useState<
+    'loading' | 'converting' | 'opening' | null
+  >(null);
+  const [importError, setImportError] = useState<ImportErrorCode | null>(null);
+  const [importedDwg, setImportedDwg] = useState<string | null>(null);
+  const importController = useRef<AbortController | null>(null);
+  const readyTimer = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(
+    () => () => {
+      importController.current?.abort();
+      bridge.current?.dispose();
+      if (readyTimer.current) clearInterval(readyTimer.current);
+    },
+    []
+  );
 
   const cloudQuery = useQuery({
     queryKey: CLOUD_QUERY_KEY,
@@ -159,7 +181,7 @@ export function useEditorFiles({ onDwg }: { onDwg: () => void }) {
 
   const autosave = useCallback(async () => {
     const b = bridge.current;
-    if (!b || !dirty.current) return;
+    if (!b || !dirty.current || importController.current) return;
     dirty.current = false;
     const file = await b.snapshot();
     if (file) await store(file);
@@ -179,16 +201,83 @@ export function useEditorFiles({ onDwg }: { onDwg: () => void }) {
     };
   }, [autosave]);
 
+  /** Convert locally, open, and confirm through an export from the editor. */
+  const openFile = useCallback(
+    async (file: File) => {
+      if (importController.current) {
+        setImportError('busy');
+        return false;
+      }
+      const ext = fileExt(file.name);
+      track('online_file_open', { ext, size_kb: Math.round(file.size / 1024) });
+      const controller = new AbortController();
+      importController.current = controller;
+      setImportError(null);
+      setImportedDwg(null);
+      setImportPhase(ext === 'dwg' ? 'loading' : 'opening');
+      const started = Date.now();
+      try {
+        if (ext !== 'dwg' && ext !== 'dxf')
+          throw new DrawingImportError('invalid');
+        if (ext === 'dxf' && file.size > MAX_DXF_BYTES)
+          throw new DrawingImportError('too_large');
+        const drawing =
+          ext === 'dwg'
+            ? await convertDwg(file, controller.signal, () =>
+                setImportPhase('converting')
+              )
+            : file;
+        setImportPhase('opening');
+        let b: EditorBridge | null = null;
+        for (let waited = 0; waited < READY_WAIT; waited += 250) {
+          if (controller.signal.aborted)
+            throw new DrawingImportError('cancelled');
+          b = bridge.current;
+          if (b?.ready()) break;
+          await new Promise((r) => setTimeout(r, 250));
+        }
+        if (!b?.ready()) throw new DrawingImportError('not_ready');
+        const confirmed = b.open(drawing)
+          ? await b.confirmOpen(drawing.name, controller.signal)
+          : null;
+        if (!confirmed) {
+          throw new DrawingImportError(
+            controller.signal.aborted ? 'cancelled' : 'open_failed'
+          );
+        }
+        if (controller.signal.aborted)
+          throw new DrawingImportError('cancelled');
+        // Keep the editor's decoded DXF in the existing recent-drawings store.
+        void store(confirmed).catch(() => {});
+        track('online_import_success', {
+          ext,
+          duration_ms: Date.now() - started,
+        });
+        if (ext === 'dwg') setImportedDwg(drawing.name);
+        return true;
+      } catch (error) {
+        const code =
+          error instanceof DrawingImportError ? error.code : 'conversion';
+        setImportError(code);
+        track('online_import_failed', { ext, reason: code });
+        return false;
+      } finally {
+        importController.current = null;
+        setImportPhase(null);
+      }
+    },
+    [store]
+  );
+
   const onFrameLoad = useCallback(
     (frame: HTMLIFrameElement) => {
+      if (bridge.current) importController.current?.abort();
+      bridge.current?.dispose();
+      if (readyTimer.current) clearInterval(readyTimer.current);
       bridge.current = attachEditor(frame, {
         onUserOpen: (file) => {
-          const ext = fileExt(file.name);
-          track('online_file_open', {
-            ext,
-            size_kb: Math.round(file.size / 1024),
-          });
-          if (ext === 'dwg') onDwg();
+          void openFile(file);
+          return true;
         },
         onUserSave: (file) => {
           track('online_file_save', { ext: fileExt(file.name) });
@@ -200,19 +289,20 @@ export function useEditorFiles({ onDwg }: { onDwg: () => void }) {
           lastInput.current = Date.now();
         },
       });
+      const started = Date.now();
+      const checkReady = () => {
+        if (bridge.current?.ready()) {
+          track('online_editor_ready', { duration_ms: Date.now() - started });
+        } else if (Date.now() - started < READY_WAIT) return;
+        else track('online_editor_failed', { reason: 'timeout' });
+        if (readyTimer.current) clearInterval(readyTimer.current);
+        readyTimer.current = null;
+      };
+      readyTimer.current = setInterval(checkReady, 250);
+      checkReady();
     },
-    [onDwg, store]
+    [openFile, store]
   );
-
-  /** Open a file in a new editor tab, waiting for the editor to boot. */
-  const openFile = useCallback(async (file: File) => {
-    for (let waited = 0; waited < READY_WAIT; waited += 500) {
-      const b = bridge.current;
-      if (b?.ready()) return b.open(file);
-      await new Promise((r) => setTimeout(r, 500));
-    }
-    return false;
-  }, []);
 
   const restore = useCallback(
     (drawing: StoredDrawing) => {
@@ -255,6 +345,10 @@ export function useEditorFiles({ onDwg }: { onDwg: () => void }) {
   }, [slot, uploadToCloud]);
 
   return {
+    importPhase,
+    importError,
+    importedDwg,
+    cancelImport: () => importController.current?.abort(),
     onFrameLoad,
     recent,
     savedAt,

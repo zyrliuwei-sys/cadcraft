@@ -66,5 +66,8 @@ package-lock.json
 # Runtime image uploads (no-storage local fallback)
 /public/uploads/
 
+# Generated from the pinned dwgdxf package by predev/prebuild/precf:build.
+/public/dwg-converter/
+
 # IndexNow installer backups
 .indexnow-backup-*

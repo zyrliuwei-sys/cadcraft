@@ -12,7 +12,8 @@ type EditorWindow = Window & typeof globalThis;
 
 export interface EditorHandlers {
   /** The user picked a file with the editor's Open dialog. */
-  onUserOpen?: (file: File) => void;
+  /** Return true to handle the import outside the editor (e.g. DWG conversion). */
+  onUserOpen?: (file: File) => boolean | void;
   /** The user saved or exported (the download still happens). */
   onUserSave?: (file: File) => void;
   /** Real keyboard or pointer input inside the editor. */
@@ -25,6 +26,9 @@ export interface EditorBridge {
   snapshot: () => Promise<File | null>;
   /** Open a file in a new editor tab. */
   open: (file: File) => boolean;
+  /** Confirm the editor can export the imported drawing under its new name. */
+  confirmOpen: (name: string, signal: AbortSignal) => Promise<File | null>;
+  dispose: () => void;
 }
 
 const SAVE_TIMEOUT = 3000;
@@ -105,28 +109,38 @@ export function attachEditor(
       return inputClick.call(this);
     };
 
-    doc.addEventListener('change', (e) => {
+    const onChange = (e: Event) => {
       const el = e.target as HTMLInputElement | null;
       if (el?.type !== 'file' || el.dataset.ccRestore) return;
       const file = el.files?.[0];
-      if (file) handlers.onUserOpen?.(file);
-    });
+      if (file && handlers.onUserOpen?.(file)) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+      }
+    };
+    // Intercept before the Rust listener reads DWG bytes as unsupported input.
+    doc.addEventListener('change', onChange, true);
+    const onDrop = (e: DragEvent) => {
+      const files = Array.from(e.dataTransfer?.files ?? []);
+      if (!files.length || !handlers.onUserOpen) return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      for (const file of files) handlers.onUserOpen(file);
+    };
+    doc.addEventListener('drop', onDrop, true);
+    const onInput = (e: Event) => {
+      if (e.isTrusted) handlers.onInput?.();
+    };
     // Capture phase: the editor stops propagation of its canvas input.
     for (const type of ['keydown', 'pointerup']) {
-      doc.addEventListener(
-        type,
-        (e) => {
-          if (e.isTrusted) handlers.onInput?.();
-        },
-        true
-      );
+      doc.addEventListener(type, onInput, true);
     }
 
     const ready = () =>
       !doc.getElementById('cadcraft_loading') &&
       !!doc.getElementById('cadcraft_canvas');
 
-    return {
+    const bridge: EditorBridge = {
       ready,
       snapshot: () =>
         new Promise((resolve) => {
@@ -153,7 +167,31 @@ export function attachEditor(
         }, SAVE_TIMEOUT);
         return ok;
       },
+      confirmOpen: async (name, signal) => {
+        // A file-picker event alone isn't success. Wait for the active drawing
+        // to export under the imported name, proving the editor decoded it.
+        const deadline = Date.now() + 10_000;
+        while (!signal.aborted && Date.now() < deadline) {
+          await new Promise((r) => setTimeout(r, 250));
+          if (signal.aborted) return null;
+          const file = await bridge.snapshot();
+          if (file?.name === name) return file;
+        }
+        return null;
+      },
+      dispose: () => {
+        if (anchor.click !== anchorClick) anchor.click = anchorClick;
+        if (input.click !== inputClick) input.click = inputClick;
+        doc.removeEventListener('change', onChange, true);
+        doc.removeEventListener('drop', onDrop, true);
+        for (const type of ['keydown', 'pointerup'])
+          doc.removeEventListener(type, onInput, true);
+        pendingSave?.(null);
+        pendingSave = null;
+        pendingOpen = null;
+      },
     };
+    return bridge;
   } catch {
     return null;
   }

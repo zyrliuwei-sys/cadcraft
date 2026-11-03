@@ -28,6 +28,7 @@ import { GoogleAnalytics } from '@/components/analytics/google-analytics';
 import { PageViewTracker } from '@/components/analytics/page-view-tracker';
 import { Plausible } from '@/components/analytics/plausible';
 import { PurchaseTracker } from '@/components/analytics/purchase-tracker';
+import { SocialBar } from '@/components/analytics/social-bar';
 import { CustomerService } from '@/components/customer-service';
 import { GoogleOneTap } from '@/components/google-one-tap';
 import { SandboxPreviewBridge } from '@/components/sandbox-preview-bridge';
@@ -175,15 +176,7 @@ function RootDocument({ children }: { children: ReactNode }) {
         <HeadContent />
         {isNotFound && <meta name="robots" content="noindex" />}
         {loadAds ? (
-          <>
-            <Ads code={adsenseCode} />
-            {/* Site-wide bellnewyork ad script (not tied to a slot). */}
-            <script
-              async
-              data-cfasync="false"
-              src="https://bellnewyork.org/14/fce47047e81a209da1feffeb74c48996"
-            />
-          </>
+          <Ads code={adsenseCode} />
         ) : (
           <meta name="google-adsense-account" content={adsenseCode} />
         )}
@@ -191,6 +184,7 @@ function RootDocument({ children }: { children: ReactNode }) {
       <body className="font-sans antialiased">
         {children}
         <Scripts />
+        <SocialBar enabled={loadAds} />
       </body>
     </html>
   );
