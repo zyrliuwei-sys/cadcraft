@@ -27,7 +27,7 @@ export const meta = {
     ],
     [
       'Which format works in the CADCraft online editor?',
-      'DXF only. The online editor at cadcraft.org/online reads and saves DXF. Convert DWG to DXF in the desktop app first.',
+      'The online editor reads and saves DXF, and now imports DWG locally in beta (up to 20 MB). No upload or account is needed. Editing and saving a DWG import use a DXF copy; writing DWG still requires the desktop app.',
     ],
   ],
 };
@@ -96,7 +96,7 @@ The desktop app and the [online editor](/online) share the same menus. Everythin
 
 _The File menu in the CADCraft web build hosted at cadcraft.org/online._
 
-- **Open…** (Ctrl+O / ⌘O): DWG and DXF on the desktop, DXF only online.
+- **Open…** (Ctrl+O / ⌘O): DWG and DXF on the desktop; DXF and local DWG import beta (up to 20 MB) online.
 - **Save As…**: choose DXF or DWG and a version from 2000 to 2018 (desktop). Online, files are saved as DXF and downloaded to your computer.
 - **Export to PDF…** and **Print…**/PLOT: vector PDF, including paper-space layouts.
 - **Export…**: SVG and PNG.
@@ -115,7 +115,7 @@ On the free plan, online drawings stay in your browser. CADCraft Online Pro ($4.
 
 **"Text is in the wrong font or boxes appear."** The drawing uses SHX fonts or characters your system fonts don't cover. Install a wide-coverage font such as Noto Sans CJK and set it with `FONTALT` or `FONTFALLBACK`.
 
-**"The online editor says DWG files can't be opened."** That's expected: the web version reads DXF only. Convert on the desktop first.
+**"The online editor could not open my DWG."** Use **Open DWG / DXF** or drop the file onto the editor. Browser import is in beta with a 20 MB limit. For an unsupported version, damaged file or conversion failure, try the desktop app. Keep the original DWG.
 
 ## FAQ
 

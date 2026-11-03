@@ -71,6 +71,7 @@ export function CadOnlinePage() {
     invalid: m['cad.online.import_error_invalid'](),
     version: m['cad.online.import_error_version'](),
     conversion: m['cad.online.import_error_conversion'](),
+    reader_failed: m['cad.online.import_error_reader'](),
     timeout: m['cad.online.import_error_timeout'](),
     cancelled: m['cad.online.import_cancelled'](),
     not_ready: m['cad.online.import_error_ready'](),

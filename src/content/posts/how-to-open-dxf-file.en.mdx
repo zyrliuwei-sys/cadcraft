@@ -82,7 +82,7 @@ The last row is common with files from CAM software and scripts. They often writ
 
 | Way                                                                     | Install?  | Can edit?       | Best for                                      | Watch out for                                                                                    |
 | ----------------------------------------------------------------------- | --------- | --------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| 1. CADCraft online ([/online](/online))                                 | No        | Yes (2D)        | Quick look or edit on any computer            | DXF only, never DWG; first load downloads about 8–23 MB                                          |
+| 1. CADCraft online ([/online](/online))                                 | No        | Yes (2D)        | Quick look or edit on any computer            | DWG import beta up to 20 MB; saves DXF; first load downloads about 8–23 MB                       |
 | 2. Other free desktop CAD (LibreCAD, QCAD and similar)                  | Yes       | Yes (2D)        | DXF-first 2D drafting                         | Each program's DXF coverage differs; check its release notes                                     |
 | 3. CADCraft desktop ([download](/download))                             | Yes       | Yes (2D)        | Large files, the command line, scripting      | Early development; saving drops objects it doesn't model                                         |
 | 4. Import into another program (Inkscape, a CAM or laser tool, FreeCAD) | Yes       | In that program | Turning the drawing into cut paths or artwork | An import isn't an open: dimensions, hatches and blocks may arrive as plain shapes or not at all |
@@ -157,7 +157,7 @@ For Chinese, Japanese or Korean text, use a CJK font such as `Noto Sans CJK TC`.
 
 ### It's actually a DWG
 
-A file renamed to `.dxf` whose first six bytes are `AC1032` (or another `AC10xx` code) and the rest binary is a DWG. The online editor doesn't read DWG. Open it in the desktop app, or follow [How to convert DWG to DXF](/blog/dwg-to-dxf).
+A file renamed to `.dxf` whose first six bytes are `AC1032` (or another `AC10xx` code) and the rest binary is a DWG. Use its original `.dwg` name and the online **Open DWG / DXF** button for local import (beta, up to 20 MB), or open it in the desktop app. See [How to convert DWG to DXF](/blog/dwg-to-dxf).
 
 ## Can you open a DXF file on a phone?
 

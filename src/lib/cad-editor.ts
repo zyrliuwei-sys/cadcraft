@@ -111,7 +111,12 @@ export function attachEditor(
 
     const onChange = (e: Event) => {
       const el = e.target as HTMLInputElement | null;
-      if (el?.type !== 'file' || el.dataset.ccRestore) return;
+      if (
+        el?.type !== 'file' ||
+        el.dataset.ccRestore ||
+        el.id !== 'cadcraft_open_input'
+      )
+        return;
       const file = el.files?.[0];
       if (file && handlers.onUserOpen?.(file)) {
         e.preventDefault();
@@ -122,7 +127,11 @@ export function attachEditor(
     doc.addEventListener('change', onChange, true);
     const onDrop = (e: DragEvent) => {
       const files = Array.from(e.dataTransfer?.files ?? []);
-      if (!files.length || !handlers.onUserOpen) return;
+      if (
+        !files.some((f) => /\.(dwg|dxf)$/i.test(f.name)) ||
+        !handlers.onUserOpen
+      )
+        return;
       e.preventDefault();
       e.stopImmediatePropagation();
       for (const file of files) handlers.onUserOpen(file);

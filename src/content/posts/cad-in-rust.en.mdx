@@ -87,7 +87,7 @@ There's no Electron and no web view. All icons are drawn in code, and the hatch 
 
 ## One codebase, native and WebAssembly
 
-The browser version at [cadcraft.org/online](/online) is the same Rust code compiled to `wasm32`. "Never break wasm" is a project rule, and the CI task builds the wasm target on every change. Two things differ in the browser: DWG isn't available (the DWG bridge is native only), and there's no file system, so files come in through the file picker and leave as downloads.
+The browser version at [cadcraft.org/online](/online) is the same Rust code compiled to `wasm32`. "Never break wasm" is a project rule, and the CI task builds the wasm target on every change. The hosted page now adds a separate local WebAssembly DWG-to-DXF converter (beta, up to 20 MB) before sending the DXF to the editor. Writing DWG remains a desktop feature. There is no file system in the browser, so files come in through a picker or drag-and-drop and leave as downloads.
 
 The WebAssembly binary served on this site is 22.5 MB (8.4 MB gzipped). That's a lot for a web page and small for a CAD program.
 

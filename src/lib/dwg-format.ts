@@ -19,6 +19,7 @@ export type ImportErrorCode =
   | 'invalid'
   | 'version'
   | 'conversion'
+  | 'reader_failed'
   | 'timeout'
   | 'cancelled'
   | 'not_ready'

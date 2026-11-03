@@ -1178,7 +1178,7 @@
   "cad.page.download.title": "CADCraft 下载：Windows、macOS、Linux 安装指南",
   "cad.page.download.description": "免费下载 ArtCraft CADCraft v0.8.0，支持 Windows、macOS、Linux 和 FreeBSD。分步安装指南、文件校验、源码构建与网页版。",
   "cad.page.online.title": "CADCraft 在线版：在浏览器中免费使用 CAD",
-  "cad.page.online.description": "通过 WebAssembly 在浏览器中运行完整的 ArtCraft CADCraft。无需安装，画图无需账号，在线绘图、编辑并导出 DXF、PDF、SVG、PNG。",
+  "cad.page.online.description": "免费在浏览器中打开 DWG 和 DXF 图纸，无需安装或注册。DWG 在本机转换（最大 20 MB），随后编辑和保存 DXF 副本。",
   "cad.page.tutorials.title": "CADCraft 教程：新手基础命令",
   "cad.page.tutorials.description": "分步学习 CADCraft：命令行、坐标、绘图与修改、对象捕捉、图层、标注、布局、导出，以及用 CLI 和 MCP 自动化。",
   "cad.page.compare.title": "CADCraft 对比 AutoCAD：区别、优势与如何选择",
@@ -1560,6 +1560,7 @@
   "cad.online.import_error_timeout": "转换耗时过长，已停止。请尝试较小的图纸或使用桌面版。",
   "cad.online.import_error_ready": "编辑器尚未就绪。请等待画布加载完成后重新打开图纸。",
   "cad.online.import_error_open": "编辑器未能确认成功打开图纸。请尝试其他图纸或使用桌面版。",
-  "cad.online.import_error_busy": "已有图纸正在打开。请等待完成或取消后，再打开下一张。",
-  "cad.online.import_desktop": "下载桌面版"
+  "cad.online.import_error_busy": "请每次打开一张图纸，额外选择的文件未被打开。",
+  "cad.online.import_desktop": "下载桌面版",
+  "cad.online.import_error_reader": "DWG 读取器加载失败，请检查网络后重试。图纸未被上传。"
 }

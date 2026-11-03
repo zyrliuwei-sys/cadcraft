@@ -18,8 +18,8 @@ export const meta = {
       'Usually DXF, and often a specific old version such as R12, because many CAM programs read only simple DXF. Ask the shop which version they want. CADCraft writes DXF 2000 to 2018, not R12.',
     ],
     [
-      'Why does the CADCraft online editor accept DXF but not DWG?',
-      'The web build of CADCraft reads DXF only. DWG goes through a separate conversion library in the desktop app. Open the DWG on the desktop, save it as DXF, and the online editor can open it.',
+      'Can the CADCraft online editor open DWG?',
+      'Yes. The hosted editor now converts DWG to DXF locally in the browser (beta, up to 20 MB), without uploading the drawing. Editing and saving use a DXF copy. Writing DWG still requires the desktop app.',
     ],
     [
       'Can I open a DXF file in a text editor?',
@@ -28,7 +28,7 @@ export const meta = {
   ],
 };
 
-**The difference in one line:** DWG is AutoCAD's native, binary, undocumented format. DXF is the documented exchange format that almost every CAD, CAM and vector program can read. **Send DWG** when the other person uses AutoCAD and needs the drawing back exactly as it was. **Send DXF** when you don't know what they use, when the file goes to a laser cutter or CNC machine, or when it needs to open in a browser tool such as the [CADCraft online editor](/online), which reads DXF only.
+**The difference in one line:** DWG is AutoCAD's native, binary, undocumented format. DXF is the documented exchange format that almost every CAD, CAM and vector program can read. **Send DWG** when the other person uses AutoCAD and needs the drawing back exactly as it was. **Send DXF** when you don't know what they use, when the file goes to a laser cutter or CNC machine, or when it needs to open in a browser tool such as the [CADCraft online editor](/online), which imports DWG locally in beta (up to 20 MB) and edits and saves DXF.
 
 _cadcraft.org is an independent guide, not the official site._
 
@@ -45,7 +45,7 @@ _Left: the real first lines of the CADCraft sample `apartment.dxf`. Right: a DWG
 
 ## How to convert between DXF and DWG with CADCraft
 
-Both directions need the **desktop app** ([download](/download)). The online version can't read or write DWG.
+**DWG → DXF** is also available in the [online editor](/online): open a DWG up to 20 MB, then Save a DXF copy. This browser import is in beta and runs locally. **DXF → DWG** still needs the **desktop app** ([download](/download)).
 
 **DWG → DXF**
 
@@ -99,7 +99,7 @@ These come from the project's own file-format document (reviewed October 2026), 
 
 **"I converted DWG → DXF → DWG and the file got smaller."** Something was probably dropped: 3D objects, proxy objects, or settings beyond the 36 header variables. Compare object counts with `cadcraft-cli info` on both files.
 
-**"The online editor won't take my file."** If it's a `.dwg`, the online version shows a notice that DWG files can't be opened online yet. Convert to DXF on the desktop first. If it's a DXF and the canvas stays blank, run zoom to extents (`zoom`, Enter, `e`, Enter).
+**"The online editor won't take my file."** For a `.dwg`, use **Open DWG / DXF** or drop it onto the editor. Browser import is in beta with a 20 MB limit; try the desktop app if conversion fails. If it's a DXF and the canvas stays blank, run zoom to extents (`zoom`, Enter, `e`, Enter).
 
 ## FAQ
 

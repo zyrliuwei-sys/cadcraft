@@ -1178,7 +1178,7 @@
   "cad.page.download.title": "CADCraft Download: Windows, macOS & Linux Install Guide",
   "cad.page.download.description": "Download ArtCraft CADCraft v0.8.0 free for Windows, macOS, Linux and FreeBSD. Step-by-step install guide, checksums, build from source and the web version.",
   "cad.page.online.title": "CADCraft Online: Use the Free CAD App in Your Browser",
-  "cad.page.online.description": "Run the full ArtCraft CADCraft app in your browser with WebAssembly. No install and no account needed to draw. Draw, edit and export DXF, PDF, SVG and PNG online.",
+  "cad.page.online.description": "Open DWG and DXF drawings in your browser for free. No install or account required. DWG converts locally on your device (up to 20 MB); edit and save a DXF copy.",
   "cad.page.tutorials.title": "CADCraft Tutorial: Basic Commands for Beginners",
   "cad.page.tutorials.description": "Learn CADCraft step by step: command line, coordinates, drawing and editing, object snaps, layers, dimensions, layouts, export, and automation with the CLI and MCP.",
   "cad.page.compare.title": "CADCraft vs AutoCAD: Differences, Advantages & Which to Choose",
@@ -1560,6 +1560,7 @@
   "cad.online.import_error_timeout": "Conversion took too long and was stopped. Try a smaller drawing or the desktop app.",
   "cad.online.import_error_ready": "The editor is not ready. Wait for the canvas to load, then try opening the drawing again.",
   "cad.online.import_error_open": "The editor could not confirm opening this drawing. Try another file or the desktop app.",
-  "cad.online.import_error_busy": "A drawing is already being opened. Wait for it to finish or cancel it before opening another.",
-  "cad.online.import_desktop": "Get the desktop app"
+  "cad.online.import_error_busy": "Open one drawing at a time. Additional files were not opened.",
+  "cad.online.import_desktop": "Get the desktop app",
+  "cad.online.import_error_reader": "The DWG reader could not load. Check your connection and try again; your drawing has not been uploaded."
 }

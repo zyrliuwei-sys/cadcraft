@@ -29,7 +29,10 @@ export async function convertDwg(
         type: 'module',
       }
     );
+    let settled = false;
     const finish = (error?: ImportErrorCode, output?: ArrayBuffer) => {
+      if (settled) return;
+      settled = true;
       clearTimeout(timer);
       signal.removeEventListener('abort', cancel);
       worker.terminate();
@@ -54,6 +57,7 @@ export async function convertDwg(
         code?: ImportErrorCode;
       }>
     ) => {
+      if (settled) return;
       if (event.data.type === 'converting') onConverting();
       else if (event.data.type === 'error')
         finish(event.data.code ?? 'conversion');

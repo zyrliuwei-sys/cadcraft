@@ -11,7 +11,7 @@ export const meta = {
   faq: [
     [
       'Can I open a DWG file online in CADCraft?',
-      'No. The online version at cadcraft.org/online reads DXF only. Open the DWG in the free desktop app, use File ▸ Save As… to save a DXF copy, and open that DXF in the browser.',
+      'Yes. Open cadcraft.org/online and choose Open DWG / DXF, or drop a DWG onto the editor. Browser import is in beta, supports files up to 20 MB, and converts locally without uploading your drawing. Editing and saving use a DXF copy; keep the original DWG.',
     ],
     [
       'Which DWG versions does CADCraft open?',
@@ -28,7 +28,7 @@ export const meta = {
   ],
 };
 
-**Short answer:** install the free CADCraft desktop app from the [download page](/download), then use **File ▸ Open…** and pick the `.dwg`. The desktop app opens DWG from R13 up to the 2018 format, and that range includes files saved by AutoCAD 2018 through 2027. If you only need a picture, run `cadcraft-cli convert drawing.dwg drawing.png`. If you want to keep working in the browser, save a DXF copy first. The [online editor](/online) does **not** read DWG.
+**Short answer:** install the free CADCraft desktop app from the [download page](/download), then use **File ▸ Open…** and pick the `.dwg`. The desktop app opens DWG from R13 up to the 2018 format, and that range includes files saved by AutoCAD 2018 through 2027. If you only need a picture, run `cadcraft-cli convert drawing.dwg drawing.png`. For a browser workflow, the [online editor](/online) now imports DWG locally in beta (up to 20 MB), without an account. Editing and saving use DXF; keep the original DWG.
 
 _cadcraft.org is an independent guide, not the official site. CADCraft is made by the ArtCraft team: see [getartcraft.com/apps/cadcraft](https://getartcraft.com/apps/cadcraft)._
 
@@ -108,17 +108,13 @@ Because this runs without a window, it also works in scripts, for example to ren
 
 ## Step 4 (optional): Keep working in the browser
 
-The online editor runs the same CADCraft app in your browser through WebAssembly, but it reads **DXF only**. If you pick a DWG there, this notice appears instead:
+The hosted [online editor](/online) now accepts DWG through a local WebAssembly converter. Browser import is in beta, with a **20 MB DWG limit**. The drawing is converted on your device and is not uploaded.
 
-![The notice on cadcraft.org/online when a DWG is opened: "DWG files can't be opened online yet. The web version of CADCraft reads DXF only."](/imgs/blog/online-dwg-notice.webp)
+1. Choose **Open DWG / DXF**, or drop the DWG onto the editor.
+2. Wait for the reader, conversion and editor check to finish. A success message names the opened DXF copy.
+3. Edit in the canvas. **Save** downloads a DXF copy; it does not overwrite or write a DWG.
 
-_What cadcraft.org/online shows when you choose a `.dwg` file._
-
-The workaround takes about a minute:
-
-1. In the desktop app, open the DWG and choose **File ▸ Save As…**.
-2. Save it as **DXF**.
-3. Go to the [online editor](/online), click into the canvas, press Ctrl+O and pick the `.dxf`.
+Keep the original DWG. Unsupported objects, custom objects and some formatting may be omitted. For a file that exceeds the limit or fails conversion, use the desktop workflow above.
 
 On the free plan the drawing stays in your browser: auto-save keeps recent drawings on that device, and Save downloads a file. The optional CADCraft Online Pro plan ($4.9/month or $29/year) adds cloud drawings, version history and share links. You don't need it to open or edit anything.
 

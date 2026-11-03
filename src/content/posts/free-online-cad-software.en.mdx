@@ -15,11 +15,11 @@ export const meta = {
     ],
     [
       'Can I use AutoCAD online for free?',
-      'Not for editing beyond the trial. AutoCAD Web is part of an AutoCAD subscription. To only look at a DWG, Autodesk Viewer is free with an Autodesk account. For free 2D editing in a browser, use a DXF-based tool such as CADCraft online and convert DWG to DXF first.',
+      'Not for editing beyond the trial. AutoCAD Web is part of an AutoCAD subscription. To only look at a DWG, Autodesk Viewer is free with an Autodesk account. For free 2D editing in a browser, CADCraft online now imports DWG locally in beta (up to 20 MB) and edits and saves DXF copies.',
     ],
     [
       'Can online CAD open DWG files?',
-      'Cloud tools from Autodesk (AutoCAD Web, Autodesk Viewer) open DWG. CADCraft’s browser version reads DXF only; its desktop app opens DWG R13 to 2018. Save the DWG as DXF, or use the desktop app, if you want to stay free.',
+      'Cloud tools from Autodesk (AutoCAD Web, Autodesk Viewer) open DWG. CADCraft’s hosted browser editor also imports DWG locally in beta (up to 20 MB), without an upload or account; editing and saving use DXF. Its desktop app supports DWG read/write.',
     ],
     [
       'Is my drawing private in an online CAD tool?',
@@ -54,14 +54,14 @@ Neither is better in general. For a client's drawing under NDA, in-browser is ea
 
 ## The free online CAD tools compared
 
-| Tool                | Runs              | 2D / 3D                         | Free plan                                   | Opens DWG    | Account     |
-| ------------------- | ----------------- | ------------------------------- | ------------------------------------------- | ------------ | ----------- |
-| **CADCraft online** | In-browser (WASM) | 2D drafting                     | Free and open source (MIT/Apache-2.0)       | No, DXF only | None        |
-| Onshape Free        | Cloud             | Parametric 3D + drawings        | Non-commercial, documents are public        | Import       | Required    |
-| Tinkercad           | Cloud             | Simple 3D (blocks, 3D printing) | Free                                        | No           | Autodesk ID |
-| AutoCAD Web         | Cloud             | 2D DWG editing                  | Trial, then part of an AutoCAD subscription | Yes          | Autodesk ID |
-| Autodesk Viewer     | Cloud             | View and mark up only           | Free                                        | Yes (view)   | Autodesk ID |
-| SketchUp Free       | Cloud             | 3D modelling                    | Non-commercial use                          | No           | Trimble ID  |
+| Tool                | Runs              | 2D / 3D                         | Free plan                                   | Opens DWG                         | Account     |
+| ------------------- | ----------------- | ------------------------------- | ------------------------------------------- | --------------------------------- | ----------- |
+| **CADCraft online** | In-browser (WASM) | 2D drafting                     | Free and open source (MIT/Apache-2.0)       | Yes, local import beta; saves DXF | None        |
+| Onshape Free        | Cloud             | Parametric 3D + drawings        | Non-commercial, documents are public        | Import                            | Required    |
+| Tinkercad           | Cloud             | Simple 3D (blocks, 3D printing) | Free                                        | No                                | Autodesk ID |
+| AutoCAD Web         | Cloud             | 2D DWG editing                  | Trial, then part of an AutoCAD subscription | Yes                               | Autodesk ID |
+| Autodesk Viewer     | Cloud             | View and mark up only           | Free                                        | Yes (view)                        | Autodesk ID |
+| SketchUp Free       | Cloud             | 3D modelling                    | Non-commercial use                          | No                                | Trimble ID  |
 
 Some notes the table can't hold:
 
@@ -99,7 +99,7 @@ If you know AutoCAD, the commands and aliases will feel familiar (`L` for LINE, 
 
 ### Where it falls short (read this before you start a real job)
 
-- **DXF only.** The web build doesn't read or write DWG. Convert first ([DWG to DXF](/blog/dwg-to-dxf)), or use the desktop app, which opens DWG R13 to 2018.
+- **DWG import beta.** Choose **Open DWG / DXF** or drop a DWG (up to 20 MB). Conversion runs locally, then the editor edits and saves a DXF copy. Unsupported objects may be omitted; keep your original. Writing DWG still requires the desktop app.
 - **No autosave.** The desktop app autosaves; the browser version doesn't yet. Save to DXF often. A closed tab loses unsaved work.
 - **PDF plotting in the browser is unreliable.** The project lists a known issue where plotting shows raw PDF bytes. Export SVG or PNG, or plot from the desktop app.
 - **Pre-alpha software.** CADCraft's own roadmap rates it about 38% ready for real work. It's fine for sketches, plates, simple plans and DXF fixes. Check anything critical before you send it.
