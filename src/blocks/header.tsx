@@ -6,6 +6,7 @@ export function Header() {
     { href: '/download', label: m['cad.nav.download']() },
     { href: '/online', label: m['cad.nav.online']() },
     { href: '/tutorials', label: m['cad.nav.tutorials']() },
+    { href: '/blog', label: m['cad.nav.blog']() },
     { href: '/vs-autocad', label: m['cad.nav.compare']() },
     { href: '/pricing', label: m['cad.nav.pricing']() },
   ];
