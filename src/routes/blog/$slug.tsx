@@ -37,28 +37,31 @@ export const Route = createFileRoute('/blog/$slug')({
       locale,
       title: `${post.title} | ${envConfigs.app_name}`,
       description: post.description,
-      jsonLd: [
-        {
-          '@context': 'https://schema.org',
-          '@type': 'Article',
-          headline: post.title,
-          description: post.description,
-          datePublished: new Date(post.createdAt).toISOString(),
-        },
-        ...(post.faq?.length
-          ? [
-              {
-                '@context': 'https://schema.org',
-                '@type': 'FAQPage',
-                mainEntity: post.faq.map(([q, a]) => ({
-                  '@type': 'Question',
-                  name: q,
-                  acceptedAnswer: { '@type': 'Answer', text: a },
-                })),
-              },
-            ]
-          : []),
-      ],
+      // Keep Article and FAQ in one data script so head reconciliation
+      // cannot replace one inline JSON-LD script with the other.
+      jsonLd: {
+        '@context': 'https://schema.org',
+        '@graph': [
+          {
+            '@type': 'Article',
+            headline: post.title,
+            description: post.description,
+            datePublished: new Date(post.createdAt).toISOString(),
+          },
+          ...(post.faq?.length
+            ? [
+                {
+                  '@type': 'FAQPage',
+                  mainEntity: post.faq.map(([q, a]) => ({
+                    '@type': 'Question',
+                    name: q,
+                    acceptedAnswer: { '@type': 'Answer', text: a },
+                  })),
+                },
+              ]
+            : []),
+        ],
+      },
     });
     return {
       ...head,
