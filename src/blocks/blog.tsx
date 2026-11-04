@@ -6,13 +6,13 @@ import { getLocale } from '@/paraglide/runtime.js';
 import { BlogCard } from '@/components/blog-card';
 import { formatPostDate, type BlogPost } from '@/content/posts';
 
-// Latest-posts landing section. Posts arrive via props (fetched in the
-// landing route's loader through the blog server functions) so this block
-// stays free of database imports.
 export function Blog({ posts }: { posts: BlogPost[] }) {
   const locale = getLocale();
 
   if (posts.length === 0) return null;
+
+  const featuredPosts = posts.slice(0, 3);
+  const olderPosts = posts.slice(3);
 
   return (
     <section id="blog" className="px-4 py-24 sm:py-32">
@@ -26,7 +26,7 @@ export function Blog({ posts }: { posts: BlogPost[] }) {
           </p>
         </div>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {posts.map((post) => (
+          {featuredPosts.map((post) => (
             <BlogCard
               key={post.slug}
               href={`/blog/${post.slug}`}
@@ -39,6 +39,25 @@ export function Blog({ posts }: { posts: BlogPost[] }) {
             />
           ))}
         </div>
+        {olderPosts.length > 0 && (
+          <details className="border-border mt-8 border-y py-4">
+            <summary className="text-foreground cursor-pointer text-sm font-medium">
+              {m['landing.blog.more_posts']()}
+            </summary>
+            <ul className="mt-4 grid gap-x-8 gap-y-3 sm:grid-cols-2">
+              {olderPosts.map((post) => (
+                <li key={post.slug}>
+                  <Link
+                    href={`/blog/${post.slug}`}
+                    className="text-muted-foreground hover:text-foreground text-sm hover:underline"
+                  >
+                    {post.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </details>
+        )}
         <div className="mt-10 text-center">
           <Link
             href="/blog"

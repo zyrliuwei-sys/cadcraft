@@ -1,6 +1,6 @@
 import { createFileRoute, notFound } from '@tanstack/react-router';
 import { MDXProvider } from '@mdx-js/react';
-import { ArrowLeft, Calendar } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 
 import { Link } from '@/core/i18n/navigation';
 import { envConfigs } from '@/config';
@@ -17,6 +17,14 @@ import {
 } from '@/components/analytics/banner-ad';
 import { MarkdownContent } from '@/components/markdown-content';
 import { mdxComponents } from '@/components/mdx-components';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
 import { formatPostDate, loadLocalPost } from '@/content/posts';
 import { getBlogPostFn } from '@/content/posts/server';
 
@@ -86,13 +94,25 @@ function BlogPostPage() {
         {/* xl+: ad in a sticky right rail; below xl it drops under the article. */}
         <div className="mx-auto max-w-3xl xl:grid xl:max-w-[calc(48rem+300px+3rem)] xl:grid-cols-[minmax(0,48rem)_300px] xl:gap-12">
           <article className="min-w-0">
-            <Link
-              href="/blog"
-              className="text-muted-foreground hover:text-foreground inline-flex items-center gap-2 text-sm font-medium transition-colors"
-            >
-              <ArrowLeft className="size-4" />
-              {m['blog.back_to_blog']()}
-            </Link>
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink render={<Link href="/" />}>
+                    {m['common.systems.home']()}
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbLink render={<Link href="/blog" />}>
+                    {m['cad.nav.blog']()}
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>{post.title}</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
 
             <header className="border-border mt-8 mb-6 border-b pb-6">
               <h1 className="text-foreground text-3xl font-semibold tracking-tight md:text-4xl">

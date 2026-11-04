@@ -5,6 +5,7 @@ import { CADCRAFT_VERSION, cadcraftLinks } from '@/config/cadcraft';
 import { pageHead } from '@/lib/page-head';
 import { m } from '@/paraglide/messages.js';
 import { getLocale } from '@/paraglide/runtime.js';
+import { Blog } from '@/blocks/blog';
 import {
   CadAgents,
   CadArtCraft,
@@ -23,9 +24,14 @@ import {
 import { Footer } from '@/blocks/footer';
 import { Header } from '@/blocks/header';
 import { HomeNativeAd } from '@/blocks/home-ads';
+import { getBlogPostsFn } from '@/content/posts/server';
 
 export const Route = createFileRoute('/')({
-  loader: () => ({ locale: getLocale() }),
+  loader: async () => {
+    const locale = getLocale();
+    const posts = await getBlogPostsFn({ data: { locale } });
+    return { locale, posts };
+  },
   head: ({ loaderData }) => {
     const heroPreload = {
       rel: 'preload',
@@ -84,6 +90,8 @@ export const Route = createFileRoute('/')({
 });
 
 function HomePage() {
+  const { posts } = Route.useLoaderData();
+
   return (
     <>
       <Header />
@@ -99,6 +107,7 @@ function HomePage() {
         <CadCompareTeaser />
         <CadDownload />
         <CadLearn />
+        <Blog posts={posts} />
         <CadFaq />
         <CadCta />
       </main>
