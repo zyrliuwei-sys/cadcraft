@@ -5,6 +5,7 @@ import { parseStoredFooterBadges } from '@/features/footer-badges/validation';
 
 import { cn } from '@/lib/utils';
 import { usePublicConfig } from '@/hooks/use-public-config';
+import { FooterBadgeLink } from '@/components/footer-badge-link';
 
 function BadgeTrack({
   badges,
@@ -20,27 +21,12 @@ function BadgeTrack({
     >
       {badges.map((badge, index) => (
         <li key={`${index}:${badge.href}:${badge.src}`} className="shrink-0">
-          <a
-            href={badge.href}
-            target="_blank"
-            rel={badge.rel ?? 'noopener noreferrer'}
-            tabIndex={hidden ? -1 : undefined}
+          <FooterBadgeLink
+            badge={badge}
+            hidden={hidden}
             className="flex h-6 items-center transition-opacity hover:opacity-80"
-          >
-            {badge.src ? (
-              <img
-                src={badge.src}
-                alt={hidden ? '' : badge.alt}
-                width={badge.width ?? 250}
-                height={badge.height}
-                loading="lazy"
-                draggable={false}
-                className="h-full w-auto max-w-[130px] object-contain"
-              />
-            ) : (
-              <span className="px-3 text-sm font-medium">{badge.alt}</span>
-            )}
-          </a>
+            imageClassName="h-full w-auto max-w-[130px] object-contain"
+          />
         </li>
       ))}
     </ul>
