@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 
 import { envConfigs } from '@/config';
 import { CADCRAFT_VERSION, cadcraftLinks } from '@/config/cadcraft';
+import { siteAuthorJsonLd } from '@/config/site-author';
 import { pageHead } from '@/lib/page-head';
 import { m } from '@/paraglide/messages.js';
 import { getLocale } from '@/paraglide/runtime.js';
@@ -53,36 +54,45 @@ export const Route = createFileRoute('/')({
       locale,
       title,
       description,
-      jsonLd: [
-        {
-          '@context': 'https://schema.org',
-          '@type': 'SoftwareApplication',
-          name: 'CADCraft',
-          alternateName: 'ArtCraft CADCraft',
-          author: { '@type': 'Organization', name: 'ArtCraft' },
-          image: `${envConfigs.app_url}/imgs/cadcraft/cadcraft-drawing.webp`,
-          applicationCategory: 'DesignApplication',
-          operatingSystem: 'Windows, macOS, Linux, FreeBSD, Web',
-          softwareVersion: CADCRAFT_VERSION,
-          license: [
-            'https://opensource.org/licenses/MIT',
-            'https://opensource.org/licenses/Apache-2.0',
-          ],
-          offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-          downloadUrl: cadcraftLinks.releases,
-          url: envConfigs.app_url,
-          description,
-        },
-        {
-          '@context': 'https://schema.org',
-          '@type': 'FAQPage',
-          mainEntity: faqItems().map(([q, a]) => ({
-            '@type': 'Question',
-            name: q,
-            acceptedAnswer: { '@type': 'Answer', text: a },
-          })),
-        },
-      ],
+      jsonLd: {
+        '@context': 'https://schema.org',
+        '@graph': [
+          {
+            '@type': 'WebPage',
+            url: envConfigs.app_url,
+            name: title,
+            author: siteAuthorJsonLd(),
+            description,
+          },
+          {
+            '@context': 'https://schema.org',
+            '@type': 'SoftwareApplication',
+            name: 'CADCraft',
+            alternateName: 'ArtCraft CADCraft',
+            image: `${envConfigs.app_url}/imgs/cadcraft/cadcraft-drawing.webp`,
+            applicationCategory: 'DesignApplication',
+            operatingSystem: 'Windows, macOS, Linux, FreeBSD, Web',
+            softwareVersion: CADCRAFT_VERSION,
+            license: [
+              'https://opensource.org/licenses/MIT',
+              'https://opensource.org/licenses/Apache-2.0',
+            ],
+            offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+            downloadUrl: cadcraftLinks.releases,
+            url: cadcraftLinks.official,
+            description,
+          },
+          {
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: faqItems().map(([q, a]) => ({
+              '@type': 'Question',
+              name: q,
+              acceptedAnswer: { '@type': 'Answer', text: a },
+            })),
+          },
+        ],
+      },
     });
     return { ...head, links: [heroPreload, ...head.links] };
   },

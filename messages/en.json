@@ -1160,7 +1160,7 @@
   "cad.faq.q6": "Is CADCraft ready for production work?",
   "cad.faq.a6": "It is in early, fast development. Many core drafting commands already work, but some AutoCAD features are missing (for example, SHX fonts are not read yet). Review the project's roadmap and gap list, and keep backups.",
   "cad.faq.q7": "What is cadcraft.org?",
-  "cad.faq.a7": "CADCraft AI (cadcraft.org) is an independent guide to CADCraft: download and installation instructions, an online version, tutorials and a comparison with Autodesk AutoCAD. Downloads link to the official GitHub releases. Contact us at support@cadcraft.org.",
+  "cad.faq.a7": "cadcraft.org is an independent CADCraft guide maintained by {author}, with release links, installation notes, a hosted browser editor and practical tutorials. This site is not part of ArtCraft and is not affiliated with Autodesk. Sources include official GitHub releases and project documentation. Contact support@cadcraft.org.",
   "cad.footer.product": "CADCraft",
   "cad.footer.learn": "Learn",
   "cad.footer.project": "Official project",

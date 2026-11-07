@@ -4,6 +4,7 @@ import { Calendar } from 'lucide-react';
 
 import { Link } from '@/core/i18n/navigation';
 import { envConfigs } from '@/config';
+import { siteAuthorJsonLd } from '@/config/site-author';
 import { pageHead } from '@/lib/page-head';
 import { m } from '@/paraglide/messages.js';
 import { getLocale } from '@/paraglide/runtime.js';
@@ -46,6 +47,7 @@ export const Route = createFileRoute('/blog/$slug')({
         '@graph': [
           {
             '@type': 'Article',
+            author: siteAuthorJsonLd(),
             headline: post.title,
             description: post.description,
             datePublished: new Date(post.createdAt).toISOString(),

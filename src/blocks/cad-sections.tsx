@@ -14,6 +14,7 @@ import {
 
 import { Link } from '@/core/i18n/navigation';
 import { CADCRAFT_VERSION, cadcraftLinks } from '@/config/cadcraft';
+import { siteAuthor } from '@/config/site-author';
 import { ctaPrimary, ctaSecondary } from '@/lib/cta';
 import { cn } from '@/lib/utils';
 import { m } from '@/paraglide/messages.js';
@@ -868,7 +869,7 @@ export function faqItems(): [string, string][] {
     [m['cad.faq.q5'](), m['cad.faq.a5']()],
     [m['home.faq.q9'](), m['home.faq.a9']()],
     [m['cad.faq.q6'](), m['cad.faq.a6']()],
-    [m['cad.faq.q7'](), m['cad.faq.a7']()],
+    [m['cad.faq.q7'](), m['cad.faq.a7']({ author: siteAuthor.name })],
   ];
 }
 
