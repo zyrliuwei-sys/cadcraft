@@ -9,12 +9,6 @@ import { m } from '@/paraglide/messages.js';
 import { getLocale } from '@/paraglide/runtime.js';
 import { Footer } from '@/blocks/footer';
 import { Header } from '@/blocks/header';
-import {
-  BannerAd,
-  BANNERS,
-  NativeAd,
-  ResponsiveBannerAd,
-} from '@/components/analytics/banner-ad';
 import { MarkdownContent } from '@/components/markdown-content';
 import { mdxComponents } from '@/components/mdx-components';
 import {
@@ -91,8 +85,7 @@ function BlogPostPage() {
     <div className="bg-background text-foreground flex min-h-screen flex-col">
       <Header />
       <main className="flex-1 px-6 py-12 md:px-8 md:py-16">
-        {/* xl+: ad in a sticky right rail; below xl it drops under the article. */}
-        <div className="mx-auto max-w-3xl xl:grid xl:max-w-[calc(48rem+300px+3rem)] xl:grid-cols-[minmax(0,48rem)_300px] xl:gap-12">
+        <div className="mx-auto max-w-3xl">
           <article className="min-w-0">
             <Breadcrumb>
               <BreadcrumbList>
@@ -151,8 +144,6 @@ function BlogPostPage() {
               />
             )}
 
-            <ResponsiveBannerAd className="mb-8" />
-
             {LocalContent ? (
               <div className="text-foreground/90 text-[15px] leading-7">
                 <MDXProvider components={mdxComponents}>
@@ -162,37 +153,10 @@ function BlogPostPage() {
             ) : (
               <MarkdownContent content={post.content || ''} />
             )}
-
-            <BannerAd
-              banner={BANNERS.banner468x60}
-              minWidth={768}
-              className="mt-12"
-            />
-
-            <NativeAd className="mt-12" />
           </article>
-          <aside className="mt-12 xl:mt-0">
-            <div className="flex flex-col gap-6 xl:h-full">
-              <BannerAd banner={BANNERS.rect300x250} />
-              <BannerAd banner={BANNERS.skyscraper160x300} minWidth={1280} />
-              <a
-                href="https://ardance.org/4/efe86a83b17ddbc2a61a54b939fac00d"
-                target="_blank"
-                rel="sponsored nofollow noopener noreferrer"
-                className="text-muted-foreground hover:text-foreground text-center text-sm underline underline-offset-4"
-              >
-                {m['blog.sponsored']()}
-              </a>
-              <BannerAd
-                banner={BANNERS.skyscraper160x600}
-                minWidth={1280}
-                className="xl:sticky xl:top-24"
-              />
-            </div>
-          </aside>
         </div>
       </main>
-      <Footer ad={false} />
+      <Footer />
     </div>
   );
 }

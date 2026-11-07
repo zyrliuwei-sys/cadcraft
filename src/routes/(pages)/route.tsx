@@ -18,7 +18,7 @@ function PagesLayout() {
           <Outlet />
         </MDXProvider>
       </main>
-      <Footer ad={false} />
+      <Footer />
     </div>
   );
 }

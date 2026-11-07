@@ -111,7 +111,7 @@ function HomePage() {
         <CadFaq />
         <CadCta />
       </main>
-      <Footer ad={false} />
+      <Footer />
     </>
   );
 }

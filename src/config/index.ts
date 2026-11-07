@@ -23,6 +23,12 @@ export const envConfigs: Record<string, string> = {
   app_description: publicEnv('VITE_APP_DESCRIPTION') ?? 'Ship your SaaS faster',
   app_logo: publicEnv('VITE_APP_LOGO') ?? '/logo.svg',
 
+  // Public display-unit IDs from the AdSense account, never invented.
+  adsense_home_hero_slot:
+    publicEnv('VITE_ADSENSE_HOME_HERO_SLOT') || '4174325864',
+  adsense_home_intro_slot:
+    publicEnv('VITE_ADSENSE_HOME_INTRO_SLOT') || '2966195133',
+
   // Database
   database_url: procEnv.DATABASE_URL ?? '',
   database_auth_token: procEnv.DATABASE_AUTH_TOKEN ?? '',

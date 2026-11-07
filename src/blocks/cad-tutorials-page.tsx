@@ -10,7 +10,6 @@ import { cadcraftLinks } from '@/config/cadcraft';
 import { ctaPrimary } from '@/lib/cta';
 import { m } from '@/paraglide/messages.js';
 import { DocLayout, DocSection, PageHero, Steps } from '@/blocks/cad-doc';
-import { BannerAd, BANNERS } from '@/components/analytics/banner-ad';
 import { CodeBlock } from '@/components/code-block';
 import { SheetFrame } from '@/components/sheet-frame';
 
@@ -187,10 +186,6 @@ export function CadTutorialsPage() {
             <DocSection id={`lesson-${i + 1}`} title={l.title}>
               {l.body}
             </DocSection>
-            {/* One ad halfway through the lessons. */}
-            {i === Math.floor(lessons.length / 2) - 1 && (
-              <BannerAd banner={BANNERS.rect300x250} />
-            )}
           </Fragment>
         ))}
         <section className="bg-sheet-grid border-foreground/80 border p-8">
