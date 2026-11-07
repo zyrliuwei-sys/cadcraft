@@ -26,11 +26,37 @@ export const meta = {
   ],
 };
 
-**Short answer:** yes, you can build a real CAD application in Rust, and [CADCraft](/download) is one: an open-source 2D CAD program with an AutoCAD-style command line, written in **pure Rust**, about 214,000 lines across 12 library crates and three apps. The same code builds a desktop app for Windows, macOS, Linux and FreeBSD, a command-line tool, and a [WebAssembly version that runs in a browser](/online). On a 100,000-line DXF it opens the file in about a third of a second.
+**Short answer:** yes, you can build a real CAD application in Rust, and [CADCraft](/download) is one: an open-source 2D CAD program with an AutoCAD-style command line, written in **pure Rust**, a Cargo workspace of library crates and desktop, CLI and web applications. The same code builds a desktop app for Windows, macOS, Linux and FreeBSD, a command-line tool, and a [WebAssembly version that runs in a browser](/online). On a 100,000-line DXF it opens the file in about a third of a second.
 
 This page is for people who searched "CAD in Rust" or "AutoCAD in Rust" and want to know how it's put together, what Rust buys a CAD program, and what it doesn't.
 
-_cadcraft.org is an independent guide, not the official site. CADCraft is made by the ArtCraft team ([getartcraft.com/apps/cadcraft](https://getartcraft.com/apps/cadcraft)); the code is at [github.com/storytold/cadcraft](https://github.com/storytold/cadcraft) under MIT OR Apache-2.0. Everything below was read from or measured on version 0.13.0 (commit 3929d94, 27 October 2026)._
+_cadcraft.org is an independent guide, not the official site. CADCraft is made by the ArtCraft team ([getartcraft.com/apps/cadcraft](https://getartcraft.com/apps/cadcraft)); the code is at [github.com/storytold/cadcraft](https://github.com/storytold/cadcraft) under MIT OR Apache-2.0. The new verification section uses v0.18.0. Architecture counts and older measurements later in this article were originally recorded on 0.13.0 (commit 3929d94, 27 October 2026); they are historical, not current release guarantees._
+
+## Verified with v0.18.0 on 7 November 2026
+
+![The tagged v0.18.0 Cargo workspace, captured from the upstream repository.](/imgs/blog/review-0180/rust-workspace.png)
+
+_The tagged v0.18.0 Cargo workspace, captured from the upstream repository._
+
+The current architecture can be checked against the tagged workspace rather than a changing default branch. I ran the v0.18.0 CLI’s built-in synthetic benchmark once on macOS/arm64. This is a local synthetic test, not a guarantee for your workstation or real customer drawings:
+
+```text
+$ cadcraft-cli perf 100000
+operation                                          ms  notes
+--------------------------------------------------------------------------------
+build synthetic drawing                         19.54  100000 entities
+display list build                              19.96  233778 prims, 1009595 segments
+first pick (incl. index build)                  33.49  None
+pick x1000                                       1.58  19 hits, 0.002 ms/pick
+pick after one edit (incremental re-index)         2.22
+window/crossing select x20 (10% side)            3.33  18547 selected
+fence select (3 legs)                           11.91  162 selected
+osnap x1000                                      1.55  8 hits, 0.002 ms/query
+DXF write                                      233.05  23.6 MB
+DXF read                                       310.65  100000 entities
+```
+
+[Raw benchmark output](/examples/review-0180/perf100k.txt). Older timings elsewhere in this article are historical measurements; this run is the v0.18.0 comparison point.
 
 ## The architecture: seven layers, enforced by a tool
 

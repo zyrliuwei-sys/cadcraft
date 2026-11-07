@@ -3,21 +3,21 @@ import { PostFaq } from '@/components/post-faq';
 export const meta = {
   title: 'Can CADCraft Do 3D? Modeling, DWG Solids, and STL Explained',
   description:
-    'CADCraft 3D support in v0.17.0: distinguish 3D entities from solid modeling, understand SOLID and 3DPOLY, and plan a DXF-to-3D-printing workflow.',
+    'CADCraft 3D support in v0.18.0: distinguish 3D entities from solid modeling, understand SOLID and 3DPOLY, and plan a DXF-to-3D-printing workflow.',
   created_at: '2026-11-04',
   cover: '/imgs/blog/cadcraft-3d-drawing-vs-volume.svg',
   faq: [
     [
       'Can CADCraft do 3D modeling?',
-      'The v0.17.0 release contains some 3D entity support, including 3D polylines, but it is not a complete solid-modeling workflow. Its documented gaps still include 3D solids, orbit and rendering. Treat it primarily as a 2D drafting tool and verify any specific 3D operation in the release you use.',
+      'The v0.18.0 release contains some 3D entity support, including 3D polylines, but it is not a complete solid-modeling workflow. Its documented gaps still include 3D solids, orbit and rendering. Treat it primarily as a 2D drafting tool and verify any specific 3D operation in the release you use.',
     ],
     [
       'Can CADCraft export STL files for 3D printing?',
-      'STL import and export are not supported in the v0.17.0 file-format documentation checked for this article. Create or transfer the profile into a 3D modeler, give it volume there, and export the resulting mesh for your slicer.',
+      'STL import and export are not supported in the v0.18.0 file-format documentation checked for this article. Create or transfer the profile into a 3D modeler, give it volume there, and export the resulting mesh for your slicer.',
     ],
     [
       'Does the SOLID command create a printable solid in CADCraft?',
-      'No. CADCraft v0.17.0 implements SOLID as filled 2D triangles and quadrilaterals. A filled region on the drawing is different from a closed 3D volume or a watertight triangle mesh.',
+      'No. CADCraft v0.18.0 implements SOLID as filled 2D triangles and quadrilaterals. A filled region on the drawing is different from a closed 3D volume or a watertight triangle mesh.',
     ],
     [
       'Are CADCraft and SolidCraft the same program?',
@@ -26,13 +26,35 @@ export const meta = {
   ],
 };
 
-**CADCraft v0.17.0 is useful for 2D drafting and contains some 3D entity support, but it is not yet a complete 3D solid modeler or an STL exporter.** A `3DPOLY` command, a ViewCube, or “2D and 3D” in a product description does not establish a working sketch → extrusion → solid → printable mesh pipeline.
+**CADCraft v0.18.0 is useful for 2D drafting and contains some 3D entity support, but it is not yet a complete 3D solid modeler or an STL exporter.** A `3DPOLY` command, a ViewCube, or “2D and 3D” in a product description does not establish a working sketch → extrusion → solid → printable mesh pipeline.
 
 If your goal is a floor plan, a dimensioned part drawing or a profile for cutting, CADCraft fits that drawing-first workflow. If your goal is a physical part from a 3D printer, you need an additional modeling and export step.
 
-_Checked on 4 November 2026 against [CADCraft v0.17.0](https://github.com/storytold/cadcraft/releases/tag/v0.17.0), its command implementations and file-format documentation. cadcraft.org is an independent guide, not the upstream ArtCraft product site._
+_Checked on 7 November 2026 against [CADCraft v0.18.0](https://github.com/storytold/cadcraft/releases/tag/v0.18.0), its command implementations and file-format documentation. cadcraft.org is an independent guide, not the upstream ArtCraft product site._
 
 ![A 40 by 20 millimetre flat plate outline with two holes compared with a plate that has 3 millimetres of thickness. The drawing defines a profile; the printable object also needs volume](/imgs/blog/cadcraft-3d-drawing-vs-volume.svg)
+
+## Verified with v0.18.0 on 7 November 2026
+
+![A saved 3D polyline reopened in the v0.18.0 browser editor; the top view is not a rendered solid.](/imgs/blog/review-0180/profile3d.png)
+
+_A saved 3D polyline reopened in the v0.18.0 browser editor; the top view is not a rendered solid._
+
+A 3D entity and a solid modeler are different capabilities. The v0.18.0 command catalogue contains `3dpoly` but no `extrude` command. This real command created one 3D polyline and saved a DXF:
+
+```text
+$ cadcraft-cli run --metric --cmd '3dpoly {"points":[[0,0,0],[40,0,0],[40,20,15],[0,20,0]],"closed":true}' --save profile3d.dxf
+{"handle":"100"}
+$ cadcraft-cli info profile3d.dxf
+# excerpt
+"counts": {"3D Polyline": 1}
+```
+
+The CLI also exported the stored polyline as this flat top-view projection:
+
+![Actual CLI PNG export of the saved 3D polyline, projected as a rectangular outline](/imgs/blog/review-0180/profile3d-export.png)
+
+That successful test establishes a stored 3D polyline, not extrusion, a watertight mesh or STL export. [Download the test DXF](/examples/review-0180/profile3d.dxf) and [full inspection](/examples/review-0180/profile3d-info.json).
 
 ## Three different meanings of “3D support”
 
@@ -48,7 +70,7 @@ Neither fact should be inflated into a promise that an AutoCAD-style `EXTRUDE` w
 
 ## What the checked release supports
 
-| Task                                          | CADCraft v0.17.0 assessment                            | What that means in practice                                                 |
+| Task                                          | CADCraft v0.18.0 assessment                            | What that means in practice                                                 |
 | --------------------------------------------- | ------------------------------------------------------ | --------------------------------------------------------------------------- |
 | Draw a dimensioned 2D profile                 | Supported drafting workflow                            | Useful for outlines, hole positions and drawings                            |
 | Represent 3D polylines                        | Present in the command implementation                  | Coordinates alone do not create a solid                                     |
@@ -61,7 +83,7 @@ The repository's roadmap documents are dated and are not a release-by-release ce
 
 ## Why SOLID is not a printable solid
 
-In CAD terminology, names can outlive their original context. CADCraft's [SOLID implementation](https://github.com/storytold/cadcraft/blob/v0.17.0/crates/engine/src/cmd/draw/solid.rs) explicitly describes **2D solids**: filled triangles and quadrilaterals.
+In CAD terminology, names can outlive their original context. CADCraft's [SOLID implementation](https://github.com/storytold/cadcraft/blob/v0.18.0/crates/engine/src/cmd/draw/solid.rs) explicitly describes **2D solids**: filled triangles and quadrilaterals.
 
 Imagine drawing a rectangle and filling it blue. You now have an area on the page. A 3D printer still needs the missing information: how thick is it, what encloses its sides, and which surfaces define the inside and outside?
 
@@ -132,6 +154,6 @@ For a broader choice of programs, see [open-source CAD by task](/blog/open-sourc
 
 ## Sources
 
-- [CADCraft v0.17.0 file-format assessment](https://github.com/storytold/cadcraft/blob/v0.17.0/docs/file-format-parity.md) and [known gaps](https://github.com/storytold/cadcraft/blob/v0.17.0/docs/gaps.md).
-- [3DPOLY and HELIX implementation](https://github.com/storytold/cadcraft/blob/v0.17.0/crates/engine/src/cmd/draw2/curves3d.rs), [SOLID implementation](https://github.com/storytold/cadcraft/blob/v0.17.0/crates/engine/src/cmd/draw/solid.rs) and [save warnings](https://github.com/storytold/cadcraft/blob/v0.17.0/crates/engine/src/cmd/file.rs).
+- [CADCraft v0.18.0 file-format assessment](https://github.com/storytold/cadcraft/blob/v0.18.0/docs/file-format-parity.md) and [known gaps](https://github.com/storytold/cadcraft/blob/v0.18.0/docs/gaps.md).
+- [3DPOLY and HELIX implementation](https://github.com/storytold/cadcraft/blob/v0.18.0/crates/engine/src/cmd/draw2/curves3d.rs), [SOLID implementation](https://github.com/storytold/cadcraft/blob/v0.18.0/crates/engine/src/cmd/draw/solid.rs) and [save warnings](https://github.com/storytold/cadcraft/blob/v0.18.0/crates/engine/src/cmd/file.rs).
 - [FreeCAD features](https://www.freecad.org/features) and [OpenSCAD's DXF extrusion documentation](https://files.openscad.org/documentation/manual/DXF_Extrusion.html).

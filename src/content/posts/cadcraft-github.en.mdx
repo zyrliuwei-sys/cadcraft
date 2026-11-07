@@ -17,7 +17,7 @@ export const meta = {
     ],
     [
       'Do I need Rust to install CADCraft?',
-      'No. The published desktop installers and portable packages run without a Rust development environment. Rust is needed only if you compile the source. The v0.17.0 workspace specifies Rust 1.95 or later.',
+      'No. The published desktop installers and portable packages run without a Rust development environment. Rust is needed only if you compile the source. The v0.18.0 workspace specifies Rust 1.95 or later.',
     ],
     [
       'Are the CADCraft web download and the desktop download the same?',
@@ -30,9 +30,24 @@ The **official CADCraft GitHub repository is [storytold/cadcraft](https://github
 
 That distinction explains many unsuccessful downloads: the repository, the release page and the browser build are three different destinations.
 
-_Checked on 4 November 2026 against the official README and v0.17.0 release, published on 3 November. cadcraft.org is an independent guide; the upstream product is made by the [ArtCraft team](https://getartcraft.com/apps/cadcraft)._
+_Checked on 7 November 2026 against the official README and v0.18.0 release, published on 6 November. cadcraft.org is an independent guide; the upstream product is made by the [ArtCraft team](https://getartcraft.com/apps/cadcraft)._
 
 ![Three routes from the CADCraft GitHub repository: Releases and Assets for a compiled desktop app, Code and a tagged checkout for developers, or the hosted browser editor for a quick trial](/imgs/blog/cadcraft-github-three-routes.svg)
+
+## Verified with v0.18.0 on 7 November 2026
+
+![Official v0.18.0 GitHub release page captured on 7 November 2026.](/imgs/blog/review-0180/github-release.png)
+
+_Official v0.18.0 GitHub release page captured on 7 November 2026._
+
+The linked Windows x64 MSI, macOS universal DMG, Linux x86_64 Flatpak, web ZIP and checksum file were present in the tagged asset list and each returned HTTP 200 after redirects. The Linux x86_64 Flatpak is real; aarch64 packages are separate files. The downloaded CLI and web archives matched the official SHA256SUMS.txt. Running the extracted CLI produced:
+
+```text
+$ cadcraft-cli --version
+cadcraft-cli 0.18.0 (32238e83c2c8bf643994132883e94bc96961f649)
+```
+
+[Asset names checked for this release](/examples/review-0180/release-assets.txt).
 
 ## Start at the right repository
 
@@ -40,21 +55,21 @@ Check the owner and project name together: **`storytold/cadcraft`**. The README 
 
 You may also encounter other repositories from the same organization. **Craft Anything** is a separate application, and **craft-launcher** is a launcher. A file named `craft-anything-…-windows-x64.msi` is not the standalone CADCraft installer. For this application, look for an asset beginning with `cadcraft-` in CADCraft's own release.
 
-The repository's default branch, `main`, is ongoing development. A release tag such as `v0.17.0` identifies a particular published version. A feature visible in today's source may not exist in an installer downloaded last week.
+The repository's default branch, `main`, is ongoing development. A release tag such as `v0.18.0` identifies a particular published version. A feature visible in today's source may not exist in an installer downloaded last week.
 
 ## Choose the asset, not the source archive
 
-Expand **Assets** below the release notes. In v0.17.0, the relevant packages include:
+Expand **Assets** below the release notes. In v0.18.0, the relevant packages include:
 
 | Your system                   | File to look for                         | What you get                                             |
 | ----------------------------- | ---------------------------------------- | -------------------------------------------------------- |
-| Windows, 64-bit Intel or AMD  | `cadcraft-0.17.0-windows-x64.msi`        | Desktop installer                                        |
-| Windows on ARM                | `cadcraft-0.17.0-windows-arm64.msi`      | Native ARM desktop installer                             |
-| Windows, 32-bit               | `cadcraft-0.17.0-windows-x86.msi`        | 32-bit desktop installer                                 |
-| macOS, Apple silicon or Intel | `cadcraft-0.17.0-macos-universal.dmg`    | Universal desktop application                            |
-| Linux, Intel or AMD           | `cadcraft-0.17.0-linux-x86_64.AppImage`  | AppImage; other distribution packages are also available |
-| Linux, ARM64                  | `cadcraft-0.17.0-linux-aarch64.AppImage` | Linux ARM build                                          |
-| FreeBSD, x86_64               | `cadcraft-0.17.0-freebsd-x86_64.tar.gz`  | FreeBSD build                                            |
+| Windows, 64-bit Intel or AMD  | `cadcraft-0.18.0-windows-x64.msi`        | Desktop installer                                        |
+| Windows on ARM                | `cadcraft-0.18.0-windows-arm64.msi`      | Native ARM desktop installer                             |
+| Windows, 32-bit               | `cadcraft-0.18.0-windows-x86.msi`        | 32-bit desktop installer                                 |
+| macOS, Apple silicon or Intel | `cadcraft-0.18.0-macos-universal.dmg`    | Universal desktop application                            |
+| Linux, Intel or AMD           | `cadcraft-0.18.0-linux-x86_64.AppImage`  | AppImage; other distribution packages are also available |
+| Linux, ARM64                  | `cadcraft-0.18.0-linux-aarch64.AppImage` | Linux ARM build                                          |
+| FreeBSD, x86_64               | `cadcraft-0.18.0-freebsd-x86_64.tar.gz`  | FreeBSD build                                            |
 
 On Windows, **Settings → System → About → System type** helps distinguish an x64 PC from an ARM machine. On Linux, `uname -m` reports the architecture: `x86_64` and `aarch64` need different files. The macOS universal application includes both supported Mac architectures.
 
@@ -70,7 +85,7 @@ The release also contains Windows portable ZIPs, Linux packages, a macOS CLI ZIP
 
 **`cadcraft-web-…zip`** contains a static website and WebAssembly assets. It needs a web server; double-clicking its HTML file is not the supported substitute for an installer. To try CADCraft without hosting anything, open the [online editor](/online).
 
-The hosted editor and GitHub's latest release have separate version numbers. At the time of this check, cadcraft.org identifies its bundled editor as **v0.8.0**, while the latest desktop release is **v0.17.0**. Reproducing a bug means recording which one you used.
+The hosted editor and the linked desktop downloads now both use **v0.18.0**. They still differ in environment: browser DWG import is this site’s additional local converter, while desktop DWG conversion is upstream functionality. Record the environment when reproducing a bug.
 
 ## Check that you downloaded the expected file
 
@@ -78,15 +93,15 @@ Download `SHA256SUMS.txt` from the **same release** as the package. Calculate th
 
 ```powershell
 # Windows PowerShell, in the download folder
-Get-FileHash .\cadcraft-0.17.0-windows-x64.msi -Algorithm SHA256
+Get-FileHash .\cadcraft-0.18.0-windows-x64.msi -Algorithm SHA256
 ```
 
 ```sh
 # macOS
-shasum -a 256 cadcraft-0.17.0-macos-universal.dmg
+shasum -a 256 cadcraft-0.18.0-macos-universal.dmg
 
 # Linux
-sha256sum cadcraft-0.17.0-linux-x86_64.AppImage
+sha256sum cadcraft-0.18.0-linux-x86_64.AppImage
 ```
 
 The values must match completely. A checksum checks the file against the release's published value; checking the repository owner first establishes which publisher supplied that value.
@@ -95,20 +110,20 @@ If the application fails to launch, keep the version and platform details. Use t
 
 ## Build from source when you actually need the source
 
-Use this route to change CADCraft, investigate a bug, or work with a specific revision. The **v0.17.0** workspace requires **Rust 1.95 or later**, plus Git and the native build requirements for your platform. Those are development dependencies; users of the published installer do not need them.
+Use this route to change CADCraft, investigate a bug, or work with a specific revision. The **v0.18.0** workspace requires **Rust 1.95 or later**, plus Git and the native build requirements for your platform. Those are development dependencies; users of the published installer do not need them.
 
 To check out the version discussed here:
 
 ```sh
-git clone --branch v0.17.0 https://github.com/storytold/cadcraft.git
+git clone --branch v0.18.0 https://github.com/storytold/cadcraft.git
 cd cadcraft
 rustc --version
 cargo run --release -p cadcraft -- --sample
 ```
 
-The last command compiles and opens the sample drawing. A first build downloads dependencies and takes longer than starting a prebuilt application. Check the [README at that tag](https://github.com/storytold/cadcraft/blob/v0.17.0/README.md#quick-start) if your compiler or system libraries produce an error.
+The last command compiles and opens the sample drawing. A first build downloads dependencies and takes longer than starting a prebuilt application. Check the [README at that tag](https://github.com/storytold/cadcraft/blob/v0.18.0/README.md#quick-start) if your compiler or system libraries produce an error.
 
-Checking out a tag normally leaves Git in a **detached HEAD** state. That is fine for reproducing a release. Create a branch before making changes you intend to keep. Use `main` deliberately when you need unreleased work, and record its commit hash instead of calling it v0.17.0.
+Checking out a tag normally leaves Git in a **detached HEAD** state. That is fine for reproducing a release. Create a branch before making changes you intend to keep. Use `main` deliberately when you need unreleased work, and record its commit hash instead of calling it v0.18.0.
 
 For the crate layout and why the engine can also power a CLI and a browser build, see [CAD in Rust](/blog/cad-in-rust). This guide's build commands are upstream instructions, not a claim that every supported platform was compiled during this article's review.
 
@@ -130,7 +145,7 @@ For a desktop crash, the README documents `logs/cadcraft.log` in the application
 
 ## Sources and related guides
 
-- [Official CADCraft repository](https://github.com/storytold/cadcraft) and [v0.17.0 release assets](https://github.com/storytold/cadcraft/releases/tag/v0.17.0).
-- [v0.17.0 workspace and Rust requirement](https://github.com/storytold/cadcraft/blob/v0.17.0/Cargo.toml).
+- [Official CADCraft repository](https://github.com/storytold/cadcraft) and [v0.18.0 release assets](https://github.com/storytold/cadcraft/releases/tag/v0.18.0).
+- [v0.18.0 workspace and Rust requirement](https://github.com/storytold/cadcraft/blob/v0.18.0/Cargo.toml).
 - [Portable CAD](/blog/portable-autocad): running the Windows ZIP with settings on a USB drive.
 - [CADCraft 3D support](/blog/cadcraft-3d): what the downloaded program can do with 3D files.

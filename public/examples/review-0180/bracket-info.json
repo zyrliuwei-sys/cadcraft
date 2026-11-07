@@ -1,0 +1,151 @@
+{
+  "blockEditor": null,
+  "blocks": [],
+  "counts": {
+    "Circle": 7,
+    "Dimension": 6,
+    "Hatch": 4,
+    "Line": 16,
+    "MText": 1,
+    "Polyline": 6,
+    "Text": 6
+  },
+  "currentLayer": "Outline",
+  "dimStyles": [
+    "Standard"
+  ],
+  "dirty": false,
+  "entityCount": 46,
+  "extents": [
+    [
+      -0.5,
+      -0.5
+    ],
+    [
+      18.0,
+      7.5
+    ]
+  ],
+  "layers": [
+    {
+      "color": "White",
+      "frozen": false,
+      "linetype": "Continuous",
+      "locked": false,
+      "name": "0",
+      "on": true
+    },
+    {
+      "color": "White",
+      "frozen": false,
+      "linetype": "Continuous",
+      "locked": false,
+      "name": "Defpoints",
+      "on": true
+    },
+    {
+      "color": "White",
+      "frozen": false,
+      "linetype": "Continuous",
+      "locked": false,
+      "name": "Outline",
+      "on": true
+    },
+    {
+      "color": "Red",
+      "frozen": false,
+      "linetype": "CENTER",
+      "locked": false,
+      "name": "Center",
+      "on": true
+    },
+    {
+      "color": "Yellow",
+      "frozen": false,
+      "linetype": "HIDDEN",
+      "locked": false,
+      "name": "Hidden",
+      "on": true
+    },
+    {
+      "color": "Cyan",
+      "frozen": false,
+      "linetype": "Continuous",
+      "locked": false,
+      "name": "Dimensions",
+      "on": true
+    },
+    {
+      "color": "Color 8",
+      "frozen": false,
+      "linetype": "Continuous",
+      "locked": false,
+      "name": "Hatch",
+      "on": true
+    },
+    {
+      "color": "Green",
+      "frozen": false,
+      "linetype": "Continuous",
+      "locked": false,
+      "name": "Notes",
+      "on": true
+    },
+    {
+      "color": "White",
+      "frozen": false,
+      "linetype": "Continuous",
+      "locked": false,
+      "name": "Title",
+      "on": true
+    }
+  ],
+  "layouts": [
+    "Layout1",
+    "Layout2"
+  ],
+  "linetypes": [
+    "ByBlock",
+    "ByLayer",
+    "Continuous",
+    "BORDER",
+    "CENTER",
+    "CENTER2",
+    "CENTERX2",
+    "DASHDOT",
+    "DASHDOT2",
+    "DASHED",
+    "DASHED2",
+    "DASHEDX2",
+    "DIVIDE",
+    "DOT",
+    "DOT2",
+    "HIDDEN",
+    "HIDDEN2",
+    "HIDDENX2",
+    "PHANTOM",
+    "PHANTOM2",
+    "FENCELINE1",
+    "ZIGZAG"
+  ],
+  "path": "/tmp/cadcraft-v0180/evidence/bracket.dxf",
+  "readNotes": [],
+  "selection": [],
+  "skipped": {
+    "count": 0,
+    "sections": {}
+  },
+  "space": "Model",
+  "textStyles": [
+    "Standard"
+  ],
+  "title": "bracket.dxf",
+  "undo": [],
+  "view": {
+    "center": [
+      8.75,
+      3.5
+    ],
+    "height": 12.718750000000002
+  }
+}

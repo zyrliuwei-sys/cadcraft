@@ -1,0 +1,12 @@
+operation                                          ms  notes
+--------------------------------------------------------------------------------
+build synthetic drawing                         19.54  100000 entities
+display list build                              19.96  233778 prims, 1009595 segments
+first pick (incl. index build)                  33.49  None
+pick x1000                                       1.58  19 hits, 0.002 ms/pick
+pick after one edit (incremental re-index)         2.22  
+window/crossing select x20 (10% side)            3.33  18547 selected
+fence select (3 legs)                           11.91  162 selected
+osnap x1000                                      1.55  8 hits, 0.002 ms/query
+DXF write                                      233.05  23.6 MB
+DXF read                                       310.65  100000 entities

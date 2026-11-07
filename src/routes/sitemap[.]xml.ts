@@ -3,6 +3,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { SITE_URL } from '@/config/site-url';
 import { baseLocale, locales, localizeUrl } from '@/paraglide/runtime.js';
 import { getLocalPosts } from '@/content/posts';
+import { isBlogPostIndexable } from '@/content/posts/indexing';
 
 const STATIC_PATHS = [
   '',
@@ -90,6 +91,7 @@ export const Route = createFileRoute('/sitemap.xml')({
         const knownPostSlugs = new Set<string>();
         for (const post of localPosts) {
           knownPostSlugs.add(post.slug);
+          if (!isBlogPostIndexable(post.slug)) continue;
           entries.push({
             path: `/blog/${encodeURIComponent(post.slug)}`,
             lastModified: post.createdAt,
@@ -104,7 +106,11 @@ export const Route = createFileRoute('/sitemap.xml')({
             await import('@/modules/posts/service');
           const rows = await listPublishedArticles().catch(() => []);
           for (const post of rows) {
-            if (knownPostSlugs.has(post.slug)) continue;
+            if (
+              knownPostSlugs.has(post.slug) ||
+              !isBlogPostIndexable(post.slug)
+            )
+              continue;
             entries.push({
               path: `/blog/${encodeURIComponent(post.slug)}`,
               lastModified: new Date(post.createdAt).toISOString(),

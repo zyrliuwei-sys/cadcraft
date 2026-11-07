@@ -1,0 +1,71 @@
+{
+  "blockEditor": null,
+  "blocks": [],
+  "counts": {
+    "3D Polyline": 1
+  },
+  "currentLayer": "0",
+  "dimStyles": [
+    "Standard",
+    "ISO-25"
+  ],
+  "dirty": false,
+  "entityCount": 1,
+  "extents": [
+    [
+      0.0,
+      0.0
+    ],
+    [
+      40.0,
+      20.0
+    ]
+  ],
+  "layers": [
+    {
+      "color": "White",
+      "frozen": false,
+      "linetype": "Continuous",
+      "locked": false,
+      "name": "0",
+      "on": true
+    },
+    {
+      "color": "White",
+      "frozen": false,
+      "linetype": "Continuous",
+      "locked": false,
+      "name": "Defpoints",
+      "on": true
+    }
+  ],
+  "layouts": [
+    "Layout1",
+    "Layout2"
+  ],
+  "linetypes": [
+    "ByBlock",
+    "ByLayer",
+    "Continuous"
+  ],
+  "path": "/tmp/cadcraft-v0180/evidence/profile3d.dxf",
+  "readNotes": [],
+  "selection": [],
+  "skipped": {
+    "count": 0,
+    "sections": {}
+  },
+  "space": "Model",
+  "textStyles": [
+    "Standard"
+  ],
+  "title": "profile3d.dxf",
+  "undo": [],
+  "view": {
+    "center": [
+      20.0,
+      10.0
+    ],
+    "height": 27.500000000000004
+  }
+}

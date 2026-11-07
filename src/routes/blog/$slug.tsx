@@ -21,6 +21,7 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { formatPostDate, loadLocalPost } from '@/content/posts';
+import { isBlogPostIndexable } from '@/content/posts/indexing';
 import { getBlogPostFn } from '@/content/posts/server';
 
 export const Route = createFileRoute('/blog/$slug')({
@@ -69,7 +70,13 @@ export const Route = createFileRoute('/blog/$slug')({
     });
     return {
       ...head,
-      meta: [...head.meta, { property: 'og:type', content: 'article' }],
+      meta: [
+        ...head.meta,
+        { property: 'og:type', content: 'article' },
+        ...(!isBlogPostIndexable(post.slug)
+          ? [{ name: 'robots', content: 'noindex, follow' }]
+          : []),
+      ],
     };
   },
   component: BlogPostPage,
