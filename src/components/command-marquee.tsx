@@ -1,7 +1,6 @@
 /**
- * One oversized, slowly drifting line of drafting commands: the site's single
- * typographic moment. Alternates solid and outlined words; pauses on hover;
- * static (and scrollable) under reduced motion.
+ * A single, scrollable line of drafting commands, alternating solid and
+ * outlined words without a duplicate animation track.
  */
 export function CommandMarquee({ words }: { words: string[] }) {
   const track = (hidden: boolean) => (
@@ -26,11 +25,8 @@ export function CommandMarquee({ words }: { words: string[] }) {
     </div>
   );
   return (
-    <div className="marquee border-foreground/80 overflow-hidden border-y py-6 text-[clamp(44px,8vw,120px)] leading-none font-semibold whitespace-nowrap select-none sm:py-8">
-      <div className="marquee-track flex w-max">
-        {track(false)}
-        {track(true)}
-      </div>
+    <div className="border-foreground/80 overflow-x-auto border-y py-6 text-[clamp(44px,8vw,120px)] leading-none font-semibold whitespace-nowrap select-none sm:py-8">
+      <div className="flex w-max">{track(false)}</div>
     </div>
   );
 }

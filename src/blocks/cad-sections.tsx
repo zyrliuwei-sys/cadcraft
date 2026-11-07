@@ -14,6 +14,7 @@ import {
 
 import { Link } from '@/core/i18n/navigation';
 import { CADCRAFT_VERSION, cadcraftLinks } from '@/config/cadcraft';
+import { cadcraftPriceText } from '@/config/cadcraft-pricing';
 import { siteAuthor } from '@/config/site-author';
 import { ctaPrimary, ctaSecondary } from '@/lib/cta';
 import { cn } from '@/lib/utils';
@@ -190,7 +191,7 @@ export function CadWhatIs() {
         </div>
         <div className="space-y-5 text-[17px] leading-[1.75] lg:col-span-8">
           <p className="text-foreground text-xl leading-relaxed">
-            {m['home.what.p1']()}
+            {m['home.what.p1'](cadcraftPriceText)}
           </p>
           <p className="text-muted-foreground">{m['home.what.p2']()}</p>
           <p className="text-muted-foreground">{m['home.what.p3']()}</p>
@@ -861,7 +862,7 @@ export function CadLearn() {
 
 export function faqItems(): [string, string][] {
   return [
-    [m['cad.faq.q1'](), m['cad.faq.a1']()],
+    [m['cad.faq.q1'](), m['cad.faq.a1'](cadcraftPriceText)],
     [m['cad.faq.q2'](), m['cad.faq.a2']()],
     [m['home.faq.q8'](), m['home.faq.a8']()],
     [m['cad.faq.q3'](), m['cad.faq.a3']()],

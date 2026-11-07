@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 
+import { cadcraftPriceText } from '@/config/cadcraft-pricing';
 import { pageHead } from '@/lib/page-head';
 import { m } from '@/paraglide/messages.js';
 import { getLocale } from '@/paraglide/runtime.js';
@@ -13,7 +14,9 @@ export const Route = createFileRoute('/pricing')({
     return {
       locale,
       title: m['cad.page.pricing.title']({}, { locale }),
-      description: m['cad.page.pricing.description']({}, { locale }),
+      description: m['cad.page.pricing.description'](cadcraftPriceText, {
+        locale,
+      }),
     };
   },
   head: ({ loaderData }) =>

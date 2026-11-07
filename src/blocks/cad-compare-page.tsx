@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 
 import { Link } from '@/core/i18n/navigation';
+import { cadcraftPriceText } from '@/config/cadcraft-pricing';
 import { ctaPrimary, ctaSecondary } from '@/lib/cta';
 import { m } from '@/paraglide/messages.js';
 import { PageHero } from '@/blocks/cad-doc';
@@ -19,7 +20,7 @@ export function CadComparePage() {
   const rows = [
     {
       label: m['cad.cmp.row_price'](),
-      cc: m['cad.cmp.row_price_cc'](),
+      cc: m['cad.cmp.row_price_cc'](cadcraftPriceText),
       ac: m['cad.cmp.row_price_ac'](),
       ccWins: true,
     },
@@ -128,7 +129,7 @@ export function CadComparePage() {
                 $0
               </p>
               <p className="text-muted-foreground mt-3 text-sm">
-                {m['cad.cmp.price_cc_note']()}
+                {m['cad.cmp.price_cc_note'](cadcraftPriceText)}
               </p>
             </div>
             <div className="p-6 sm:p-8">
