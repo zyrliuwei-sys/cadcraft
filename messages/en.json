@@ -1583,5 +1583,14 @@
   "admin.analytics.experiment.editor_rate": "Editor ready rate",
   "admin.analytics.experiment.control": "Online first (control)",
   "admin.analytics.experiment.download_first": "Direct download first",
-  "admin.analytics.experiment.note": "Windows/macOS desktop visitors are assigned 50/50 when the home buttons become visible. Counts are unique visitors in this date range; outcomes must follow exposure and match the assigned variant. Internal and mixed-variant visitors are excluded. Download clicks do not confirm an installation. Compare editor use alongside downloads; allow time for data to accumulate."
+  "admin.analytics.experiment.note": "Windows/macOS desktop visitors are assigned 50/50 when the home buttons become visible. Counts are unique visitors in this date range; outcomes must follow exposure and match the assigned variant. Internal and mixed-variant visitors are excluded. Download clicks do not confirm an installation. Compare editor use alongside downloads; allow time for data to accumulate.",
+  "cad.guide.download_intro": "Choose and install the right CADCraft download",
+  "cad.guide.online_intro": "Working with CADCraft in your browser",
+  "cad.guide.faq": "Frequently asked questions",
+  "cad.guide.learn_prefix": "Continue with practical steps and a feature comparison:",
+  "cad.guide.tutorials_link": "CADCraft step-by-step tutorials",
+  "cad.guide.compare_link": "CADCraft vs AutoCAD: features and limits",
+  "cad.guide.practice_prefix": "Follow these lessons in the browser or install the desktop app:",
+  "cad.guide.download_link": "CADCraft download and installation guide",
+  "cad.guide.online_link": "CADCraft online editor"
 }

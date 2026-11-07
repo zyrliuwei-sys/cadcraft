@@ -3,9 +3,11 @@ import { createFileRoute } from '@tanstack/react-router';
 import { pageHead } from '@/lib/page-head';
 import { m } from '@/paraglide/messages.js';
 import { getLocale } from '@/paraglide/runtime.js';
+import { CadGuideContent } from '@/blocks/cad-guide-content';
 import { CadOnlinePage } from '@/blocks/cad-online-page';
 import { Footer } from '@/blocks/footer';
 import { Header } from '@/blocks/header';
+import { guideFaqJsonLd } from '@/content/guide-copy';
 
 export const Route = createFileRoute('/online')({
   loader: () => {
@@ -17,7 +19,13 @@ export const Route = createFileRoute('/online')({
     };
   },
   head: ({ loaderData }) =>
-    loaderData ? pageHead({ path: '/online', ...loaderData }) : {},
+    loaderData
+      ? pageHead({
+          path: '/online',
+          ...loaderData,
+          jsonLd: guideFaqJsonLd('online'),
+        })
+      : {},
   component: Page,
 });
 
@@ -27,6 +35,7 @@ function Page() {
       <Header />
       <main>
         <CadOnlinePage />
+        <CadGuideContent page="online" />
       </main>
       <Footer />
     </>

@@ -197,8 +197,10 @@ export function CadWhatIs() {
           <p className="text-muted-foreground">{m['home.what.p3']()}</p>
           <p className="text-muted-foreground">{m['home.what.p4']()}</p>
           <div className="flex flex-wrap gap-x-8 gap-y-3 pt-3">
-            <TextLink href="/download">{m['cad.nav.download']()}</TextLink>
-            <TextLink href="/online">{m['cad.nav.online']()}</TextLink>
+            <TextLink href="/download">
+              {m['cad.guide.download_link']()}
+            </TextLink>
+            <TextLink href="/online">{m['cad.guide.online_link']()}</TextLink>
             <TextLink href="/tutorials">{m['cad.nav.tutorials']()}</TextLink>
             <TextLink href="/vs-autocad">{m['cad.nav.compare']()}</TextLink>
           </div>

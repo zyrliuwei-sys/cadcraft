@@ -5,9 +5,11 @@ import { pageHead } from '@/lib/page-head';
 import { m } from '@/paraglide/messages.js';
 import { getLocale } from '@/paraglide/runtime.js';
 import { CadDownloadPage } from '@/blocks/cad-download-page';
+import { CadGuideContent } from '@/blocks/cad-guide-content';
 import { Footer } from '@/blocks/footer';
 import { Header } from '@/blocks/header';
 import { ScrollProgress } from '@/components/scroll-progress';
+import { guideFaqJsonLd } from '@/content/guide-copy';
 
 export const Route = createFileRoute('/download')({
   loader: () => {
@@ -22,7 +24,13 @@ export const Route = createFileRoute('/download')({
     };
   },
   head: ({ loaderData }) =>
-    loaderData ? pageHead({ path: '/download', ...loaderData }) : {},
+    loaderData
+      ? pageHead({
+          path: '/download',
+          ...loaderData,
+          jsonLd: guideFaqJsonLd('download'),
+        })
+      : {},
   component: Page,
 });
 
@@ -33,6 +41,7 @@ function Page() {
       <ScrollProgress />
       <main>
         <CadDownloadPage />
+        <CadGuideContent page="download" />
       </main>
       <Footer />
     </>

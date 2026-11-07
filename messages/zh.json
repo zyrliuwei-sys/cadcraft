@@ -1583,5 +1583,14 @@
   "admin.analytics.experiment.editor_rate": "编辑器就绪率",
   "admin.analytics.experiment.control": "在线体验优先（对照组）",
   "admin.analytics.experiment.download_first": "直接下载优先",
-  "admin.analytics.experiment.note": "Windows/macOS 桌面访客看到首页按钮时按 50/50 分组。按所选日期内的访客去重，仅统计曝光后且与分组一致的行为，排除内部流量和分组冲突。下载点击不代表安装成功。请同时观察在线使用率，待数据积累后再判断效果。"
+  "admin.analytics.experiment.note": "Windows/macOS 桌面访客看到首页按钮时按 50/50 分组。按所选日期内的访客去重，仅统计曝光后且与分组一致的行为，排除内部流量和分组冲突。下载点击不代表安装成功。请同时观察在线使用率，待数据积累后再判断效果。",
+  "cad.guide.download_intro": "选择并安装适合你的 CADCraft 版本",
+  "cad.guide.online_intro": "在浏览器中使用 CADCraft",
+  "cad.guide.faq": "常见问题",
+  "cad.guide.learn_prefix": "继续查看操作步骤和功能对比：",
+  "cad.guide.tutorials_link": "CADCraft 分步教程",
+  "cad.guide.compare_link": "CADCraft 与 AutoCAD 的功能和限制对比",
+  "cad.guide.practice_prefix": "使用浏览器跟随教程，或安装桌面应用：",
+  "cad.guide.download_link": "CADCraft 下载与安装指南",
+  "cad.guide.online_link": "CADCraft 在线编辑器"
 }
