@@ -1,15 +1,12 @@
 import { cadcraftLinks } from '@/config/cadcraft';
 import { m } from '@/paraglide/messages.js';
-import { ResponsiveBannerAd } from '@/components/analytics/banner-ad';
 import { FooterBadgeList } from '@/components/footer-badge-list';
 import { SiteFooter, type FooterColumn } from '@/components/site-footer';
 
 // 姊妹站导流栏暂时下线：不渲染进 HTML，避免被爬虫抓到。恢复时改回 true。
 const SHOW_SISTER_GUIDES = false;
 
-// `ad` puts a banner above the footer; off on pages that already carry
-// their own ads or shouldn't show any (pricing, legal).
-export function Footer({ ad = true }: { ad?: boolean } = {}) {
+export function Footer() {
   const columns: FooterColumn[] = [
     {
       title: m['cad.footer.product'](),
@@ -84,7 +81,6 @@ export function Footer({ ad = true }: { ad?: boolean } = {}) {
 
   return (
     <>
-      {ad && <ResponsiveBannerAd className="my-12" />}
       <SiteFooter
         columns={columns}
         copyright={m['cad.footer.copyright']({
