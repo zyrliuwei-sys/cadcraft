@@ -1,4 +1,5 @@
 import { envConfigs } from '@/config';
+import { SITE_URL } from '@/config/site-url';
 
 const name = envConfigs.site_author_name.trim() || 'ben';
 
@@ -15,7 +16,7 @@ export function siteAuthorJsonLd() {
   return {
     '@type': 'Person',
     name: siteAuthor.name,
-    url: `${envConfigs.app_url}/about`,
+    url: `${SITE_URL}/about`,
     email: siteAuthor.email,
   };
 }
