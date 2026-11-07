@@ -1,5 +1,6 @@
 import handler from '@tanstack/react-start/server-entry';
 
+import { canonicalRedirectUrl } from './lib/canonical-url';
 import { getCookieFromHeader } from './lib/cookie';
 import { respErr } from './lib/resp';
 import { paraglideMiddleware } from './paraglide/server.js';
@@ -76,17 +77,8 @@ async function renderWithEdgeCache(req: Request): Promise<Response> {
 export default {
   async fetch(req: Request): Promise<Response> {
     const url = new URL(req.url);
-    // Canonical host: permanently redirect www.<domain> to the bare domain.
-    if (url.hostname.startsWith('www.')) {
-      url.hostname = url.hostname.slice(4);
-      return Response.redirect(url.toString(), 301);
-    }
-    // The Chinese mirror is retired: /zh and /zh/* permanently redirect to
-    // the matching English page (/zh → /, /zh/download → /download).
-    if (/^\/zh(?:\/|$)/.test(url.pathname)) {
-      url.pathname = url.pathname.replace(/^\/zh/, '') || '/';
-      return Response.redirect(url.toString(), 301);
-    }
+    const canonical = canonicalRedirectUrl(req.url);
+    if (canonical) return Response.redirect(canonical, 301);
     const origin = req.headers.get('Origin');
     if (
       url.pathname.startsWith('/api/') &&

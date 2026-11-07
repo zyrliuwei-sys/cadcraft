@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 
-import { envConfigs } from '@/config';
+import { SITE_URL } from '@/config/site-url';
 import { baseLocale, locales, localizeUrl } from '@/paraglide/runtime.js';
 import { getLocalPosts } from '@/content/posts';
 
@@ -27,7 +27,7 @@ type Entry = {
 };
 
 function urlFor(path: string, locale: string): string {
-  return localizeUrl(`${envConfigs.app_url}${path || '/'}`, {
+  return localizeUrl(`${SITE_URL}${path || '/'}`, {
     locale: locale as (typeof locales)[number],
   }).href;
 }

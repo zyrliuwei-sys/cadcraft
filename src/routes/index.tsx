@@ -1,8 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router';
 
-import { envConfigs } from '@/config';
 import { CADCRAFT_VERSION, cadcraftLinks } from '@/config/cadcraft';
 import { siteAuthorJsonLd } from '@/config/site-author';
+import { SITE_URL } from '@/config/site-url';
 import { pageHead } from '@/lib/page-head';
 import { m } from '@/paraglide/messages.js';
 import { getLocale } from '@/paraglide/runtime.js';
@@ -59,7 +59,7 @@ export const Route = createFileRoute('/')({
         '@graph': [
           {
             '@type': 'WebPage',
-            url: envConfigs.app_url,
+            url: SITE_URL,
             name: title,
             author: siteAuthorJsonLd(),
             description,
@@ -69,7 +69,7 @@ export const Route = createFileRoute('/')({
             '@type': 'SoftwareApplication',
             name: 'CADCraft',
             alternateName: 'ArtCraft CADCraft',
-            image: `${envConfigs.app_url}/imgs/cadcraft/cadcraft-drawing.webp`,
+            image: `${SITE_URL}/imgs/cadcraft/cadcraft-drawing.webp`,
             applicationCategory: 'DesignApplication',
             operatingSystem: 'Windows, macOS, Linux, FreeBSD, Web',
             softwareVersion: CADCRAFT_VERSION,

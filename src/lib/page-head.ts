@@ -1,4 +1,4 @@
-import { envConfigs } from '@/config';
+import { SITE_URL } from '@/config/site-url';
 import { locales, localizeUrl } from '@/paraglide/runtime.js';
 
 type Locale = (typeof locales)[number];
@@ -18,8 +18,8 @@ export function pageHead({
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }) {
   const urlFor = (loc: string) =>
-    localizeUrl(`${envConfigs.app_url}${path}`, { locale: loc as Locale }).href;
-  const image = `${envConfigs.app_url}/og-image.jpg`;
+    localizeUrl(`${SITE_URL}${path}`, { locale: loc as Locale }).href;
+  const image = `${SITE_URL}/og-image.jpg`;
   return {
     meta: [
       { title },
