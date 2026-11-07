@@ -29,6 +29,10 @@ export const envConfigs: Record<string, string> = {
   adsense_home_intro_slot:
     publicEnv('VITE_ADSENSE_HOME_INTRO_SLOT') || '2966195133',
 
+  // Public biography supplied by the site owner, never inferred from account data.
+  site_author_name: publicEnv('VITE_SITE_AUTHOR_NAME') ?? '',
+  site_author_biography: publicEnv('VITE_SITE_AUTHOR_BIOGRAPHY') ?? '',
+
   // Database
   database_url: procEnv.DATABASE_URL ?? '',
   database_auth_token: procEnv.DATABASE_AUTH_TOKEN ?? '',

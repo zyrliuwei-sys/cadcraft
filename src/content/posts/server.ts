@@ -1,5 +1,7 @@
 import { createServerFn } from '@tanstack/react-start';
 
+import { siteAuthor } from '@/config/site-author';
+
 import {
   getLocalPosts,
   loadLocalPost,
@@ -21,8 +23,8 @@ async function getDbPosts(): Promise<BlogPost[]> {
       description: row.description || '',
       image: row.image || undefined,
       createdAt: new Date(row.createdAt).toISOString(),
-      authorName: row.authorName || undefined,
-      authorImage: row.authorImage || undefined,
+      authorName: siteAuthor.name || undefined,
+      authorImage: undefined,
       source: 'db' as const,
     }));
   } catch {
@@ -62,8 +64,8 @@ export const getBlogPostFn = createServerFn()
           description: row.description || '',
           image: row.image || undefined,
           createdAt: new Date(row.createdAt).toISOString(),
-          authorName: row.authorName || undefined,
-          authorImage: row.authorImage || undefined,
+          authorName: siteAuthor.name || undefined,
+          authorImage: undefined,
           source: 'db',
           content: row.content || '',
         };
@@ -81,8 +83,8 @@ export const getBlogPostFn = createServerFn()
       description: meta.description,
       image: meta.image,
       createdAt: new Date(meta.created_at).toISOString(),
-      authorName: meta.author_name,
-      authorImage: meta.author_image,
+      authorName: siteAuthor.name || undefined,
+      authorImage: undefined,
       source: 'local',
       faq: meta.faq,
     };

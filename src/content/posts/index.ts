@@ -1,5 +1,6 @@
 import type { ComponentType } from 'react';
 
+import { siteAuthor } from '@/config/site-author';
 import { baseLocale } from '@/paraglide/runtime.js';
 
 /**
@@ -112,8 +113,8 @@ function localPostToItem(slug: string, meta: BlogPostMeta): BlogPost {
     image: meta.image,
     cover: meta.cover,
     createdAt: new Date(meta.created_at).toISOString(),
-    authorName: meta.author_name,
-    authorImage: meta.author_image,
+    authorName: siteAuthor.name || undefined,
+    authorImage: undefined,
     source: 'local',
   };
 }

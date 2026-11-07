@@ -1160,7 +1160,7 @@
   "cad.faq.q6": "CADCraft 能用于正式生产吗？",
   "cad.faq.a6": "它仍处于早期快速开发阶段。许多核心制图命令已可用，但部分 AutoCAD 功能尚缺（例如暂不支持读取 SHX 字体）。请查看项目路线图和缺失功能清单，并做好备份。",
   "cad.faq.q7": "cadcraft.org 是什么网站？",
-  "cad.faq.a7": "CADCraft AI（cadcraft.org）是关于 CADCraft 的独立指南站：提供下载与安装说明、在线版、教程，以及与 Autodesk AutoCAD 的对比。下载链接均指向官方 GitHub Releases。联系邮箱：support@cadcraft.org。",
+  "cad.faq.a7": "cadcraft.org 是由 {author} 维护的独立 CADCraft 指南站，提供发布链接、安装说明、托管浏览器编辑器和实用教程。本站不属于 ArtCraft，与 Autodesk 无关。资料来源包括官方 GitHub releases 和项目文档。联系邮箱：support@cadcraft.org。",
   "cad.footer.product": "CADCraft",
   "cad.footer.learn": "学习",
   "cad.footer.project": "官方项目",
