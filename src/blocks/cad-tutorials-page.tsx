@@ -10,6 +10,7 @@ import { cadcraftLinks } from '@/config/cadcraft';
 import { ctaPrimary } from '@/lib/cta';
 import { m } from '@/paraglide/messages.js';
 import { DocLayout, DocSection, PageHero, Steps } from '@/blocks/cad-doc';
+import { CadPracticeLinks } from '@/blocks/cad-guide-content';
 import { CodeBlock } from '@/components/code-block';
 import { SheetFrame } from '@/components/sheet-frame';
 
@@ -180,6 +181,7 @@ export function CadTutorialsPage() {
           {m['cad.tut.open_online']()}
         </Link>
       </PageHero>
+      <CadPracticeLinks />
       <DocLayout tocTitle={m['cad.tut.toc']()} toc={toc}>
         {lessons.map((l, i) => (
           <Fragment key={i}>
