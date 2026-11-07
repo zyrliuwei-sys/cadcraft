@@ -34,7 +34,27 @@ claude mcp add cadcraft -- cadcraft-cli mcp
 
 The setup takes a minute. Most of this page is about the part that decides whether you can trust the result: **making the agent check what it drew**, with two real mistakes from a real session.
 
-_cadcraft.org is an independent guide, not the official site and not affiliated with Autodesk. CADCraft is the ArtCraft team's open-source CAD program ([getartcraft.com/apps/cadcraft](https://getartcraft.com/apps/cadcraft)). Everything below was run with cadcraft-cli 0.13.0._
+_cadcraft.org is an independent guide, not the official site and not affiliated with Autodesk. CADCraft is the ArtCraft team's open-source CAD program ([getartcraft.com/apps/cadcraft](https://getartcraft.com/apps/cadcraft)). The new verification section uses v0.18.0; the original worked session below was recorded with cadcraft-cli 0.13.0._
+
+## Verified with v0.18.0 on 7 November 2026
+
+![A flange recreated through v0.18.0 MCP and reopened in the browser editor.](/imgs/blog/review-0180/mcp-flange.png)
+
+_A flange recreated through v0.18.0 MCP and reopened in the browser editor._
+
+A fresh stdio MCP session successfully completed `initialize`, `tools/list`, `new_drawing`, `script`, `query_entities` and `save`. The server returned these **12 tools**, and the recreated flange query returned **9 circles**: outer diameter, bore, pitch circle and six bolt holes. The screenshot shows geometry; the query is the numerical check.
+
+```text
+$ cadcraft-cli --version
+cadcraft-cli 0.18.0 (32238e83c2c8bf643994132883e94bc96961f649)
+# tools/list names returned by this MCP session
+command_line, script, execute, list_commands, inspect_drawing,
+query_entities, render, find_text, new_drawing, open, save, cancel
+# query_entities, type=Circle
+9 entities
+```
+
+This was a direct MCP protocol test, not a test of a separately installed Claude client or a running desktop bridge. [Recreated flange DXF](/examples/review-0180/flange.dxf) · [Actual circle query](/examples/review-0180/flange-circle-query.json).
 
 ## What the agent can do
 

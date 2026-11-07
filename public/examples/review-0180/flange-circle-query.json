@@ -1,0 +1,151 @@
+{
+  "count": 9,
+  "entities": [
+    {
+      "color": "ByLayer",
+      "geometry": {
+        "center": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "radius": 75.0,
+        "type": "circle"
+      },
+      "handle": "100",
+      "layer": "PART",
+      "transparency": "ByLayer",
+      "type": "Circle"
+    },
+    {
+      "color": "ByLayer",
+      "geometry": {
+        "center": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "radius": 40.0,
+        "type": "circle"
+      },
+      "handle": "101",
+      "layer": "PART",
+      "transparency": "ByLayer",
+      "type": "Circle"
+    },
+    {
+      "color": "ByLayer",
+      "geometry": {
+        "center": {
+          "x": 57.5,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "radius": 6.0,
+        "type": "circle"
+      },
+      "handle": "102",
+      "layer": "HOLES",
+      "transparency": "ByLayer",
+      "type": "Circle"
+    },
+    {
+      "color": "ByLayer",
+      "geometry": {
+        "center": {
+          "x": 28.75,
+          "y": 49.796461,
+          "z": 0.0
+        },
+        "radius": 6.0,
+        "type": "circle"
+      },
+      "handle": "103",
+      "layer": "HOLES",
+      "transparency": "ByLayer",
+      "type": "Circle"
+    },
+    {
+      "color": "ByLayer",
+      "geometry": {
+        "center": {
+          "x": -28.75,
+          "y": 49.796461,
+          "z": 0.0
+        },
+        "radius": 6.0,
+        "type": "circle"
+      },
+      "handle": "104",
+      "layer": "HOLES",
+      "transparency": "ByLayer",
+      "type": "Circle"
+    },
+    {
+      "color": "ByLayer",
+      "geometry": {
+        "center": {
+          "x": -57.5,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "radius": 6.0,
+        "type": "circle"
+      },
+      "handle": "105",
+      "layer": "HOLES",
+      "transparency": "ByLayer",
+      "type": "Circle"
+    },
+    {
+      "color": "ByLayer",
+      "geometry": {
+        "center": {
+          "x": -28.75,
+          "y": -49.796461,
+          "z": 0.0
+        },
+        "radius": 6.0,
+        "type": "circle"
+      },
+      "handle": "106",
+      "layer": "HOLES",
+      "transparency": "ByLayer",
+      "type": "Circle"
+    },
+    {
+      "color": "ByLayer",
+      "geometry": {
+        "center": {
+          "x": 28.75,
+          "y": -49.796461,
+          "z": 0.0
+        },
+        "radius": 6.0,
+        "type": "circle"
+      },
+      "handle": "107",
+      "layer": "HOLES",
+      "transparency": "ByLayer",
+      "type": "Circle"
+    },
+    {
+      "color": "ByLayer",
+      "geometry": {
+        "center": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "radius": 57.5,
+        "type": "circle"
+      },
+      "handle": "108",
+      "layer": "CENTER",
+      "transparency": "ByLayer",
+      "type": "Circle"
+    }
+  ],
+  "offset": 0,
+  "returned": 9
+}

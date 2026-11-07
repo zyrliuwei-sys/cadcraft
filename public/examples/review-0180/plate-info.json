@@ -1,0 +1,97 @@
+{
+  "blockEditor": null,
+  "blocks": [],
+  "counts": {
+    "Circle": 5,
+    "Dimension": 3,
+    "Polyline": 1
+  },
+  "currentLayer": "DIMS",
+  "dimStyles": [
+    "Standard",
+    "ISO-25"
+  ],
+  "dirty": false,
+  "entityCount": 9,
+  "extents": [
+    [
+      -18.25,
+      -18.25
+    ],
+    [
+      126.25,
+      86.25
+    ]
+  ],
+  "layers": [
+    {
+      "color": "White",
+      "frozen": false,
+      "linetype": "Continuous",
+      "locked": false,
+      "name": "0",
+      "on": true
+    },
+    {
+      "color": "White",
+      "frozen": false,
+      "linetype": "Continuous",
+      "locked": false,
+      "name": "Defpoints",
+      "on": true
+    },
+    {
+      "color": "White",
+      "frozen": false,
+      "linetype": "Continuous",
+      "locked": false,
+      "name": "OUTLINE",
+      "on": true
+    },
+    {
+      "color": "Red",
+      "frozen": false,
+      "linetype": "Continuous",
+      "locked": false,
+      "name": "HOLES",
+      "on": true
+    },
+    {
+      "color": "Cyan",
+      "frozen": false,
+      "linetype": "Continuous",
+      "locked": false,
+      "name": "DIMS",
+      "on": true
+    }
+  ],
+  "layouts": [
+    "Layout1",
+    "Layout2"
+  ],
+  "linetypes": [
+    "ByBlock",
+    "ByLayer",
+    "Continuous"
+  ],
+  "path": "/tmp/cadcraft-v0180/evidence/plate.dxf",
+  "readNotes": [],
+  "selection": [],
+  "skipped": {
+    "count": 0,
+    "sections": {}
+  },
+  "space": "Model",
+  "textStyles": [
+    "Standard"
+  ],
+  "title": "plate.dxf",
+  "undo": [],
+  "view": {
+    "center": [
+      54.0,
+      34.0
+    ],
+    "height": 114.95
+  }
+}

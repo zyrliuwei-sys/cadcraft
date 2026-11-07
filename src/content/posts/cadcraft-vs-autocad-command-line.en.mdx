@@ -8,6 +8,25 @@ export const meta = {
 
 When someone asks whether CADCraft feels like AutoCAD, the easy answer is to compare the buttons. The more useful answer starts at the command line. Both applications treat typed commands as a first-class way to draw, but CADCraft makes the command line unusually easy to carry outside the desktop window. That changes how I test a drawing, batch a conversion, and hand a repeatable task to an agent.
 
+## Verified with v0.18.0 on 7 November 2026
+
+![The official bracket DXF reopened in the updated hosted editor.](/imgs/blog/review-0180/command-line.png)
+
+_The official bracket DXF reopened in the updated hosted editor._
+
+For a repeatable first check, I used the built-in bracket rather than an unknown customer drawing. The v0.18.0 CLI wrote the sample and inspected it before it was opened in the browser:
+
+```text
+$ cadcraft-cli sample bracket bracket.dxf
+wrote bracket.dxf (42813 bytes)
+$ cadcraft-cli info bracket.dxf
+# excerpt
+"entityCount": 46
+"counts": {"Circle": 7, "Dimension": 6, "Hatch": 4, "Line": 16, "MText": 1, "Polyline": 6, "Text": 6}
+```
+
+[Download the exact sample](/examples/review-0180/bracket.dxf) · [Full CLI inspection](/examples/review-0180/bracket-info.json). A matching entity count is a useful checkpoint, but it does not establish lossless DWG round-trip fidelity.
+
 ## Start with a file, not a blank screen
 
 With AutoCAD, I usually open a drawing, inspect the current workspace, and then decide whether to automate part of the job. With CADCraft, I can begin by asking the CLI what a file contains:

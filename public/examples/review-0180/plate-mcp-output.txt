@@ -1,0 +1,16 @@
+HOLES {'x': 60.0, 'y': 40.0, 'z': 0.0} dia 30.0
+HOLES {'x': 10.0, 'y': 10.0, 'z': 0.0} dia 6.0
+HOLES {'x': 110.0, 'y': 10.0, 'z': 0.0} dia 6.0
+HOLES {'x': 110.0, 'y': 70.0, 'z': 0.0} dia 6.0
+HOLES {'x': 10.0, 'y': 70.0, 'z': 0.0} dia 6.0
+{
+  "binary": false,
+  "bytes": 25611,
+  "path": "plate.dxf",
+  "portableFonts": false,
+  "version": "2018"
+}
+{
+  "bytes": 3168,
+  "path": "plate.pdf"
+}

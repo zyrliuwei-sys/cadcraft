@@ -9,7 +9,7 @@ export const meta = {
   faq: [
     [
       'Is there an official CADCraft APK for Android?',
-      'No Android APK is listed in the official CADCraft v0.17.0 release checked on 4 November 2026. Published builds target desktop operating systems and the web. Check the ArtCraft product page and official GitHub releases for any later Android announcement.',
+      'No Android APK is listed in the official CADCraft v0.18.0 release checked on 7 November 2026. Published builds target desktop operating systems and the web. Check the ArtCraft product page and official GitHub releases for any later Android announcement.',
     ],
     [
       'Can I use CADCraft on an Android phone without installing an APK?',
@@ -26,13 +26,32 @@ export const meta = {
   ],
 };
 
-**There is no official Android APK in CADCraft's v0.17.0 release**, checked on 4 November 2026. The ArtCraft team publishes Windows, macOS, Linux and FreeBSD builds, plus a WebAssembly build. If you searched for “CADCraft APK” or “CADCraft for Android,” the available browser route is worth distinguishing from a native phone application before downloading anything.
+**There is no official Android APK in CADCraft's v0.18.0 release**, checked on 7 November 2026. The ArtCraft team publishes Windows, macOS, Linux and FreeBSD builds, plus a WebAssembly build. If you searched for “CADCraft APK” or “CADCraft for Android,” the available browser route is worth distinguishing from a native phone application before downloading anything.
 
 You can open the [CADCraft online editor](/online) on a phone. Its interface, however, is designed around a **mouse, keyboard and desktop-sized canvas**. A page that loads on Android is not automatically a practical replacement for a mobile CAD app.
 
-_cadcraft.org is an independent guide and browser host. The upstream developer is the [ArtCraft team](https://getartcraft.com/apps/cadcraft). Release-platform claims below refer to its [official v0.17.0 assets](https://github.com/storytold/cadcraft/releases/tag/v0.17.0)._
+_cadcraft.org is an independent guide and browser host. The upstream developer is the [ArtCraft team](https://getartcraft.com/apps/cadcraft). Release-platform claims below refer to its [official v0.18.0 assets](https://github.com/storytold/cadcraft/releases/tag/v0.18.0)._
 
-![CADCraft platform map: official native builds for desktop systems, a separate browser build to test on a phone, and no Android APK listed among the checked v0.17.0 release assets](/imgs/blog/cadcraft-android-platforms.svg)
+![CADCraft platform map: official native builds for desktop systems, a separate browser build to test on a phone, and no Android APK listed among the checked v0.18.0 release assets](/imgs/blog/cadcraft-android-platforms.svg)
+
+## Verified with v0.18.0 on 7 November 2026
+
+![The hosted editor at a 390 CSS-pixel viewport in desktop browser emulation, not a physical Android device.](/imgs/blog/review-0180/mobile-browser.png)
+
+_The hosted editor at a 390 CSS-pixel viewport in desktop browser emulation, not a physical Android device._
+
+The official v0.18.0 asset list contains **zero APK files**. A release-note change about scanning Android font directories does not establish that a downloadable Android application exists. This screenshot tests the browser layout only; it is not evidence of Android touch, GPU or native-app compatibility. On the same release, a desktop CLI inspection of the drawing used for the browser test returned:
+
+```text
+$ cadcraft-cli --version
+cadcraft-cli 0.18.0 (32238e83c2c8bf643994132883e94bc96961f649)
+$ cadcraft-cli info bracket.dxf
+# excerpt from the actual JSON result
+"entityCount": 46
+"Circle": 7
+```
+
+[Checked release assets](/examples/review-0180/release-assets.txt) · [Full drawing inspection](/examples/review-0180/bracket-info.json).
 
 ## What the official download list actually contains
 
@@ -44,7 +63,7 @@ The current release has installers and archives for desktop operating systems. T
 | macOS universal `.dmg`                          | Apple silicon and Intel Macs                | No           |
 | Linux AppImage, Flatpak or distribution package | Linux desktops, including some ARM systems  | No           |
 | FreeBSD archive                                 | FreeBSD                                     | No           |
-| `cadcraft-web-0.17.0.zip`                       | A web server, accessed through a browser    | No           |
+| `cadcraft-web-0.18.0.zip`                       | A web server, accessed through a browser    | No           |
 
 The release includes a Linux **aarch64** build and a Windows **arm64** build. Neither is an APK. Matching the processor is only half of choosing software: the operating system and application environment must match too.
 
@@ -56,7 +75,7 @@ The online page loads a WebAssembly application inside a normal web page. In our
 
 ![The actual cadcraft.org online page in a 390-pixel-wide emulated browser, showing the mobile notice, renderer buttons and the desktop-style editor scaled into the page](/imgs/blog/cadcraft-phone-browser-check.png)
 
-_Browser-emulation capture, 4 November 2026. This checks the narrow-screen layout; it is not a physical Android-device or touch-editing test._
+_Browser-emulation capture, 7 November 2026. This checks the narrow-screen layout; it is not a physical Android-device or touch-editing test._
 
 There are several separate things to test on your own device:
 
@@ -100,7 +119,7 @@ On the free route, the site's autosave keeps recent drawings **in that browser o
 
 Pro's optional cloud saving is a separate account feature. It does not turn the editor into a native mobile application. Similarly, an **Add to Home screen** shortcut changes how you launch the website, not what CAD commands it implements.
 
-The hosted editor identifies itself as **v0.8.0** at the time of this check. The upstream desktop release is **v0.17.0**. A feature mentioned in the latest desktop release notes should not be assumed to exist in this older hosted build.
+The hosted editor and linked desktop release now both identify as **v0.18.0**. A matching version does not make a desktop workflow a good phone workflow: the browser UI, input method and file conversion support still differ.
 
 ## Which route should you use?
 
@@ -114,7 +133,7 @@ For a job that must be completed entirely on a phone, choose a tool whose publis
 
 ## Sources and related guides
 
-- [Official CADCraft v0.17.0 release](https://github.com/storytold/cadcraft/releases/tag/v0.17.0) and [platform download documentation](https://github.com/storytold/cadcraft/blob/v0.17.0/README.md#downloads).
+- [Official CADCraft v0.18.0 release](https://github.com/storytold/cadcraft/releases/tag/v0.18.0) and [platform download documentation](https://github.com/storytold/cadcraft/blob/v0.18.0/README.md#downloads).
 - [CADCraft Online](/online): renderer controls, device notice and hosted-version information.
 - [Free online CAD software](/blog/free-online-cad-software): browser and cloud tools compared by task.
 - [CADCraft 3D support](/blog/cadcraft-3d): why mobile access does not imply 3D-printing support.

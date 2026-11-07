@@ -34,7 +34,25 @@ export const meta = {
 
 Put every dimension in the prompt, and make the agent **measure what it drew** before you trust it. The runnable example below does exactly that.
 
-_cadcraft.org is an independent guide, not the official site. CADCraft is the ArtCraft team's open-source CAD program ([getartcraft.com/apps/cadcraft](https://getartcraft.com/apps/cadcraft)). The example on this page was run with cadcraft-cli 0.8.0._
+_cadcraft.org is an independent guide, not the official site. CADCraft is the ArtCraft team's open-source CAD program ([getartcraft.com/apps/cadcraft](https://getartcraft.com/apps/cadcraft)). The original example used cadcraft-cli 0.8.0; the verification section below records its new v0.18.0 rerun._
+
+## Verified with v0.18.0 on 7 November 2026
+
+![The plate produced through the MCP script, opened in the v0.18.0 hosted editor.](/imgs/blog/review-0180/text-to-cad.png)
+
+_The plate produced through the MCP script, opened in the v0.18.0 hosted editor._
+
+I reran the Python MCP example below with the verified v0.18.0 CLI. Querying the actual circles, rather than judging the picture, produced one 30 mm central circle and four 6 mm holes at the expected coordinates:
+
+```text
+HOLES {'x': 60.0, 'y': 40.0, 'z': 0.0} dia 30.0
+HOLES {'x': 10.0, 'y': 10.0, 'z': 0.0} dia 6.0
+HOLES {'x': 110.0, 'y': 10.0, 'z': 0.0} dia 6.0
+HOLES {'x': 110.0, 'y': 70.0, 'z': 0.0} dia 6.0
+HOLES {'x': 10.0, 'y': 70.0, 'z': 0.0} dia 6.0
+```
+
+The saved DXF inspection contains **5 circles, 3 dimensions and 1 polyline**. DXF and PDF saves both completed. This test runs the drawing script directly through MCP; it does not claim that a new language-model session generated the script. [Test DXF](/examples/review-0180/plate.dxf) · [Full MCP output](/examples/review-0180/plate-mcp-output.txt) · [Drawing inspection](/examples/review-0180/plate-info.json).
 
 ## The three routes, compared
 
