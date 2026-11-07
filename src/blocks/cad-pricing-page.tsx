@@ -1,6 +1,7 @@
 import { Loader2 } from 'lucide-react';
 
 import { useRouter } from '@/core/i18n/navigation';
+import { cadcraftPriceText } from '@/config/cadcraft-pricing';
 import { pricingCatalog } from '@/config/pricing';
 import { ctaPrimary } from '@/lib/cta';
 import { m } from '@/paraglide/messages.js';
@@ -104,7 +105,7 @@ export function CadPricingPage() {
     [m['cad.pricing.q1'](), m['cad.pricing.a1']()],
     [m['cad.pricing.q2'](), m['cad.pricing.a2']()],
     [m['cad.pricing.q3'](), m['cad.pricing.a3']()],
-    [m['cad.pricing.q4'](), m['cad.pricing.a4']()],
+    [m['cad.pricing.q4'](), m['cad.pricing.a4'](cadcraftPriceText)],
   ];
 
   return (
