@@ -1,0 +1,12 @@
+{
+  "version": "0.18.0",
+  "source": "https://github.com/storytold/cadcraft/releases/tag/v0.18.0",
+  "archive_sha256": "2440d15ebe28ce0a97f107a860f96d3bc21d98381b9f685676843b876a4d9086",
+  "wasm_sha256": "7b8563f9ae654e4c203e9df445d20bf16c8e10679b572727422b64c6a0d17631",
+  "gzip_sha256": "3017d207e4fca005b1076beec86a60b4012f43f68c15ba534578bbaa45dfda33",
+  "gzip_parts": [
+    "cadcraft-web-d875c3c223026021_bg.wasm.gz.1",
+    "cadcraft-web-d875c3c223026021_bg.wasm.gz.2",
+    "cadcraft-web-d875c3c223026021_bg.wasm.gz.3"
+  ]
+}
