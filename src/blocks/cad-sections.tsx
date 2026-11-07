@@ -152,7 +152,10 @@ export function CadTitleBlock() {
     [m['home.spec.files'](), m['home.spec.files_v']()],
     [m['home.spec.engine'](), m['home.spec.engine_v']()],
     [m['home.spec.agents'](), m['home.spec.agents_v']()],
-    [m['home.spec.release'](), m['home.spec.release_v']()],
+    [
+      m['home.spec.release'](),
+      m['home.spec.release_v']({ version: CADCRAFT_VERSION }),
+    ],
   ];
   return (
     <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:py-16">

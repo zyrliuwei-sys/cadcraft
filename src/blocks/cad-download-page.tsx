@@ -28,9 +28,9 @@ export function CadDownloadPage() {
   return (
     <>
       <PageHero
-        eyebrow={m['cad.dl.version']()}
+        eyebrow={m['cad.dl.version']({ version: CADCRAFT_VERSION })}
         title={m['cad.dl.h1']()}
-        lead={m['cad.dl.lead']()}
+        lead={m['cad.dl.lead']({ version: CADCRAFT_VERSION })}
         aside={
           <dl className="border-foreground/80 bg-sheet grid grid-cols-2 border-t border-l">
             {[
@@ -98,7 +98,7 @@ export function CadDownloadPage() {
           <Steps
             items={[
               <>
-                {m['cad.dl.win_s1']()}{' '}
+                {m['cad.dl.win_s1']({ version: CADCRAFT_VERSION })}{' '}
                 <a
                   href={cadcraftLinks.windows}
                   className="text-signal-ink font-semibold hover:underline"
@@ -120,7 +120,7 @@ export function CadDownloadPage() {
           <Steps
             items={[
               <>
-                {m['cad.dl.mac_s1']()}{' '}
+                {m['cad.dl.mac_s1']({ version: CADCRAFT_VERSION })}{' '}
                 <a
                   href={cadcraftLinks.macos}
                   className="text-signal-ink font-semibold hover:underline"
@@ -199,7 +199,7 @@ export function CadDownloadPage() {
 
         <DocSection id="web" title={m['cad.dl.web_title']()}>
           <p>
-            {m['cad.dl.web_desc']()}{' '}
+            {m['cad.dl.web_desc']({ version: CADCRAFT_VERSION })}{' '}
             <a
               href={cadcraftLinks.web}
               className="text-signal-ink font-semibold hover:underline"

@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 
+import { CADCRAFT_VERSION } from '@/config/cadcraft';
 import { pageHead } from '@/lib/page-head';
 import { m } from '@/paraglide/messages.js';
 import { getLocale } from '@/paraglide/runtime.js';
@@ -14,7 +15,10 @@ export const Route = createFileRoute('/download')({
     return {
       locale,
       title: m['cad.page.download.title']({}, { locale }),
-      description: m['cad.page.download.description']({}, { locale }),
+      description: m['cad.page.download.description'](
+        { version: CADCRAFT_VERSION },
+        { locale }
+      ),
     };
   },
   head: ({ loaderData }) =>
