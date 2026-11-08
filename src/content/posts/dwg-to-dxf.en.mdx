@@ -28,7 +28,7 @@ export const meta = {
 
 **Short answer:** in the free CADCraft desktop app ([download](/download)), open the DWG with **File ▸ Open…**, then choose **File ▸ Save As…** (Ctrl+Shift+S) and save it with a `.dxf` name. The DXF gets the same version as the DWG. To choose a different version, or to convert a whole folder, run `cadcraft-cli run file.dwg --cmd 'saveas {"path":"file.dxf","version":2013}'` (Path B). The desktop app opens DWG R13–2018. Keep the original DWG, because the DXF holds only what CADCraft read.
 
-_cadcraft.org is an independent guide, not the official site. CADCraft is made by the ArtCraft team: see [getartcraft.com/apps/cadcraft](https://getartcraft.com/apps/cadcraft). Commands and outputs below were checked with cadcraft-cli 0.8.0._
+_cadcraft.org is an independent guide, not the official site. CADCraft is made by the ArtCraft team: see [getartcraft.com/apps/cadcraft](https://getartcraft.com/apps/cadcraft). The commands, outputs and screenshots below are recorded CLI examples from an earlier test, not a claim that every step has been rerun on the current release._
 
 ## Why convert at all?
 
@@ -44,7 +44,7 @@ If the recipient uses AutoCAD and will send the file back, send the DWG instead.
 2. **File ▸ Save As…** (Ctrl+Shift+S, ⇧⌘S on a Mac), give the file a `.dxf` name, and save it next to the original, not over it.
 3. Check the version you got (step 4 of the checks below). A drawing opened from a file **keeps that file's version** when you save it: a DWG from AutoCAD 2018 or later becomes a 2018 (AC1032) DXF.
 
-**File ▸ Default Save Format ▸ Version 2000…2018** looks like the place to change that, but in 0.8.0 it applies only to new drawings that have never been saved. For an opened DWG, choose the version with the CLI command in Path B.
+**File ▸ Default Save Format ▸ Version 2000…2018** looks like the place to change that, but in our recorded test it applied only to new drawings that had never been saved. For an opened DWG, choose the version with the CLI command in Path B.
 
 Under the hood, CADCraft has already converted the DWG to DXF to open it (through the open-source acadrust library). Saving writes CADCraft's own DXF.
 

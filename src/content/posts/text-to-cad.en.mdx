@@ -34,7 +34,7 @@ export const meta = {
 
 Put every dimension in the prompt, and make the agent **measure what it drew** before you trust it. The runnable example below does exactly that.
 
-_cadcraft.org is an independent guide, not the official site. CADCraft is the ArtCraft team's open-source CAD program ([getartcraft.com/apps/cadcraft](https://getartcraft.com/apps/cadcraft)). The original example used cadcraft-cli 0.8.0; the verification section below records its new v0.18.0 rerun._
+_cadcraft.org is an independent guide, not the official site. CADCraft is the ArtCraft team's open-source CAD program ([getartcraft.com/apps/cadcraft](https://getartcraft.com/apps/cadcraft)). The original example used an earlier CLI build; the verification section below records its new v0.18.0 rerun._
 
 ## Verified with v0.18.0 on 7 November 2026
 
@@ -100,7 +100,7 @@ dimdiameter 75,40 85,55
 
 ## What a model will get wrong, with the evidence
 
-These are failures we produced on purpose with CADCraft 0.8.0, so you know what to check for.
+These are failures we produced on purpose in the original CADCraft test, so you know what to check for.
 
 | Mistake                                    | What happens                                                                                                                                         | How to catch it                                           |
 | ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
@@ -116,7 +116,7 @@ _One missing letter. Both drawings came from the same script; on the right the `
 
 ## How CADCraft's MCP server and JSON channel fit in
 
-CADCraft doesn't include a language model. It gives an agent **hands and eyes**: every menu item, tool and prompt is a command that can be typed or called with JSON. The MCP server exposes 12 tools in 0.8.0: `command_line`, `script`, `execute`, `list_commands`, `inspect_drawing`, `query_entities`, `render`, `find_text`, `new_drawing`, `open`, `save` and `cancel`. `render` returns a PNG the model can look at, and `save` to a `.pdf`, `.svg` or `.png` path exports.
+CADCraft doesn't include a language model. It gives an agent **hands and eyes**: every menu item, tool and prompt is a command that can be typed or called with JSON. The MCP server exposes 12 tools: `command_line`, `script`, `execute`, `list_commands`, `inspect_drawing`, `query_entities`, `render`, `find_text`, `new_drawing`, `open`, `save` and `cancel`. `render` returns a PNG the model can look at, and `save` to a `.pdf`, `.svg` or `.png` path exports.
 
 ![Text to CAD loop: you write the prompt, a language model writes commands, the CADCraft MCP server runs them, the agent checks the result with query_entities and render, fixes and retries, then saves DXF or PDF](/imgs/blog/text-to-cad-agent-loop.svg)
 
@@ -136,7 +136,7 @@ For clients configured with JSON (Claude Desktop and others):
 
 That runs **headless**, with no window. To watch the agent draw in the app, start the desktop app with `--control 7979` and use `"args": ["mcp", "--connect", "127.0.0.1:7979"]`.
 
-**The minimal runnable example**, without any AI client. This Python script speaks MCP to `cadcraft-cli` directly, sends the commands above, checks the holes and saves the files. It ran as shown with cadcraft-cli 0.8.0 on its `PATH`:
+**The minimal runnable example**, without any AI client. This Python script speaks MCP to `cadcraft-cli` directly, sends the commands above, checks the holes and saves the files. It ran as shown in the original test with `cadcraft-cli` on its `PATH`; the current-release verification below records the later rerun:
 
 ```python
 import json, subprocess

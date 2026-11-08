@@ -1,5 +1,6 @@
 import { createRouter } from '@tanstack/react-router';
 
+import { canonicalPageUrl } from '@/lib/canonical-url';
 import { deLocalizeUrl, localizeUrl } from '@/paraglide/runtime.js';
 
 import { routeTree } from './routeTree.gen';
@@ -9,11 +10,12 @@ export function getRouter() {
     routeTree,
     defaultPreload: 'intent',
     scrollRestoration: true,
+    trailingSlash: 'never',
     // Paraglide owns locale prefixes: incoming URLs are de-localized before
     // matching (routes are locale-free), outgoing hrefs get re-localized.
     rewrite: {
       input: ({ url }) => deLocalizeUrl(url),
-      output: ({ url }) => localizeUrl(url),
+      output: ({ url }) => new URL(canonicalPageUrl(localizeUrl(url).href)),
     },
   });
   return router;

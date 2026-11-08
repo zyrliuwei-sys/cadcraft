@@ -73,6 +73,15 @@ export default defineConfig({
     // Versions the homepage HTML edge cache (src/server.ts) per build.
     __BUILD_ID__: JSON.stringify(Date.now().toString(36)),
     __BUILD_VERSION__: JSON.stringify(buildVersion()),
+    // Editorial dates use the site's timezone, independently of the CI host.
+    __BUILD_DATE__: JSON.stringify(
+      new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Asia/Shanghai',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      }).format(new Date())
+    ),
   },
   server: {
     port: 3000,

@@ -26,15 +26,15 @@ export const meta = {
   ],
 };
 
-**Short answer:** in AutoCAD, type the **alias** at the command line and press **Enter** or **Space**: `L` for LINE, `C` for CIRCLE, `TR` for TRIM, `O` for OFFSET, `H` for HATCH, `DLI` for a linear dimension. Press **Enter** on an empty line to repeat the last command, and **Esc** to cancel. The tables below list the shortcuts by category, in the order you'd use them. The last column says whether each one works the same in the free [CADCraft desktop app](/download) or [online editor](/online), checked against CADCraft 0.8.0's built-in command catalogue.
+**Short answer:** in AutoCAD, type the **alias** at the command line and press **Enter** or **Space**: `L` for LINE, `C` for CIRCLE, `TR` for TRIM, `O` for OFFSET, `H` for HATCH, `DLI` for a linear dimension. Press **Enter** on an empty line to repeat the last command, and **Esc** to cancel. The tables below list the shortcuts by category, in the order you'd use them. The last column says whether each one works the same in the free [CADCraft desktop app](/download) or [online editor](/online), with command availability rechecked against the current CADCraft release's built-in catalogue. Keyboard and mouse behaviour is illustrated by the recorded examples below; catalogue presence alone does not verify an interactive shortcut.
 
 _cadcraft.org is an independent guide, not the official site. CADCraft is an open-source project by the ArtCraft team and isn't affiliated with Autodesk._
 
-**How to read the CADCraft column:** "Same" means the same keys start the same command. "Differs" says what happens instead. "No" means CADCraft 0.8.0 has no such shortcut or command. On a Mac, CADCraft uses ⌘ wherever this page says Ctrl.
+**How to read the CADCraft column:** "Same" means the same keys start the same command. "Differs" says what happens instead. "No" means the shortcut was unavailable in the recorded keymap or the command is absent from the current catalogue. On a Mac, CADCraft uses ⌘ wherever this page says Ctrl.
 
 ![The CADCraft command line with dim typed and an AutoComplete list showing DIM, DIMARC, DIMEDIT, DIMBREAK, DIMSPACE, DIMSTYLE, DIMTEDIT and DIMJOGGED with their labels](/imgs/blog/shortcuts-command-autocomplete.webp)
 
-_Type the first letters at the command line and CADCraft lists the matching commands, as AutoCAD’s AutoComplete does. Web build of CADCraft 0.8.0._
+_Type the first letters at the command line and CADCraft lists the matching commands, as AutoCAD’s AutoComplete does. Recorded screenshot of the CADCraft web build._
 
 ## Draw
 
@@ -151,7 +151,7 @@ _Type the first letters at the command line and CADCraft lists the matching comm
 | `Z` Enter `P`             | Zoom previous                                | Same                                 |
 | `P`                       | Pan                                          | Same                                 |
 | Mouse wheel / middle-drag | Zoom / pan                                   | Same; pinch works on touchpads       |
-| Double-click wheel        | Zoom extents                                 | Not documented in 0.8.0; use `Z` `E` |
+| Double-click wheel        | Zoom extents                                 | Not verified here; use `Z` `E` |
 | `RE` / `REA`              | Regen / regen all                            | Same                                 |
 | `V`                       | Named views                                  | Same                                 |
 | `3DO`                     | Orbit                                        | Same (`ORBIT` too)                   |
@@ -224,7 +224,7 @@ _The function-key row at a glance. Ctrl shortcuts are in the table below._
 
 **These don't:**
 
-1. **UCS.** CADCraft 0.8.0 has no UCS command, so drawings that rely on a rotated UCS can't be set up the AutoCAD way. Rotate the geometry or use polar input.
+1. **UCS.** The current CADCraft command catalogue has no UCS command, so drawings that rely on a rotated UCS can't be set up the AutoCAD way. Rotate the geometry or use polar input.
 2. **CUI customisations.** Your company's `.cuix` ribbon and keyboard shortcuts won't load. Command aliases are different: CADCraft loads user alias files and has **ALIASEDIT**, so you can add the odd alias your fingers expect.
 
 If a shortcut does something unexpected, press **F1** in CADCraft. It lists every command with its aliases and keys, so you don't have to remember this page.

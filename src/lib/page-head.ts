@@ -1,4 +1,5 @@
 import { SITE_URL } from '@/config/site-url';
+import { canonicalPageUrl } from '@/lib/canonical-url';
 import { locales, localizeUrl } from '@/paraglide/runtime.js';
 
 type Locale = (typeof locales)[number];
@@ -18,7 +19,9 @@ export function pageHead({
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }) {
   const urlFor = (loc: string) =>
-    localizeUrl(`${SITE_URL}${path}`, { locale: loc as Locale }).href;
+    canonicalPageUrl(
+      localizeUrl(`${SITE_URL}${path}`, { locale: loc as Locale }).href
+    );
   const image = `${SITE_URL}/og-image.jpg`;
   return {
     meta: [
