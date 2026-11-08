@@ -9,6 +9,8 @@ type PageMeta = {
   title: string;
   description: string;
   updated_at: string;
+  reviewed_at?: string;
+  reviewed_version?: string;
 };
 
 // Page metadata is bundled eagerly (loader/head need it synchronously); the
@@ -85,6 +87,14 @@ function StaticPage() {
         <p className="text-muted-foreground mt-2 text-xs">
           {m['common.pages.last_updated']()}: {meta.updated_at}
         </p>
+        {meta.reviewed_at && meta.reviewed_version && (
+          <p className="text-muted-foreground mt-2 text-xs">
+            {m['common.pages.last_reviewed']({
+              date: meta.reviewed_at,
+              version: meta.reviewed_version,
+            })}
+          </p>
+        )}
       </header>
       <div className="text-foreground/90 text-[15px] leading-7">
         <Suspense fallback={null}>

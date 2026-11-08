@@ -5,6 +5,7 @@ import {
   useRouter as useTanStackRouter,
 } from '@tanstack/react-router';
 
+import { canonicalPagePath } from '@/lib/canonical-url';
 import { getLocale } from '@/paraglide/runtime.js';
 
 // Locale-aware navigation. Locale prefixes are handled entirely by the
@@ -27,7 +28,7 @@ export function Link({ href, locale, prefetch, ...rest }: LinkProps) {
     return <a href={href} {...rest} />;
   }
   const Comp = RouterLink as any;
-  return <Comp to={href} {...rest} />;
+  return <Comp to={canonicalPagePath(href)} {...rest} />;
 }
 
 export function usePathname(): string {

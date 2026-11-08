@@ -35,7 +35,7 @@ WORKDIR /app
 ENV NODE_ENV=production
 
 ARG VITE_APP_URL=https://cadcraft.org
-ARG VITE_APP_NAME="CADCraft AI"
+ARG VITE_APP_NAME="CADCraft"
 ARG VITE_APP_DESCRIPTION="CADCraft download and installation guide, Autodesk AutoCAD feature comparison and user experience"
 ARG VITE_APP_LOGO=/logo.svg
 ARG VITE_DEFAULT_LOCALE=en

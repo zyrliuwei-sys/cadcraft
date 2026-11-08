@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 
 import { SITE_URL } from '@/config/site-url';
+import { canonicalPageUrl } from '@/lib/canonical-url';
 import { baseLocale, locales, localizeUrl } from '@/paraglide/runtime.js';
 import { getLocalPosts } from '@/content/posts';
 import { isBlogPostIndexable } from '@/content/posts/indexing';
@@ -28,9 +29,11 @@ type Entry = {
 };
 
 function urlFor(path: string, locale: string): string {
-  return localizeUrl(`${SITE_URL}${path || '/'}`, {
-    locale: locale as (typeof locales)[number],
-  }).href;
+  return canonicalPageUrl(
+    localizeUrl(`${SITE_URL}${path || '/'}`, {
+      locale: locale as (typeof locales)[number],
+    }).href
+  );
 }
 
 function xmlEscape(value: string): string {

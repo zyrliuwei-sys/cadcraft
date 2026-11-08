@@ -28,7 +28,7 @@ export const meta = {
 
 **Short answer:** open [cadcraft.org/online](/online), click into the drawing area, press **Ctrl+O** (⌘O on a Mac) and pick the `.dxf`. It opens in the browser with no install and no account. The online editor reads DXF R12 (ASCII) and R13–2018, ASCII or binary. If it won't open, find out whether the file is ASCII or binary and which version it is (Step 1), then use the fix for that case in the troubleshooting section. For big drawings or batch work, the free [desktop app](/download) reads the same DXF versions.
 
-_cadcraft.org is an independent guide, not the official site. CADCraft is made by the ArtCraft team: see [getartcraft.com/apps/cadcraft](https://getartcraft.com/apps/cadcraft). The commands and messages below were checked with cadcraft-cli 0.8.0._
+_cadcraft.org is an independent guide, not the official site. CADCraft is made by the ArtCraft team: see [getartcraft.com/apps/cadcraft](https://getartcraft.com/apps/cadcraft). The exact CLI messages and rendered comparisons below are recorded examples from an earlier test; they have not all been rerun on the current release._
 
 ## Step 1: Is it ASCII or binary, and which version?
 
@@ -127,7 +127,7 @@ The dangerous case is a **truncated ASCII** DXF. We cut a 16-object file in the 
 
 ![Left: a floor plan DXF with walls, door swing, room names and furniture, 16 objects. Right: the same file cut off in the middle of its ENTITIES section opens with only the walls, 5 objects, and no error](/imgs/blog/open-dxf-truncated-compare.webp)
 
-_Rendered with cadcraft-cli 0.8.0. The right-hand file opened without an error message, which is why counting objects matters._
+_Recorded cadcraft-cli rendering. The right-hand file opened without an error message, which is why counting objects matters._
 
 ### "Version too new" or "unsupported version"
 

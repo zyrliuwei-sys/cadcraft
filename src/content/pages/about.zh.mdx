@@ -1,17 +1,21 @@
+import { BUILD_DATE } from '@/config/build-date';
 import { SiteAuthorIntroduction } from '@/blocks/site-author-introduction';
+import aboutReview from '@/content/about-review.json';
 
 export const meta = {
-  title: '关于 CADCraft AI',
+  title: '关于 cadcraft.org',
   description:
     '一个关于 CADCraft 的独立社区指南站，提供实用工作流、版本和使用资料。',
-  updated_at: '2026-10-15',
+  updated_at: BUILD_DATE,
+  reviewed_at: aboutReview.date,
+  reviewed_version: aboutReview.version,
 };
 
 <SiteAuthorIntroduction />
 
 ## 面向实际 CAD 使用的独立指南
 
-CADCraft AI 是一个独立的社区指南站，服务于希望下载、试用、理解和自动化使用 CADCraft 的读者。我把实用信息集中在这里：版本发布链接、安装说明、浏览器版使用方法、命令教程、与 AutoCAD 的对比，以及面向终端用户和 AI Agent 的实际工作流示例。
+cadcraft.org 是一个独立的社区指南站，服务于希望下载、试用、理解和自动化使用 CADCraft 的读者。我把实用信息集中在这里：版本发布链接、安装说明、浏览器版使用方法、命令教程、与 AutoCAD 的对比，以及面向终端用户和 AI Agent 的实际工作流示例。
 
 CADCraft 是由 ArtCraft 团队开发的开源 CAD 软件。本网站不是 CADCraft 官方项目、软件供应商，也不是任何商业 CAD 产品的官方支持中心。本站与 Autodesk, Inc. 及 ArtCraft 团队均无关联。CADCraft、ArtCraft 和 AutoCAD 归各自权利人所有；本站不代表这些组织发言，也不代表获得它们的支持。AutoCAD 是 Autodesk, Inc. 的注册商标。
 

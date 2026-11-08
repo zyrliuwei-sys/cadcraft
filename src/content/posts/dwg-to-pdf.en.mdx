@@ -28,7 +28,7 @@ export const meta = {
 
 **Short answer:** open the DWG in the free CADCraft desktop app ([download](/download)), choose **File ▸ Print…** (Ctrl+P, ⌘P on a Mac), set **Printer/plotter** to `CADCraft PDF`, tick **Plot object lineweights**, pick a **Plot style table**, then plot. For a whole folder, skip the GUI and run `cadcraft-cli convert drawing.dwg drawing.pdf` in a loop (Step 4). The desktop app opens DWG R13–2018. The PDF is vector, and TrueType text stays searchable.
 
-_cadcraft.org is an independent guide, not the official site. CADCraft is made by the ArtCraft team: see [getartcraft.com/apps/cadcraft](https://getartcraft.com/apps/cadcraft). Everything below was checked against cadcraft-cli 0.8.0._
+_cadcraft.org is an independent guide, not the official site. CADCraft is made by the ArtCraft team: see [getartcraft.com/apps/cadcraft](https://getartcraft.com/apps/cadcraft). The screenshots and exact outputs below are recorded examples from an earlier CLI test. Recheck plotting and font behaviour on the current release rather than treating an old result as a new verification._
 
 ## Step 1: Open the DWG and check its layouts
 
@@ -44,7 +44,7 @@ This is the step that decides whether your 0.50 mm walls come out as 0.50 mm.
 
 ![The CADCraft Plot dialog: Layout Model, Printer/plotter None, Paper size ANSI A 8.50 x 11.00 inches, Landscape, Plot area Extents, Fit to paper, Center the plot, Plot object lineweights ticked, Plot transparency unticked, Plot style table None](/imgs/blog/dwg-to-pdf-plot-dialog.webp)
 
-_The Plot dialog (File ▸ Print…) in the web build of CADCraft 0.8.0, with its defaults for a model-space plot of an imperial drawing._
+_The Plot dialog (File ▸ Print…) in a recorded CADCraft web session, with its defaults for a model-space plot of an imperial drawing._
 
 In **File ▸ Print…** (the Plot dialog):
 
@@ -83,7 +83,7 @@ A colour-dependent table chooses by the object's index colour; a true colour use
 
 ![The same bracket drawing plotted twice by CADCraft at 300 dpi: on the left with no plot style table, in its object colours; on the right with monochrome.ctb, all black](/imgs/blog/dwg-to-pdf-ctb-compare.webp)
 
-_Same drawing, same plot settings, two tables. Plotted with cadcraft-cli 0.8.0 to the CADCraft PNG device at 300 dpi._
+_Same drawing, same plot settings, two tables. Recorded output from cadcraft-cli to the CADCraft PNG device at 300 dpi._
 
 **The trap:** if the page setup or your command names a table CADCraft can't find (for example `office.ctb` from the sender's office), the plot goes ahead **without a warning** and prints object colours. We plotted the same drawing with `"plotStyleTable":"missing.ctb"` and with no table, and the two PDFs had identical colours and line widths. After you rebuild the table under the same name, the plot uses it. In our test, `Color_1` set to black at 0.5 mm came out as a 1.417 pt stroke, which is 0.5 mm.
 
@@ -97,7 +97,7 @@ _Same drawing, same plot settings, two tables. Plotted with cadcraft-cli 0.8.0 t
 | One PDF per sheet           | **File ▸ Batch Publish…**                      | `publish {"path":"job.pdf"}` → `job-Model.pdf`, `job-Layout1.pdf`… |
 | Frames drawn in model space | **File ▸ Sheet Books to PDF…**                 | `pdfbook` (closed polylines of the frame height become pages)      |
 
-Notes from running these on 0.8.0:
+Notes from the recorded CLI run:
 
 - `"all"` means Model (if it has objects) plus **every** layout in tab order, **including empty ones**. Our test drawing produced three pages, two of them blank. Name the layouts if you have placeholders.
 - One PDF holds at most 256 sheets.
@@ -141,7 +141,7 @@ Each run prints a line such as `{"bytes":11374,"layout":"Model","pages":3,"path"
 | `CADCraft PNG` device or `.png` export | No      | No                                              |
 | `CADCraft SVG` device or `.svg` export | Yes     | Not covered here                                |
 
-We checked this by decompressing the PDF. A label in Arial was written as real text with an embedded `ArialMT` subset and a `ToUnicode` map, so a PDF viewer can search it. The same words in a `romans.shx` style were written as stroked lines. CADCraft doesn't read SHX fonts at all: it draws that text with its own single-stroke font.
+We checked this by decompressing the PDF. A label in Arial was written as real text with an embedded `ArialMT` subset and a `ToUnicode` map, so a PDF viewer can search it. The same words in a `romans.shx` style were written as stroked lines. That recorded output used a substitute stroke font. The current release supports SHX fonts, so inspect the actual font resources and exported PDF instead of assuming the same substitution will occur.
 
 ## Troubleshooting
 
@@ -151,7 +151,7 @@ We checked this by decompressing the PDF. A label in Arial was written as real t
 
 **Text runs longer or wraps differently than in the sender's PDF.** That's the SHX substitution. CADCraft's stroke font has different widths. Set a TrueType stand-in with `SETVAR FONTALT` followed by a font name, or `CADCRAFT_FONTALT=Arial` for the CLI. In our test, that also made the text searchable. For Chinese, Japanese or Korean drawings, use a CJK font such as `Noto Sans CJK TC`.
 
-**Model-space PDF ignores the paper margins.** This is a documented limitation in 0.8.0: model-space PDF plots fit the drawing inside default margins rather than the paper's own margins. PNG plots do apply them. Plot from a layout if the margins matter.
+**Check model-space PDF margins.** In the recorded test, model-space PDF used default margins rather than the paper margins, while PNG applied the configured margins. Recheck the current exporter with your page setup, and plot from a layout when exact sheet margins matter.
 
 **Transparency looks solid.** Object transparency is plotted only when **Plot transparency** is ticked. CADCraft can't save that setting in DXF or DWG, so it's off again after you reopen the file.
 

@@ -17,7 +17,7 @@ export const meta = {
     ],
     [
       'Does CADCraft support AutoCAD commands?',
-      'CADCraft 0.8.0 has 426 commands and uses AutoCAD’s names and most of its aliases for the 2D drafting set: draw, modify, layers, dimensions, blocks and inquiry. It has no UCS command, no 3D modelling commands such as EXTRUDE, and no XCLIP, LAYWALK, COPYTOLAYER or QLEADER.',
+      'The current CADCraft release uses AutoCAD’s names and most of its aliases for the 2D drafting set: draw, modify, layers, dimensions, blocks and inquiry. It has no UCS command, no 3D modelling commands such as EXTRUDE, and no LAYWALK, COPYTOLAYER or QLEADER. XCLIP is now present in the command catalogue.',
     ],
     [
       'How do I see every command CADCraft has?',
@@ -28,7 +28,7 @@ export const meta = {
 
 **Short answer:** type a command's **full name** or its **alias** at the command line and press **Enter**: `OFFSET` or `O`, `TRIM` or `TR`, `DIMLINEAR` or `DLI`. Answer the prompts, choosing options by typing the capital letters shown in `[brackets]`. Press Enter on an empty line to repeat the command, and Esc to stop it. Below, the commands are grouped by job. Each row gives the **full name, alias, what it does, and whether the free CADCraft app supports it**. The last section lists the 20 to learn first.
 
-_cadcraft.org is an independent guide, not the official site. The CADCraft column was checked against the command catalogue of CADCraft 0.8.0 (`cadcraft-cli commands`), not taken from marketing pages._
+_cadcraft.org is an independent guide, not the official site. The CADCraft column was rechecked against the current CADCraft command catalogue (`cadcraft-cli commands`), not taken from marketing pages._
 
 ![CADCraft desktop with a mounting bracket drawing: Draw, Modify, Dimension and Block tool sets on the left, Layers and Properties on the right, and the command line at the bottom](/imgs/blog/desktop-bracket.webp)
 
@@ -142,7 +142,7 @@ _`LA` opens the Layer Properties Manager. Here it shows the layers of CADCraft�
 | BASE    | —     | Insertion base point of the drawing           | ✓        |
 | REFEDIT | —     | Edit a block or reference in place            | ✓        |
 | XATTACH | XA    | Attach a DWG as an external reference         | ✓        |
-| XCLIP   | XC    | Clip an external reference                    | ✗        |
+| XCLIP   | XC    | Clip an external reference                    | ✓        |
 | PURGE   | PU    | Remove unused blocks, layers, styles          | ✓        |
 
 Dynamic blocks are partly supported: CADCraft reads their parameters and lets you switch visibility states, but it can't drag distances or positions yet.
@@ -164,7 +164,7 @@ Dynamic blocks are partly supported: CADCraft reads their parameters and lets yo
 | STATUS      | —     | Drawing status summary                         | ✓                                                                 |
 | UNITS       | UN    | Units and precision                            | ✓                                                                 |
 
-The output reads like AutoCAD's. Here is what CADCraft 0.8.0 printed for `ID 12.5,40` and `DI 0,0 30,40`:
+The output reads like AutoCAD's. Here is the recorded CADCraft output for `ID 12.5,40` and `DI 0,0 30,40`:
 
 ```text
 X = 12.5000     Y = 40.0000     Z = 0.0000
@@ -176,11 +176,11 @@ So the habit of checking a drawing with `ID` and `DIST` before you trust it carr
 
 ![The CADCraft command history showing Command: ID with X = 12.5000 Y = 40.0000 Z = 0.0000, then Command: DIST with Distance = 50.0000 and Delta X = 30.0000, Delta Y = 40.0000](/imgs/blog/commands-id-dist-history.webp)
 
-_The same two commands in the web build of CADCraft 0.8.0, with the history expanded (F2)._
+_The same two commands in a recorded CADCraft web session, with the history expanded (F2)._
 
 ## Gaps worth knowing before you switch
 
-CADCraft is a 2D drafting app. The project's own parity documents describe 3D modelling as future work. So **UCS, EXTRUDE, PRESSPULL, SECTIONPLANE** and the rest of the 3D toolset aren't in the catalogue. Neither are PDF underlays (PDFATTACH) or attaching raster images: an `ATTACH` command exists but answers "not available yet". If a workflow depends on these, keep AutoCAD for that part. [Open-source CAD compared](/blog/open-source-cad) lists tools that do 3D.
+CADCraft is a 2D drafting app. The project's own parity documents describe 3D modelling as future work. So **UCS, EXTRUDE, PRESSPULL, SECTIONPLANE** and the rest of the 3D toolset aren't in the catalogue. PDF underlays (PDFATTACH) are also absent. Raster-image attachment is available through IMAGEATTACH and ATTACH; other ATTACH file types remain unavailable. Catalogue presence is not a guarantee that every imported drawing will behave identically to AutoCAD. If a workflow depends on these, keep AutoCAD for that part. [Open-source CAD compared](/blog/open-source-cad) lists tools that do 3D.
 
 ## The 20 commands to learn first
 

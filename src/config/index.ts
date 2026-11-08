@@ -15,11 +15,13 @@ const procEnv: Record<string, string | undefined> =
   typeof process !== 'undefined' && process.env ? process.env : {};
 
 const publicEnv = (key: string) => metaEnv[key] ?? procEnv[key];
+const appName = publicEnv('VITE_APP_NAME') ?? 'CADCraft';
 
 export const envConfigs: Record<string, string> = {
   // App (public)
   app_url: publicEnv('VITE_APP_URL') ?? 'http://localhost:3000',
-  app_name: publicEnv('VITE_APP_NAME') ?? 'ShipAny',
+  // Older local/host environments may still supply the retired site name.
+  app_name: appName.replace(/^CADCraft\s+AI$/i, 'CADCraft'),
   app_description: publicEnv('VITE_APP_DESCRIPTION') ?? 'Ship your SaaS faster',
   app_logo: publicEnv('VITE_APP_LOGO') ?? '/logo.svg',
 

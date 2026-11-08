@@ -1,17 +1,21 @@
+import { BUILD_DATE } from '@/config/build-date';
 import { SiteAuthorIntroduction } from '@/blocks/site-author-introduction';
+import aboutReview from '@/content/about-review.json';
 
 export const meta = {
-  title: 'About CADCraft AI',
+  title: 'About cadcraft.org',
   description:
     'An independent community guide to CADCraft, its workflows, releases, and practical CAD use.',
-  updated_at: '2026-10-15',
+  updated_at: BUILD_DATE,
+  reviewed_at: aboutReview.date,
+  reviewed_version: aboutReview.version,
 };
 
 <SiteAuthorIntroduction />
 
 ## An independent guide for practical CAD work
 
-CADCraft AI is an independent community guide for people who want to download, try, understand, and automate CADCraft. I bring useful information into one place: release links, installation notes, browser usage, command tutorials, AutoCAD comparisons, and practical examples for people working from a terminal or with AI agents.
+cadcraft.org is an independent community guide for people who want to download, try, understand, and automate CADCraft. I bring useful information into one place: release links, installation notes, browser usage, command tutorials, AutoCAD comparisons, and practical examples for people working from a terminal or with AI agents.
 
 CADCraft is open-source CAD software developed by the ArtCraft team. This site is not the official CADCraft project, a software vendor, or a support desk for any commercial CAD product. It is also not affiliated with Autodesk, Inc. or the ArtCraft team. CADCraft, ArtCraft, and AutoCAD belong to their respective owners; this guide does not speak for, represent, or receive support from those organizations. AutoCAD is a registered trademark of Autodesk, Inc.
 
