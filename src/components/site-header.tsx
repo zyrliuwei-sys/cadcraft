@@ -26,11 +26,20 @@ export function SiteHeader({
   navLinks,
   logoAlt,
   cta,
+  languageLinks,
+  languageLabel,
 }: {
   navLinks?: NavLink[];
   logoAlt: string;
   /** Primary button for signed-out visitors; defaults to Get Started → /settings. */
   cta?: { href: string; label: string };
+  languageLinks?: {
+    href: string;
+    label: string;
+    locale: string;
+    current: boolean;
+  }[];
+  languageLabel?: string;
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
@@ -57,7 +66,7 @@ export function SiteHeader({
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden items-center gap-6 lg:flex">
+        <nav className="hidden items-center gap-6 xl:flex">
           {navLinks?.map((link) =>
             isExternalHref(link.href) ? (
               <a
@@ -89,7 +98,7 @@ export function SiteHeader({
         </nav>
 
         {/* Desktop actions */}
-        <div className="hidden items-center gap-3 lg:flex">
+        <div className="hidden items-center gap-3 xl:flex">
           <ThemeToggle />
           {user ? (
             <SiteUserMenu
@@ -122,10 +131,33 @@ export function SiteHeader({
           )}
         </div>
 
+        {!!languageLinks?.length && (
+          <details className="relative text-sm" data-language-switcher>
+            <summary className="cursor-pointer px-2 py-2 font-medium">
+              {languageLinks.find((l) => l.current)?.label ?? languageLabel}
+            </summary>
+            <nav
+              aria-label={languageLabel}
+              className="bg-background absolute right-0 z-50 mt-2 min-w-36 border p-1 shadow-lg"
+            >
+              {languageLinks.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  hrefLang={link.locale}
+                  aria-current={link.current ? 'page' : undefined}
+                  className="hover:bg-muted block px-3 py-2"
+                >
+                  {link.label}
+                </a>
+              ))}
+            </nav>
+          </details>
+        )}
         {/* Mobile toggle */}
         <button
           type="button"
-          className="flex size-10 items-center justify-center lg:hidden"
+          className="flex size-10 items-center justify-center xl:hidden"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label={
             mobileOpen
@@ -140,7 +172,7 @@ export function SiteHeader({
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="border-border border-t px-4 pt-2 pb-4 lg:hidden">
+        <div className="border-border border-t px-4 pt-2 pb-4 xl:hidden">
           <nav className="flex flex-col gap-2">
             {navLinks?.map((link) =>
               isExternalHref(link.href) ? (

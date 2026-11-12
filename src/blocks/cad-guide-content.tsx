@@ -1,10 +1,11 @@
 import { Link } from '@/core/i18n/navigation';
 import { m } from '@/paraglide/messages.js';
+import { getLocale } from '@/paraglide/runtime.js';
 import { PostFaq } from '@/components/post-faq';
-import { guideCopy, type GuidePage } from '@/content/guide-copy';
+import { getGuideCopy, type GuidePage } from '@/content/guide-copy';
 
 export function CadGuideContent({ page }: { page: GuidePage }) {
-  const copy = guideCopy[page];
+  const copy = getGuideCopy(page, getLocale());
   return (
     <section className="mx-auto max-w-3xl space-y-6 px-6 py-12">
       {copy && (
@@ -21,7 +22,7 @@ export function CadGuideContent({ page }: { page: GuidePage }) {
           ))}
           <p className="text-muted-foreground leading-7">
             {page === 'download'
-              ? 'Just need to look at a DWG? Use the '
+              ? m['cad.guide.viewer_prefix']()
               : 'Only need to look at it? Open the '}
             {page === 'online' && (
               <>
@@ -32,15 +33,17 @@ export function CadGuideContent({ page }: { page: GuidePage }) {
               </>
             )}
             <Link href="/dwg-viewer" className="text-signal-ink underline">
-              {page === 'download' ? 'free DWG viewer' : 'DWG viewer'}
+              {page === 'download'
+                ? m['cad.guide.viewer_label']()
+                : 'DWG viewer'}
             </Link>
             .
           </p>
           {page === 'download' && (
             <p className="text-muted-foreground leading-7">
-              Need a PDF instead?{' '}
+              {m['cad.guide.pdf_prefix']()}{' '}
               <Link href="/dwg-to-pdf" className="text-signal-ink underline">
-                Convert DWG to PDF in the browser.
+                {m['cad.guide.pdf_link']()}
               </Link>
             </p>
           )}

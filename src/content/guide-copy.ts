@@ -1,3 +1,5 @@
+import { localizedDownloadGuides } from './localized-download';
+
 export type GuidePage = 'download' | 'online';
 
 export type GuideCopy = {
@@ -82,8 +84,14 @@ export const guideCopy: Record<GuidePage, GuideCopy | null> = {
   },
 };
 
-export function guideFaqJsonLd(page: GuidePage) {
-  const copy = guideCopy[page];
+export function getGuideCopy(page: GuidePage, locale = 'en') {
+  return page === 'download' && localizedDownloadGuides[locale]
+    ? localizedDownloadGuides[locale]
+    : guideCopy[page];
+}
+
+export function guideFaqJsonLd(page: GuidePage, locale = 'en') {
+  const copy = getGuideCopy(page, locale);
   if (!copy?.faq.length) return undefined;
   return {
     '@context': 'https://schema.org',

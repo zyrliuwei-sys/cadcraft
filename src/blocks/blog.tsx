@@ -4,6 +4,7 @@ import { Link } from '@/core/i18n/navigation';
 import { m } from '@/paraglide/messages.js';
 import { getLocale } from '@/paraglide/runtime.js';
 import { BlogCard } from '@/components/blog-card';
+import previews from '@/content/home-post-previews.json';
 import { formatPostDate, type BlogPost } from '@/content/posts';
 
 export function Blog({ posts }: { posts: BlogPost[] }) {
@@ -11,8 +12,20 @@ export function Blog({ posts }: { posts: BlogPost[] }) {
 
   if (posts.length === 0) return null;
 
-  const featuredPosts = posts.slice(0, 3);
-  const olderPosts = posts.slice(3);
+  const translations = previews[locale as keyof typeof previews] as
+    | Record<string, { title: string; description?: string }>
+    | undefined;
+  const translatedPosts = translations
+    ? posts.map((post) => ({
+        ...post,
+        title: translations[post.slug]?.title ?? m['landing.blog.title'](),
+        description:
+          translations[post.slug]?.description ??
+          m['landing.blog.description'](),
+      }))
+    : posts;
+  const featuredPosts = translatedPosts.slice(0, 3);
+  const olderPosts = translatedPosts.slice(3);
 
   return (
     <section id="blog" className="px-4 py-24 sm:py-32">
@@ -33,7 +46,15 @@ export function Blog({ posts }: { posts: BlogPost[] }) {
               title={post.title}
               description={post.description}
               image={post.cover ?? post.image}
-              date={formatPostDate(post.createdAt, locale)}
+              date={
+                locale === 'en'
+                  ? formatPostDate(post.createdAt, locale)
+                  : new Intl.DateTimeFormat(locale, {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric',
+                    }).format(new Date(post.createdAt))
+              }
               authorName={post.authorName}
               authorImage={post.authorImage}
             />

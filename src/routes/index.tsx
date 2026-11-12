@@ -4,6 +4,7 @@ import { CADCRAFT_VERSION, cadcraftLinks } from '@/config/cadcraft';
 import { siteAuthorJsonLd } from '@/config/site-author';
 import { SITE_URL } from '@/config/site-url';
 import { pageHead } from '@/lib/page-head';
+import { pageLanguagePath } from '@/lib/site-languages';
 import { m } from '@/paraglide/messages.js';
 import { getLocale } from '@/paraglide/runtime.js';
 import { Blog } from '@/blocks/blog';
@@ -59,7 +60,7 @@ export const Route = createFileRoute('/')({
         '@graph': [
           {
             '@type': 'WebPage',
-            url: SITE_URL,
+            url: `${SITE_URL}${pageLanguagePath('/', locale)}`,
             name: title,
             author: siteAuthorJsonLd(),
             description,

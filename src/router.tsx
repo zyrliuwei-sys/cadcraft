@@ -10,7 +10,8 @@ export function getRouter() {
     routeTree,
     defaultPreload: 'intent',
     scrollRestoration: true,
-    trailingSlash: 'never',
+    // canonicalPagePath normalizes ordinary pages; language home roots keep '/'.
+    trailingSlash: 'preserve',
     // Paraglide owns locale prefixes: incoming URLs are de-localized before
     // matching (routes are locale-free), outgoing hrefs get re-localized.
     rewrite: {

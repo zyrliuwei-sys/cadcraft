@@ -28,7 +28,7 @@ export const Route = createFileRoute('/download')({
       ? pageHead({
           path: '/download',
           ...loaderData,
-          jsonLd: guideFaqJsonLd('download'),
+          jsonLd: guideFaqJsonLd('download', loaderData.locale),
         })
       : {},
   component: Page,

@@ -1,11 +1,12 @@
 const PRODUCTION_HOSTS = new Set(['cadcraft.org', 'www.cadcraft.org']);
 
-/** Public page paths have no trailing slash; keep the origin's root slash. */
+/** Page paths have no trailing slash, except the English and language roots. */
 export function canonicalPagePath(path: string): string {
   const boundary = path.search(/[?#]/);
   const pathname = boundary < 0 ? path : path.slice(0, boundary);
   const suffix = boundary < 0 ? '' : path.slice(boundary);
-  return (pathname.replace(/\/+$/, '') || '/') + suffix;
+  const trimmed = pathname.replace(/\/+$/, '') || '/';
+  return (/^\/(pt|it|de)$/.test(trimmed) ? trimmed + '/' : trimmed) + suffix;
 }
 
 /** Apply the page form after localization (which may reintroduce a slash). */

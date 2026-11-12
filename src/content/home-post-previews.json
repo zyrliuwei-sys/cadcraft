@@ -1,0 +1,323 @@
+{
+  "pt-BR": {
+    "cadcraft-github": {
+      "title": "CADCraft no GitHub: repositório oficial, versões e código-fonte",
+      "description": "Encontre o repositório oficial do CADCraft, escolha o arquivo certo da versão, diferencie código-fonte de instaladores e compile uma versão específica."
+    },
+    "cadcraft-android": {
+      "title": "CADCraft para Android: existe um APK oficial?",
+      "description": "Está procurando um APK do CADCraft? Confira as plataformas oficiais, o que a edição de navegador oferece no celular e os limites da edição CAD móvel."
+    },
+    "cadcraft-3d": {
+      "title": "O CADCraft faz 3D? Modelagem, sólidos DWG e STL",
+      "description": "Suporte 3D no CADCraft v0.18.0: entenda a diferença entre entidades 3D e modelagem de sólidos, os comandos SOLID e 3DPOLY e o caminho do DXF para a impressão 3D."
+    },
+    "pdf-to-dwg": {
+      "title": "Como converter PDF em DWG e o que é preservado"
+    },
+    "autocad-pricing": {
+      "title": "Quanto custa o AutoCAD? Opções e preços"
+    },
+    "autocad-dimensions": {
+      "title": "Como cotar no AutoCAD: DIMLINEAR e estilos de cota"
+    },
+    "model-space-vs-paper-space": {
+      "title": "Espaço do modelo e espaço do papel no AutoCAD"
+    },
+    "how-to-learn-autocad": {
+      "title": "Como aprender AutoCAD: um roteiro para iniciantes"
+    },
+    "autocad-blocks": {
+      "title": "Blocos no AutoCAD: criar, inserir e reutilizar"
+    },
+    "open-source-dwg-editor": {
+      "title": "Editor DWG de código aberto: quais ferramentas gratuitas salvam DWG"
+    },
+    "autocad-vs-cad": {
+      "title": "AutoCAD e CAD: qual é a diferença?"
+    },
+    "autocad-ai-free": {
+      "title": "IA no AutoCAD sem pagar: o que funciona sem assinatura"
+    },
+    "portable-autocad": {
+      "title": "Existe AutoCAD portátil? Alternativas CAD portáteis e gratuitas"
+    },
+    "autodesk-alternatives": {
+      "title": "Alternativas à Autodesk: uma opção gratuita para cada produto"
+    },
+    "autocad-clone": {
+      "title": "Um clone de código aberto do AutoCAD feito com agentes de IA"
+    },
+    "free-online-cad-software": {
+      "title": "CAD online gratuito: o que roda no navegador em 2026"
+    },
+    "cad-in-rust": {
+      "title": "CAD em Rust: como é feito um aplicativo de código aberto no estilo AutoCAD"
+    },
+    "autocad-ai-agent-mcp": {
+      "title": "Agente de IA para CAD: conecte o Claude a um aplicativo gratuito com MCP"
+    },
+    "how-to-hatch-in-autocad": {
+      "title": "Como fazer hachuras no AutoCAD e corrigir falhas"
+    },
+    "how-to-draw-a-floor-plan-in-autocad": {
+      "title": "Como desenhar uma planta baixa no AutoCAD, passo a passo"
+    },
+    "autocad-layers-off-freeze-lock": {
+      "title": "Camadas do AutoCAD: desligar, congelar ou bloquear"
+    },
+    "text-to-cad": {
+      "title": "Texto para CAD: o que realmente funciona hoje"
+    },
+    "how-to-scale-in-autocad": {
+      "title": "Como alterar a escala no AutoCAD: fator, referência e unidades"
+    },
+    "how-to-open-dxf-file": {
+      "title": "Como abrir um arquivo DXF: 5 formas gratuitas"
+    },
+    "free-autocad-alternatives": {
+      "title": "Alternativas gratuitas ao AutoCAD e seus limites"
+    },
+    "dxf-to-svg-png": {
+      "title": "DXF para SVG ou PNG: imagens limpas a partir do CAD"
+    },
+    "dwg-to-pdf": {
+      "title": "DWG para PDF sem perder as espessuras de linha"
+    },
+    "dwg-to-dxf": {
+      "title": "Como converter DWG em DXF: versões e perdas"
+    },
+    "autocad-shortcuts": {
+      "title": "Atalhos do AutoCAD: guia de consulta"
+    },
+    "autocad-commands": {
+      "title": "Comandos do AutoCAD: consulta rápida e os 20 principais"
+    },
+    "open-source-cad": {
+      "title": "CAD de código aberto: qual ferramenta gratuita escolher"
+    },
+    "how-to-open-dwg-file": {
+      "title": "Como abrir um arquivo DWG sem AutoCAD"
+    },
+    "cad-file-formats": {
+      "title": "Formatos CAD: identifique seu arquivo e saiba como abri-lo"
+    },
+    "cadcraft-vs-autocad-command-line": {
+      "title": "Meu primeiro fluxo de trabalho no terminal com CADCraft"
+    }
+  },
+  "it-IT": {
+    "cadcraft-github": {
+      "title": "CADCraft su GitHub: repository ufficiale, versioni e sorgenti",
+      "description": "Trova il repository ufficiale CADCraft, scegli il file giusto della versione, distingui sorgenti e installer e compila un tag preciso."
+    },
+    "cadcraft-android": {
+      "title": "CADCraft per Android: esiste un APK ufficiale?",
+      "description": "Cerchi un APK CADCraft? Verifica le piattaforme ufficiali, cosa offre la versione browser sul telefono e i limiti della modifica CAD su dispositivi mobili."
+    },
+    "cadcraft-3d": {
+      "title": "CADCraft supporta il 3D? Modellazione, solidi DWG e STL",
+      "description": "Supporto 3D in CADCraft v0.18.0: distingui entità 3D e modellazione solida, scopri SOLID e 3DPOLY e pianifica il passaggio da DXF alla stampa 3D."
+    },
+    "pdf-to-dwg": {
+      "title": "Come convertire PDF in DWG e cosa si conserva"
+    },
+    "autocad-pricing": {
+      "title": "Quanto costa AutoCAD? Opzioni e prezzi"
+    },
+    "autocad-dimensions": {
+      "title": "Come quotare in AutoCAD: DIMLINEAR e stili di quota"
+    },
+    "model-space-vs-paper-space": {
+      "title": "Spazio modello e spazio carta in AutoCAD"
+    },
+    "how-to-learn-autocad": {
+      "title": "Come imparare AutoCAD: un percorso per principianti"
+    },
+    "autocad-blocks": {
+      "title": "Blocchi AutoCAD: crearli, inserirli e riutilizzarli"
+    },
+    "open-source-dwg-editor": {
+      "title": "Editor DWG a codice aperto: quali strumenti gratuiti salvano DWG"
+    },
+    "autocad-vs-cad": {
+      "title": "AutoCAD e CAD: qual è la differenza?"
+    },
+    "autocad-ai-free": {
+      "title": "IA per AutoCAD gratis: cosa funziona senza abbonamento"
+    },
+    "portable-autocad": {
+      "title": "Esiste AutoCAD portatile? Alternative CAD gratuite e portatili"
+    },
+    "autodesk-alternatives": {
+      "title": "Alternative ad Autodesk: un’opzione gratuita per ogni prodotto"
+    },
+    "autocad-clone": {
+      "title": "Un’alternativa a codice aperto ad AutoCAD costruita con agenti IA"
+    },
+    "free-online-cad-software": {
+      "title": "CAD online gratuito: cosa funziona nel browser nel 2026"
+    },
+    "cad-in-rust": {
+      "title": "CAD in Rust: come nasce un’app a codice aperto in stile AutoCAD"
+    },
+    "autocad-ai-agent-mcp": {
+      "title": "Agente IA per CAD: collega Claude a un’app gratuita con MCP"
+    },
+    "how-to-hatch-in-autocad": {
+      "title": "Come creare tratteggi in AutoCAD e risolvere i problemi"
+    },
+    "how-to-draw-a-floor-plan-in-autocad": {
+      "title": "Come disegnare una pianta in AutoCAD, passo passo"
+    },
+    "autocad-layers-off-freeze-lock": {
+      "title": "Layer AutoCAD: spegnere, congelare o bloccare"
+    },
+    "text-to-cad": {
+      "title": "Dal testo al CAD: cosa funziona davvero oggi"
+    },
+    "how-to-scale-in-autocad": {
+      "title": "Come scalare in AutoCAD: fattore, riferimento e unità"
+    },
+    "how-to-open-dxf-file": {
+      "title": "Come aprire un file DXF: 5 metodi gratuiti"
+    },
+    "free-autocad-alternatives": {
+      "title": "Alternative gratuite ad AutoCAD e relativi compromessi"
+    },
+    "dxf-to-svg-png": {
+      "title": "Da DXF a SVG o PNG: immagini pulite dai file CAD"
+    },
+    "dwg-to-pdf": {
+      "title": "Da DWG a PDF senza perdere gli spessori di linea"
+    },
+    "dwg-to-dxf": {
+      "title": "Come convertire DWG in DXF: versioni e perdite"
+    },
+    "autocad-shortcuts": {
+      "title": "Scorciatoie AutoCAD: guida di consultazione"
+    },
+    "autocad-commands": {
+      "title": "Comandi AutoCAD: guida rapida e i 20 principali"
+    },
+    "open-source-cad": {
+      "title": "CAD a codice aperto: quale strumento gratuito scegliere"
+    },
+    "how-to-open-dwg-file": {
+      "title": "Come aprire un file DWG senza AutoCAD"
+    },
+    "cad-file-formats": {
+      "title": "Formati CAD: come riconoscere e aprire il file"
+    },
+    "cadcraft-vs-autocad-command-line": {
+      "title": "Il mio primo flusso CADCraft da terminale"
+    }
+  },
+  "de-DE": {
+    "cadcraft-github": {
+      "title": "CADCraft auf GitHub: offizielles Repository, Versionen und Quellcode",
+      "description": "Finden Sie das offizielle CADCraft-Repository, wählen Sie die richtige Veröffentlichungsdatei, unterscheiden Sie Quellcode und Installationspakete und kompilieren Sie einen festen Versionsstand."
+    },
+    "cadcraft-android": {
+      "title": "CADCraft für Android: Gibt es eine offizielle APK?",
+      "description": "Sie suchen eine CADCraft-APK? Prüfen Sie die offiziell unterstützten Plattformen, die Möglichkeiten der Browser-Ausgabe auf dem Smartphone und die Grenzen mobiler CAD-Bearbeitung."
+    },
+    "cadcraft-3d": {
+      "title": "Kann CADCraft 3D? Modellierung, DWG-Volumenkörper und STL",
+      "description": "3D-Unterstützung in CADCraft v0.18.0: 3D-Objekte von Volumenmodellierung unterscheiden, SOLID und 3DPOLY verstehen und einen Weg von DXF zum 3D-Druck planen."
+    },
+    "pdf-to-dwg": {
+      "title": "PDF in DWG umwandeln: Was bleibt erhalten?"
+    },
+    "autocad-pricing": {
+      "title": "Was kostet AutoCAD? Bezugsmodelle und Preise"
+    },
+    "autocad-dimensions": {
+      "title": "Bemaßungen in AutoCAD: DIMLINEAR und Bemaßungsstile"
+    },
+    "model-space-vs-paper-space": {
+      "title": "Modellbereich und Papierbereich in AutoCAD"
+    },
+    "how-to-learn-autocad": {
+      "title": "AutoCAD lernen: ein Wegweiser für Einsteiger"
+    },
+    "autocad-blocks": {
+      "title": "AutoCAD-Blöcke erstellen, einfügen und wiederverwenden"
+    },
+    "open-source-dwg-editor": {
+      "title": "Quelloffene DWG-Editoren: Welche kostenlosen Werkzeuge speichern DWG?"
+    },
+    "autocad-vs-cad": {
+      "title": "AutoCAD und CAD: Was ist der Unterschied?"
+    },
+    "autocad-ai-free": {
+      "title": "Kostenlose KI für AutoCAD: Was funktioniert ohne Abonnement?"
+    },
+    "portable-autocad": {
+      "title": "Gibt es ein portables AutoCAD? Kostenlose portable CAD-Alternativen"
+    },
+    "autodesk-alternatives": {
+      "title": "Alternativen zu Autodesk: eine kostenlose Option für jedes Produkt"
+    },
+    "autocad-clone": {
+      "title": "Ein quelloffener AutoCAD-Nachbau mit KI-Agenten"
+    },
+    "free-online-cad-software": {
+      "title": "Kostenlose Online-CAD-Software: Was läuft 2026 im Browser?"
+    },
+    "cad-in-rust": {
+      "title": "CAD in Rust: So entsteht eine quelloffene AutoCAD-ähnliche Anwendung"
+    },
+    "autocad-ai-agent-mcp": {
+      "title": "KI-Agent für CAD: Claude über MCP mit einer kostenlosen Anwendung verbinden"
+    },
+    "how-to-hatch-in-autocad": {
+      "title": "Schraffuren in AutoCAD erstellen und Fehler beheben"
+    },
+    "how-to-draw-a-floor-plan-in-autocad": {
+      "title": "Einen Grundriss in AutoCAD zeichnen: Schritt für Schritt"
+    },
+    "autocad-layers-off-freeze-lock": {
+      "title": "AutoCAD-Layer: ausschalten, frieren oder sperren"
+    },
+    "text-to-cad": {
+      "title": "Von Text zu CAD: Was funktioniert heute tatsächlich?"
+    },
+    "how-to-scale-in-autocad": {
+      "title": "Skalieren in AutoCAD: Faktor, Referenz und Einheiten"
+    },
+    "how-to-open-dxf-file": {
+      "title": "Eine DXF-Datei öffnen: 5 kostenlose Möglichkeiten"
+    },
+    "free-autocad-alternatives": {
+      "title": "Kostenlose AutoCAD-Alternativen und ihre Grenzen"
+    },
+    "dxf-to-svg-png": {
+      "title": "DXF in SVG oder PNG umwandeln: saubere Bilder aus CAD-Dateien"
+    },
+    "dwg-to-pdf": {
+      "title": "DWG in PDF umwandeln, ohne Linienstärken zu verlieren"
+    },
+    "dwg-to-dxf": {
+      "title": "DWG in DXF umwandeln: Versionen und Verluste"
+    },
+    "autocad-shortcuts": {
+      "title": "AutoCAD-Tastenkürzel zum Nachschlagen"
+    },
+    "autocad-commands": {
+      "title": "AutoCAD-Befehle: Kurzübersicht und die wichtigsten 20"
+    },
+    "open-source-cad": {
+      "title": "Quelloffenes CAD: Welches kostenlose Werkzeug passt zu Ihrer Arbeit?"
+    },
+    "how-to-open-dwg-file": {
+      "title": "Eine DWG-Datei ohne AutoCAD öffnen"
+    },
+    "cad-file-formats": {
+      "title": "CAD-Dateiformate erkennen und öffnen"
+    },
+    "cadcraft-vs-autocad-command-line": {
+      "title": "Mein erster CADCraft-Arbeitsablauf im Terminal"
+    }
+  }
+}

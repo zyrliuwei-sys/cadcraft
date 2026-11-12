@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 
 import { SITE_URL } from '@/config/site-url';
 import { canonicalPageUrl } from '@/lib/canonical-url';
-import { baseLocale, locales, localizeUrl } from '@/paraglide/runtime.js';
+import { pageLanguagePath, pageLanguageVariants } from '@/lib/site-languages';
 import { getLocalPosts } from '@/content/posts';
 import { isBlogPostIndexable } from '@/content/posts/indexing';
 
@@ -33,9 +33,7 @@ type Entry = {
 
 function urlFor(path: string, locale: string): string {
   return canonicalPageUrl(
-    localizeUrl(`${SITE_URL}${path || '/'}`, {
-      locale: locale as (typeof locales)[number],
-    }).href
+    `${SITE_URL}${pageLanguagePath(path || '/', locale)}`
   );
 }
 
@@ -57,15 +55,17 @@ function xmlEscape(value: string): string {
 // recommended hreflang form). The site is English-only, so this yields one
 // <loc> per page with en + x-default alternates.
 function entryXml(e: Entry): string {
+  const languages = pageLanguageVariants(e.path || '/');
+  const variants = languages.length ? languages : [{ locale: 'en' }];
   const alternates = [
-    ...locales.map(
-      (loc) =>
+    ...variants.map(
+      ({ locale: loc }) =>
         `    <xhtml:link rel="alternate" hreflang="${loc}" href="${xmlEscape(urlFor(e.path, loc))}"/>`
     ),
-    `    <xhtml:link rel="alternate" hreflang="x-default" href="${xmlEscape(urlFor(e.path, baseLocale))}"/>`,
+    `    <xhtml:link rel="alternate" hreflang="x-default" href="${xmlEscape(urlFor(e.path, 'en'))}"/>`,
   ].join('\n');
-  return locales
-    .map((loc) =>
+  return variants
+    .map(({ locale: loc }) =>
       [
         '  <url>',
         `    <loc>${xmlEscape(urlFor(e.path, loc))}</loc>`,
@@ -93,7 +93,7 @@ export const Route = createFileRoute('/sitemap.xml')({
 
         // Local project articles are published content and use the same
         // hreflang entry format as the static pages.
-        const localPosts = getLocalPosts(baseLocale);
+        const localPosts = getLocalPosts('en');
         const knownPostSlugs = new Set<string>();
         for (const post of localPosts) {
           knownPostSlugs.add(post.slug);

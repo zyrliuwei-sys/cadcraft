@@ -6,10 +6,10 @@
   "scripts": {
     "predev": "node scripts/compile-paraglide.mjs && node scripts/sync-dwg-wasm.mjs",
     "dev": "vite dev --port 3000",
-    "prebuild": "node scripts/db-setup.mjs && node scripts/sync-dwg-wasm.mjs && node --test tests/site-check.test.mjs && node scripts/check-site.mjs --source-only",
+    "prebuild": "node scripts/db-setup.mjs && node scripts/sync-dwg-wasm.mjs && node scripts/compile-paraglide.mjs && node --import tsx --test tests/site-languages.test.ts && node --test tests/site-check.test.mjs && node scripts/check-site.mjs --source-only",
     "build": "vite build && node scripts/check-site.mjs",
     "start": "node .output/server/index.mjs",
-    "precf:build": "node scripts/db-setup.mjs && node scripts/sync-dwg-wasm.mjs && node --test tests/site-check.test.mjs && node scripts/check-site.mjs --source-only",
+    "precf:build": "node scripts/db-setup.mjs && node scripts/sync-dwg-wasm.mjs && node scripts/compile-paraglide.mjs && node --import tsx --test tests/site-languages.test.ts && node --test tests/site-check.test.mjs && node scripts/check-site.mjs --source-only",
     "cf:build": "NITRO_PRESET=cloudflare_module vite build && node scripts/check-worker-config.mjs && node scripts/check-site.mjs",
     "cf:ci:build": "node scripts/prepare-cloudflare-ci.mjs && sh -c 'set -a && . ./.env.production && set +a && pnpm cf:build'",
     "cf:deploy": "sh -c 'set -a && [ -f .env.production ] && . ./.env.production; set +a && pnpm cf:build && exec wrangler deploy'",
@@ -28,7 +28,8 @@
     "check:site:source": "node scripts/check-site.mjs --source-only",
     "test:site-check": "node --test tests/site-check.test.mjs",
     "test:footer-badge-integration": "TSX_TSCONFIG_PATH=tests/tsconfig.badges.json node --import tsx --test tests/footer-badges.test.tsx tests/footer-badges-storage.test.ts tests/footer-badge-automation.test.ts",
-    "test:footer-badge-integration:d1": "TSX_TSCONFIG_PATH=tests/tsconfig.badges.json BADGES_D1=1 node --import tsx --test tests/footer-badges-storage.test.ts"
+    "test:footer-badge-integration:d1": "TSX_TSCONFIG_PATH=tests/tsconfig.badges.json BADGES_D1=1 node --import tsx --test tests/footer-badges-storage.test.ts",
+    "test:languages": "node scripts/compile-paraglide.mjs && node --import tsx --test tests/site-languages.test.ts"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,mjs,cjs}": "prettier --write",

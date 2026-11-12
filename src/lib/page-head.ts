@@ -1,8 +1,6 @@
 import { SITE_URL } from '@/config/site-url';
 import { canonicalPageUrl } from '@/lib/canonical-url';
-import { locales, localizeUrl } from '@/paraglide/runtime.js';
-
-type Locale = (typeof locales)[number];
+import { pageLanguagePath, pageLanguageVariants } from '@/lib/site-languages';
 
 /** Title/description/OG + canonical and hreflang links for a public page. */
 export function pageHead({
@@ -19,9 +17,8 @@ export function pageHead({
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }) {
   const urlFor = (loc: string) =>
-    canonicalPageUrl(
-      localizeUrl(`${SITE_URL}${path}`, { locale: loc as Locale }).href
-    );
+    canonicalPageUrl(`${SITE_URL}${pageLanguagePath(path, loc)}`);
+  const variants = pageLanguageVariants(path);
   const image = `${SITE_URL}/og-image.jpg`;
   return {
     meta: [
@@ -39,11 +36,13 @@ export function pageHead({
     ],
     links: [
       { rel: 'canonical', href: urlFor(locale) },
-      ...locales.map((loc) => ({
-        rel: 'alternate',
-        hrefLang: loc,
-        href: urlFor(loc),
-      })),
+      ...(variants.length ? variants : [{ locale: 'en' }]).map(
+        ({ locale: loc }) => ({
+          rel: 'alternate',
+          hrefLang: loc,
+          href: urlFor(loc),
+        })
+      ),
       { rel: 'alternate', hrefLang: 'x-default', href: urlFor('en') },
     ],
     scripts: (Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : []).map(

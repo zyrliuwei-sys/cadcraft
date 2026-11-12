@@ -83,7 +83,11 @@ export function checkPage(html, path) {
     )
       continue;
     const url = new URL(value, 'https://cadcraft.org');
-    if (url.pathname !== '/' && url.pathname.endsWith('/')) {
+    if (
+      url.pathname !== '/' &&
+      !/^\/(?:pt|it|de)\/$/.test(url.pathname) &&
+      url.pathname.endsWith('/')
+    ) {
       issues.push(`${path}: trailing slash in page URL ${value}`);
     }
   }
@@ -94,7 +98,11 @@ export function checkPage(html, path) {
       /^https?:\/\/(?:www\.)?cadcraft\.org(?:\/|$)/.test(value)
     ) {
       const url = new URL(value);
-      if (url.pathname !== '/' && url.pathname.endsWith('/'))
+      if (
+        url.pathname !== '/' &&
+        !/^\/(?:pt|it|de)\/$/.test(url.pathname) &&
+        url.pathname.endsWith('/')
+      )
         issues.push(`${path}: trailing slash in JSON-LD URL ${value}`);
     } else if (value && typeof value === 'object') {
       for (const entry of Object.values(value)) checkStructuredUrl(entry);
@@ -129,7 +137,11 @@ export function checkSitemap(xml) {
   if (!urls.length) issues.push('sitemap.xml: no URLs');
   for (const value of urls) {
     const url = new URL(value.replaceAll('&amp;', '&'));
-    if (url.pathname !== '/' && url.pathname.endsWith('/'))
+    if (
+      url.pathname !== '/' &&
+      !/^\/(?:pt|it|de)\/$/.test(url.pathname) &&
+      url.pathname.endsWith('/')
+    )
       issues.push(`sitemap.xml: trailing slash ${value}`);
   }
   return issues;

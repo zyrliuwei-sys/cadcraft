@@ -14,6 +14,10 @@ import { setTimeout as delay } from 'node:timers/promises';
 import { fileURLToPath } from 'node:url';
 
 import {
+  checkLanguagePage,
+  checkLanguageSitemap,
+} from './language-check-policy.mjs';
+import {
   checkPage,
   checkSitemap,
   checkText,
@@ -146,6 +150,10 @@ async function renderedChecks() {
 
     const sitemap = await get('/sitemap.xml');
     issues.push(...checkSitemap(sitemap));
+    const languagesEnabled = existsSync(
+      join(root, 'src/lib/site-languages.ts')
+    );
+    if (languagesEnabled) issues.push(...checkLanguageSitemap(sitemap));
     const paths = new Set([
       '/',
       '/about',
@@ -162,7 +170,11 @@ async function renderedChecks() {
     )) {
       paths.add('/blog/' + file.split('/').at(-1).replace('.en.mdx', ''));
     }
-    for (const path of paths) issues.push(...checkPage(await get(path), path));
+    for (const path of paths) {
+      const html = await get(path);
+      issues.push(...checkPage(html, path));
+      if (languagesEnabled) issues.push(...checkLanguagePage(html, path));
+    }
     if (!issues.length) {
       console.log(
         `PASS SSR preview: ${cloudflare ? 'compiled Worker handler / Node adapter' : 'Node production server'}; isolated test storage`
@@ -171,8 +183,12 @@ async function renderedChecks() {
         `PASS rendered pages: ${paths.size}; one Draw strip; at most one AdSense loader per page`
       );
       console.log(
-        'PASS canonical, internal links and sitemap: HTTPS, no non-root trailing slash'
+        'PASS canonical, internal links and sitemap: HTTPS, consistent page/root slashes'
       );
+      if (languagesEnabled)
+        console.log(
+          'PASS languages: nine new URLs; 12 complete reciprocal hreflang groups; scoped static switchers'
+        );
     }
   } catch (error) {
     issues.push(error.message);

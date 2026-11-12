@@ -1593,5 +1593,9 @@
   "cad.guide.compare_link": "CADCraft vs AutoCAD: features and limits",
   "cad.guide.practice_prefix": "Follow these lessons in the browser or install the desktop app:",
   "cad.guide.download_link": "CADCraft download and installation guide",
-  "cad.guide.online_link": "CADCraft online editor"
+  "cad.guide.online_link": "CADCraft online editor",
+  "cad.guide.viewer_prefix": "Just need to look at a DWG? Use the ",
+  "cad.guide.viewer_label": "free DWG viewer",
+  "cad.guide.pdf_prefix": "Need a PDF instead?",
+  "cad.guide.pdf_link": "Convert DWG to PDF in the browser."
 }
