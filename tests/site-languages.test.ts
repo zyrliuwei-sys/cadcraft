@@ -128,6 +128,14 @@ test('cookies and Accept-Language cannot redirect English or override an explici
 
 test('translated messages cover the full shared templates and preserve numeric facts and placeholders', () => {
   const en = read('messages/en.json');
+  const postPreviews = read('src/content/home-post-previews.json');
+  const postRegistry = readFileSync(
+    new URL('../src/content/posts/index.ts', import.meta.url),
+    'utf8'
+  )
+    .split('export const BLOG_POST_SLUGS = [')[1]
+    .split('] as const')[0];
+  const postSlugs = [...postRegistry.matchAll(/'([^']+)'/g)].map((m) => m[1]);
   const numbers = (value: string) =>
     [...new Set(value.match(/(?<![A-Za-z])\d+(?:[.,]\d+)*/g) || [])].sort();
   const fields = (value: string) => (value.match(/\{\w+\}/g) || []).sort();
@@ -150,6 +158,11 @@ test('translated messages cover the full shared templates and preserve numeric f
   ];
   for (const [locale] of langs) {
     const dict = read(`messages/${locale}.json`);
+    for (const slug of postSlugs)
+      assert.ok(
+        postPreviews[locale][slug]?.title,
+        locale + ' missing home preview ' + slug
+      );
     for (const file of requiredFiles) {
       const source = readFileSync(
         new URL('../src/' + file, import.meta.url),

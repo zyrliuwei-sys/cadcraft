@@ -104,6 +104,9 @@
     },
     "cadcraft-vs-autocad-command-line": {
       "title": "Meu primeiro fluxo de trabalho no terminal com CADCraft"
+    },
+    "dxf-vs-dwg": {
+      "title": "DXF ou DWG: diferenças e quando usar cada formato"
     }
   },
   "it-IT": {
@@ -211,6 +214,9 @@
     },
     "cadcraft-vs-autocad-command-line": {
       "title": "Il mio primo flusso CADCraft da terminale"
+    },
+    "dxf-vs-dwg": {
+      "title": "DXF o DWG: differenze e quando scegliere ciascun formato"
     }
   },
   "de-DE": {
@@ -318,6 +324,9 @@
     },
     "cadcraft-vs-autocad-command-line": {
       "title": "Mein erster CADCraft-Arbeitsablauf im Terminal"
+    },
+    "dxf-vs-dwg": {
+      "title": "DXF oder DWG: Unterschiede und die passende Dateiwahl"
     }
   }
 }

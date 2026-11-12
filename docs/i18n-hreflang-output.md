@@ -1,10 +1,10 @@
 # Actual reciprocal hreflang output
 
-Captured from raw local production HTML on 2026-11-12. These are the emitted absolute production URLs, not a proposed matrix. The four versions in each group were compared byte for byte and are identical. English is included; x-default always points to English.
+Captured from **live HTTPS production HTML** at cadcraft.org on 2026-11-12 after deployment. All 12 canonical pages returned HTTP 200 without redirect. The four versions in each group were compared and have the same five entries, including English itself and x-default.
 
 ## /
 
-Checked pages: `/`, `/it/`, `/pt/`, `/de/`. Each returned HTTP 200 without redirect.
+Checked pages: `/`, `/it/`, `/pt/`, `/de/`.
 
 ```html
 <link rel="alternate" hreflang="en" href="https://cadcraft.org/" />
@@ -16,7 +16,7 @@ Checked pages: `/`, `/it/`, `/pt/`, `/de/`. Each returned HTTP 200 without redir
 
 ## /download
 
-Checked pages: `/download`, `/it/download`, `/pt/download`, `/de/download`. Each returned HTTP 200 without redirect.
+Checked pages: `/download`, `/it/download`, `/pt/download`, `/de/download`.
 
 ```html
 <link rel="alternate" hreflang="en" href="https://cadcraft.org/download" />
@@ -44,7 +44,7 @@ Checked pages: `/download`, `/it/download`, `/pt/download`, `/de/download`. Each
 
 ## /dwg-viewer
 
-Checked pages: `/dwg-viewer`, `/it/dwg-viewer`, `/pt/dwg-viewer`, `/de/dwg-viewer`. Each returned HTTP 200 without redirect.
+Checked pages: `/dwg-viewer`, `/it/dwg-viewer`, `/pt/dwg-viewer`, `/de/dwg-viewer`.
 
 ```html
 <link rel="alternate" hreflang="en" href="https://cadcraft.org/dwg-viewer" />
@@ -70,4 +70,4 @@ Checked pages: `/dwg-viewer`, `/it/dwg-viewer`, `/pt/dwg-viewer`, `/de/dwg-viewe
 />
 ```
 
-No zh, ko, Indian English, or unshipped page variants are advertised. Nontranslated pages retain only en and x-default declarations, with no language switcher.
+No retired Chinese, Korean, Indian-English or unshipped page variants are advertised. English-only pages retain self/x-default alternates and have no language switcher.

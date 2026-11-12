@@ -32,3 +32,7 @@ None. All 41 previous local entries remain.
 - All other pages remain English-only; no localized blog, online-editor or legal URLs are added.
 - Root slashes match the actual canonical URLs. Non-root pages keep the existing no-trailing-slash form.
 - No robots or other crawl rules are changed.
+
+## Production verification
+
+After the user pushed main, production returned the same 50-entry sitemap. All nine new HTTPS URLs return 200 without redirect, and each of the 12 language-group entries has all five reciprocal annotations. No old English URL was removed.
