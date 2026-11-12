@@ -9,7 +9,7 @@ export const meta = {
   faq: [
     [
       'Can I open a DWG file online in CADCraft?',
-      'Yes. Open cadcraft.org/online and choose Open DWG / DXF, or drop a DWG onto the editor. Browser import is in beta, supports files up to 20 MB, and converts locally without uploading your drawing. Editing and saving use a DXF copy; keep the original DWG.',
+      'Yes. For a quick look, use the free [DWG viewer](/dwg-viewer) on this site. It opens DWG locally in your browser, up to 20 MB, without an upload or sign-in. To modify or save the drawing, use the [online editor](/online), which edits and saves a DXF copy. Keep the original DWG.',
     ],
     [
       'Which DWG versions does CADCraft open?',
@@ -106,6 +106,8 @@ Because this runs without a window, it also works in scripts, for example to ren
 
 ## Step 4 (optional): Keep working in the browser
 
+Just looking? Open the file in the [DWG viewer](/dwg-viewer) for a read-only preview on this site.
+
 The hosted [online editor](/online) now accepts DWG through a local WebAssembly converter. Browser import is in beta, with a **20 MB DWG limit**. The drawing is converted on your device and is not uploaded.
 
 1. Choose **Open DWG / DXF**, or drop the DWG onto the editor.
@@ -148,6 +150,8 @@ If the drawing has to come back to an AutoCAD user exactly as they sent it, open
 <PostFaq items={meta.faq} />
 
 ## Related
+
+- [Open a DWG online — free DWG viewer](/dwg-viewer)
 
 - [CAD file formats explained](/blog/cad-file-formats): which format to ask for, and what opens what
 - [DXF vs DWG](/blog/dxf-vs-dwg): why the browser takes DXF and what each format keeps

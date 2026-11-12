@@ -19,6 +19,15 @@ export function CadGuideContent({ page }: { page: GuidePage }) {
               {paragraph}
             </p>
           ))}
+          <p className="text-muted-foreground leading-7">
+            {page === 'download'
+              ? 'Just need to look at a DWG? Use the '
+              : 'Only viewing? Try the '}
+            <Link href="/dwg-viewer" className="text-signal-ink underline">
+              free DWG viewer
+            </Link>
+            {page === 'download' ? '.' : ' instead.'}
+          </p>
           {copy.faq.length > 0 && (
             <>
               <h2 className="font-display text-2xl font-semibold">

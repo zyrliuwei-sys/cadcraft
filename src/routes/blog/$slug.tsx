@@ -5,6 +5,7 @@ import { Calendar } from 'lucide-react';
 import { Link } from '@/core/i18n/navigation';
 import { envConfigs } from '@/config';
 import { siteAuthorJsonLd } from '@/config/site-author';
+import { faqAnswerText } from '@/lib/faq-links';
 import { pageHead } from '@/lib/page-head';
 import { m } from '@/paraglide/messages.js';
 import { getLocale } from '@/paraglide/runtime.js';
@@ -60,7 +61,10 @@ export const Route = createFileRoute('/blog/$slug')({
                   mainEntity: post.faq.map(([q, a]) => ({
                     '@type': 'Question',
                     name: q,
-                    acceptedAnswer: { '@type': 'Answer', text: a },
+                    acceptedAnswer: {
+                      '@type': 'Answer',
+                      text: faqAnswerText(a),
+                    },
                   })),
                 },
               ]
