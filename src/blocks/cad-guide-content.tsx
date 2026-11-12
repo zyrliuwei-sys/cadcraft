@@ -22,12 +22,28 @@ export function CadGuideContent({ page }: { page: GuidePage }) {
           <p className="text-muted-foreground leading-7">
             {page === 'download'
               ? 'Just need to look at a DWG? Use the '
-              : 'Only viewing? Try the '}
+              : 'Only need to look at it? Open the '}
+            {page === 'online' && (
+              <>
+                <Link href="/dxf-viewer" className="text-signal-ink underline">
+                  DXF viewer
+                </Link>
+                {' / '}
+              </>
+            )}
             <Link href="/dwg-viewer" className="text-signal-ink underline">
-              free DWG viewer
+              {page === 'download' ? 'free DWG viewer' : 'DWG viewer'}
             </Link>
-            {page === 'download' ? '.' : ' instead.'}
+            .
           </p>
+          {page === 'download' && (
+            <p className="text-muted-foreground leading-7">
+              Need a PDF instead?{' '}
+              <Link href="/dwg-to-pdf" className="text-signal-ink underline">
+                Convert DWG to PDF in the browser.
+              </Link>
+            </p>
+          )}
           {copy.faq.length > 0 && (
             <>
               <h2 className="font-display text-2xl font-semibold">

@@ -11,6 +11,8 @@ const STATIC_PATHS = [
   '/download',
   '/online',
   '/dwg-viewer',
+  '/dxf-viewer',
+  '/dwg-to-pdf',
   '/tutorials',
   '/vs-autocad',
   '/pricing',
