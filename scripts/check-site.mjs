@@ -117,6 +117,19 @@ async function renderedChecks() {
     launchError = error;
   });
   const base = `http://127.0.0.1:${port}`;
+  const cachePolicyEnabled = existsSync(
+    join(root, 'src/lib/page-cache-policy.ts')
+  );
+  function checkUncached(response, path) {
+    for (const name of [
+      'Cache-Control',
+      'CDN-Cache-Control',
+      'Cloudflare-CDN-Cache-Control',
+    ]) {
+      if (!/(?:^|,\s*)no-store(?:,|$)/i.test(response.headers.get(name) ?? ''))
+        issues.push(`${path}: ${name} must prohibit caching`);
+    }
+  }
   async function get(path) {
     const response = await fetch(base + path, {
       redirect: 'manual',
@@ -124,6 +137,11 @@ async function renderedChecks() {
     });
     if (response.status !== 200)
       throw new Error(`${path}: HTTP ${response.status}; expected 200`);
+    if (
+      cachePolicyEnabled &&
+      /^(?:\/(?:pt|it|de)(?:\/|$)|\/$|\/download$|\/dwg-viewer$)/.test(path)
+    )
+      checkUncached(response, path);
     return response.text();
   }
   try {
@@ -175,6 +193,23 @@ async function renderedChecks() {
       issues.push(...checkPage(html, path));
       if (languagesEnabled) issues.push(...checkLanguagePage(html, path));
     }
+    if (cachePolicyEnabled) {
+      for (const path of [
+        '/pt',
+        '/it/download/',
+        '/de/dwg-viewer/',
+        '/about/',
+      ]) {
+        const response = await fetch(base + path, {
+          redirect: 'manual',
+          signal: AbortSignal.timeout(10000),
+        });
+        if (response.status !== 301 || !response.headers.has('Location'))
+          issues.push(`${path}: expected the existing canonical 301`);
+        checkUncached(response, path);
+        await response.body?.cancel();
+      }
+    }
     if (!issues.length) {
       console.log(
         `PASS SSR preview: ${cloudflare ? 'compiled Worker handler / Node adapter' : 'Node production server'}; isolated test storage`
@@ -188,6 +223,10 @@ async function renderedChecks() {
       if (languagesEnabled)
         console.log(
           'PASS languages: nine new URLs; 12 complete reciprocal hreflang groups; scoped static switchers'
+        );
+      if (cachePolicyEnabled)
+        console.log(
+          'PASS cache policy: 12 HTML pages bypass downstream caches; canonical redirects are no-store'
         );
     }
   } catch (error) {

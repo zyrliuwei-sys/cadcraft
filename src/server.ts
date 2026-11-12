@@ -2,6 +2,7 @@ import handler from '@tanstack/react-start/server-entry';
 
 import { canonicalRedirectUrl } from './lib/canonical-url';
 import { getCookieFromHeader } from './lib/cookie';
+import { applyPageCachePolicy } from './lib/page-cache-policy';
 import { respErr } from './lib/resp';
 import { paraglideMiddleware } from './paraglide/server.js';
 
@@ -54,12 +55,14 @@ async function renderWithEdgeCache(req: Request): Promise<Response> {
   const url = new URL(req.url);
   const key = new Request(`${url.origin}${url.pathname}?__v=${__BUILD_ID__}`);
   const hit = await cache.match(key);
-  if (hit) {
+  if (hit?.status === 200) {
     const response = new Response(hit.body, hit);
     response.headers.set('Cache-Control', 'no-cache');
     response.headers.set('X-HTML-Cache', 'HIT');
     return response;
   }
+  // Never replay a redirect left in the Cache API by an older deployment.
+  if (hit) await cache.delete(key).catch(() => false);
 
   const fresh = await render();
   if (fresh.status !== 200 || fresh.headers.has('Set-Cookie')) return fresh;
@@ -78,7 +81,8 @@ export default {
   async fetch(req: Request): Promise<Response> {
     const url = new URL(req.url);
     const canonical = canonicalRedirectUrl(req.url);
-    if (canonical) return Response.redirect(canonical, 301);
+    if (canonical)
+      return applyPageCachePolicy(req, Response.redirect(canonical, 301));
     const origin = req.headers.get('Origin');
     if (
       url.pathname.startsWith('/api/') &&
@@ -91,7 +95,7 @@ export default {
       return respErr('Forbidden origin', { status: 403 });
     }
     await ensureCloudflareEnv();
-    const response = await renderWithEdgeCache(req);
+    const response = applyPageCachePolicy(req, await renderWithEdgeCache(req));
     if (url.pathname.startsWith('/api/')) {
       response.headers.set('X-Robots-Tag', 'noindex, nofollow');
       // API responses can contain sessions, payment data or user records.
