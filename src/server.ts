@@ -4,7 +4,7 @@ import { canonicalRedirectUrl } from './lib/canonical-url';
 import { getCookieFromHeader } from './lib/cookie';
 import { applyPageCachePolicy } from './lib/page-cache-policy';
 import { respErr } from './lib/resp';
-import { paraglideMiddleware } from './paraglide/server.js';
+import { withRequestLocale } from './lib/server-locale';
 
 // On Cloudflare Workers, stash the binding env (D1, ASSETS, …) on globalThis
 // so synchronous code paths (e.g. the db() singleton with DATABASE_PROVIDER=d1)
@@ -48,7 +48,7 @@ function htmlEdgeCache(req: Request): Cache | undefined {
 }
 
 async function renderWithEdgeCache(req: Request): Promise<Response> {
-  const render = () => paraglideMiddleware(req, () => handler.fetch(req));
+  const render = () => withRequestLocale(req, () => handler.fetch(req));
   const cache = htmlEdgeCache(req);
   if (!cache) return render();
 
