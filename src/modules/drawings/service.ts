@@ -103,6 +103,8 @@ export async function saveDrawing(
 ): Promise<DrawingSummary> {
   const now = new Date();
   const size = opts.data.byteLength;
+  if (!size) throw new Error('Empty file');
+  if (size > MAX_DRAWING_BYTES) throw new Error('File too large');
   const existing = opts.id ? await ownDrawing(userId, opts.id) : null;
   if (opts.id && !existing) throw new Error('Drawing not found');
   if (!existing && (await listDrawings(userId)).length >= MAX_DRAWINGS)
@@ -134,42 +136,85 @@ export async function saveDrawing(
     ? current.objectKey
     : `users/${userId}/drawings/${drawing.id}/${versionId}.dxf`;
 
-  // Bytes first: rows are only written once the file is safely in R2, so a
-  // failed upload never leaves a drawing that points at nothing.
-  await bucket().put(objectKey, opts.data, 'application/dxf');
+  let objectWritten = false;
+  let createdDrawingRow = false;
+  let createdVersionRow = false;
+  try {
+    // Bytes first: rows are only written once the file is safely in R2, so a
+    // failed upload never leaves a drawing that points at nothing.
+    await bucket().put(objectKey, opts.data, 'application/dxf');
+    objectWritten = true;
 
-  if (!existing) {
-    await db()
-      .insert(cadDrawing)
-      .values({ ...drawing, currentVersionId: versionId, size });
-  }
-  if (overwrite) {
-    await db()
-      .update(cadDrawingVersion)
-      .set({ size })
-      .where(eq(cadDrawingVersion.id, versionId));
-  } else {
-    await db().insert(cadDrawingVersion).values({
-      id: versionId,
-      drawingId: drawing.id,
-      objectKey,
-      size,
-      createdAt: now,
-    });
-  }
-  if (existing) {
-    await db()
-      .update(cadDrawing)
-      .set({
-        name: opts.name,
-        currentVersionId: versionId,
+    if (!existing) {
+      await db()
+        .insert(cadDrawing)
+        .values({ ...drawing, currentVersionId: versionId, size });
+      createdDrawingRow = true;
+    }
+    if (overwrite) {
+      await db()
+        .update(cadDrawingVersion)
+        .set({ size })
+        .where(eq(cadDrawingVersion.id, versionId));
+    } else {
+      await db().insert(cadDrawingVersion).values({
+        id: versionId,
+        drawingId: drawing.id,
+        objectKey,
         size,
-        updatedAt: now,
-      })
-      .where(eq(cadDrawing.id, drawing.id));
+        createdAt: now,
+      });
+      createdVersionRow = true;
+    }
+    if (existing) {
+      await db()
+        .update(cadDrawing)
+        .set({
+          name: opts.name,
+          currentVersionId: versionId,
+          size,
+          updatedAt: now,
+        })
+        .where(eq(cadDrawing.id, drawing.id));
+    }
+  } catch (error) {
+    // A new object is not valid until all DB writes above finish. Remove it
+    // and any partial rows when a later write fails so retries do not leak
+    // R2 objects or leave an empty drawing behind. An in-place auto-save
+    // intentionally keeps the object because it replaced the previous bytes
+    // at the same key.
+    if (createdVersionRow) {
+      await db()
+        .delete(cadDrawingVersion)
+        .where(eq(cadDrawingVersion.id, versionId))
+        .catch((cleanupError: unknown) =>
+          console.error('[drawings] version-row cleanup failed', cleanupError)
+        );
+    }
+    if (createdDrawingRow) {
+      await db()
+        .delete(cadDrawing)
+        .where(eq(cadDrawing.id, drawing.id))
+        .catch((cleanupError: unknown) =>
+          console.error('[drawings] drawing-row cleanup failed', cleanupError)
+        );
+    }
+    if (objectWritten && !overwrite) {
+      await bucket()
+        .delete([objectKey])
+        .catch((cleanupError: unknown) =>
+          console.error('[drawings] orphan cleanup failed', cleanupError)
+        );
+    }
+    throw error;
   }
 
-  await pruneVersions(drawing.id, versionId);
+  // Pruning is housekeeping, not part of the save itself. A transient R2 or
+  // D1 error here must not report a successful upload as failed or cause the
+  // client to retry it as a new version.
+  await pruneVersions(drawing.id, versionId).catch((error) =>
+    console.error('[drawings] version pruning failed', error)
+  );
   return {
     id: drawing.id,
     name: opts.name,

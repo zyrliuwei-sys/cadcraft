@@ -133,6 +133,7 @@ export function CloudActions({
   pro,
   hasCloud,
   saving,
+  disabled,
   onSave,
   onShowList,
 }: {
@@ -140,6 +141,7 @@ export function CloudActions({
   /** Has cloud drawings (still listed after Pro ends). */
   hasCloud: boolean;
   saving: boolean;
+  disabled?: boolean;
   onSave: () => void;
   onShowList: () => void;
 }) {
@@ -149,7 +151,7 @@ export function CloudActions({
         <button
           type="button"
           onClick={onShowList}
-          className="hover:border-foreground hidden h-9 items-center gap-2 border px-3 text-sm font-semibold transition-colors md:inline-flex"
+          className="hover:border-foreground inline-flex h-9 items-center gap-2 border px-2 text-xs font-semibold transition-colors sm:px-3 sm:text-sm"
         >
           <FolderOpen className="size-4" />
           {m['cad.cloud.title']()}
@@ -158,8 +160,9 @@ export function CloudActions({
       <button
         type="button"
         onClick={onSave}
-        disabled={saving}
-        className="bg-primary text-primary-foreground hover:bg-primary/85 hidden h-9 items-center gap-2 px-4 text-sm font-semibold transition-colors active:translate-y-px disabled:opacity-60 md:inline-flex"
+        disabled={disabled || saving}
+        aria-busy={saving}
+        className="bg-primary text-primary-foreground hover:bg-primary/85 inline-flex h-9 items-center gap-2 px-2 text-xs font-semibold transition-colors active:translate-y-px disabled:cursor-wait disabled:opacity-60 sm:px-4 sm:text-sm"
       >
         <CloudUpload className="size-4" />
         {m['cad.cloud.save']()}

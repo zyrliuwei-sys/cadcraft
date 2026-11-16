@@ -14,7 +14,7 @@ import { toast } from 'sonner';
 
 import { Link } from '@/core/i18n/navigation';
 import { CADCRAFT_VERSION, cadcraftLinks } from '@/config/cadcraft';
-import { ctaSecondary } from '@/lib/cta';
+import { ctaPrimary, ctaSecondary } from '@/lib/cta';
 import { downloadSharedDrawing } from '@/lib/drawings-client';
 import { track } from '@/lib/track';
 import { cn } from '@/lib/utils';
@@ -65,6 +65,7 @@ export function CadOnlinePage() {
   const editorShell = useRef<HTMLDivElement>(null);
   const [cloudOpen, setCloudOpen] = useState(false);
   const [upsellOpen, setUpsellOpen] = useState(false);
+  const [cloudPromptDismissed, setCloudPromptDismissed] = useState(false);
   const { openFile } = files;
   const importErrors = {
     too_large: m['cad.online.import_error_large'](),
@@ -241,6 +242,7 @@ export function CadOnlinePage() {
                 pro={files.pro}
                 hasCloud={files.cloud.length > 0}
                 saving={files.cloudSaving}
+                disabled={!files.cloudReady}
                 onSave={saveToCloud}
                 onShowList={() => setCloudOpen(true)}
               />
@@ -250,6 +252,55 @@ export function CadOnlinePage() {
 
         <div className="mx-auto max-w-[1600px] px-0 sm:px-6 sm:py-4">
           <div className="space-y-2 border-x border-t px-4 py-3 text-sm">
+            {files.signedIn && files.cloudLoadFailed && (
+              <p
+                role="alert"
+                className="text-destructive flex flex-wrap gap-x-2"
+              >
+                <span>{m['cad.cloud.load_failed']()}</span>
+                <button
+                  type="button"
+                  className="font-semibold underline underline-offset-4"
+                  onClick={() => void files.retryCloud()}
+                >
+                  {m['cad.cloud.retry']()}
+                </button>
+              </p>
+            )}
+            {files.hasDrawing &&
+              files.cloudReady &&
+              !files.pro &&
+              !cloudPromptDismissed && (
+                <div
+                  role="status"
+                  className="bg-muted/40 flex flex-wrap items-center gap-3 border px-3 py-2.5"
+                >
+                  <div className="min-w-0 flex-1">
+                    <p className="font-semibold">
+                      {m['cad.cloud.prompt_title']()}
+                    </p>
+                    <p className="text-muted-foreground text-xs">
+                      {m['cad.cloud.prompt_desc']()}
+                    </p>
+                  </div>
+                  <Link
+                    href="/pricing?upgrade_from=cloud_prompt"
+                    onClick={() =>
+                      track('pro_upsell_click', { from: 'cloud_prompt' })
+                    }
+                    className={cn(ctaPrimary, 'h-9 px-3 text-xs')}
+                  >
+                    {m['cad.cloud.prompt_cta']()}
+                  </Link>
+                  <button
+                    type="button"
+                    className="text-muted-foreground text-xs underline underline-offset-4"
+                    onClick={() => setCloudPromptDismissed(true)}
+                  >
+                    {m['cad.cloud.prompt_dismiss']()}
+                  </button>
+                </div>
+              )}
             <p className="text-muted-foreground">
               {m['cad.online.import_note']()}
             </p>

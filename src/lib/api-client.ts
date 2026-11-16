@@ -27,7 +27,11 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, {
     ...init,
     headers: {
-      ...(init?.body ? { 'Content-Type': 'application/json' } : {}),
+      // JSON helpers pass a string body. Binary uploads (DXF, images, etc.)
+      // must keep their own content type instead of being labelled JSON.
+      ...(typeof init?.body === 'string'
+        ? { 'Content-Type': 'application/json' }
+        : {}),
       ...init?.headers,
     },
   });
@@ -47,6 +51,18 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
 
 export const apiGet = <T>(url: string, init?: RequestInit) =>
   request<T>(url, init);
+
+/** POST a binary body while retaining the response envelope handling. */
+export const apiPostFile = <T>(
+  url: string,
+  body: BodyInit,
+  contentType = 'application/octet-stream'
+) =>
+  request<T>(url, {
+    method: 'POST',
+    body,
+    headers: { 'Content-Type': contentType },
+  });
 
 export const apiPost = <T = void>(url: string, body?: unknown) =>
   request<T>(url, {

@@ -61,7 +61,7 @@ export type CloudSaveResult =
  */
 export function useEditorFiles() {
   const queryClient = useQueryClient();
-  const { data: session } = useSession();
+  const { data: session, isPending: sessionPending } = useSession();
   const signedIn = !!session?.user;
   const bridge = useRef<EditorBridge | null>(null);
   const dirty = useRef(false);
@@ -75,6 +75,7 @@ export function useEditorFiles() {
   const [cloudSavedAt, setCloudSavedAt] = useState<number | null>(null);
   const [cloudSaving, setCloudSaving] = useState(false);
   const [cloudFailed, setCloudFailed] = useState(false);
+  const [hasDrawing, setHasDrawing] = useState(false);
   const [importPhase, setImportPhase] = useState<
     'loading' | 'converting' | 'opening' | null
   >(null);
@@ -99,6 +100,12 @@ export function useEditorFiles() {
     staleTime: 60_000,
   });
   const pro = !!cloudQuery.data?.pro;
+  // Do not show a Pro user the upsell while the session or cloud entitlement
+  // is still loading. A transient request failure is surfaced separately so
+  // it can be retried instead of silently acting like a free account.
+  const cloudReady =
+    !sessionPending &&
+    (!signedIn || (!cloudQuery.isPending && !cloudQuery.isError));
   const proRef = useRef(pro);
   proRef.current = pro;
 
@@ -169,6 +176,7 @@ export function useEditorFiles() {
       if (fileExt(file.name) !== 'dxf') return;
       const geometry = dxfGeometry(await file.text());
       if (!geometry) return;
+      setHasDrawing(true);
       if (
         !trackedFirstDrawing.current &&
         lastInput.current > 0 &&
@@ -416,7 +424,11 @@ export function useEditorFiles() {
     openCloud,
     saveToCloud,
     signedIn,
+    cloudReady,
+    cloudLoadFailed: signedIn && cloudQuery.isError,
+    retryCloud: cloudQuery.refetch,
     pro,
+    hasDrawing,
     cloud: cloudQuery.data?.items ?? [],
     cloudSavedAt,
     cloudSaving,

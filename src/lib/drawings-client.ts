@@ -2,7 +2,13 @@
 // through api-client; file downloads return the DXF bytes, or the usual
 // { code, message } envelope on error.
 
-import { apiDelete, ApiError, apiGet, apiPatch } from '@/lib/api-client';
+import {
+  apiDelete,
+  ApiError,
+  apiGet,
+  apiPatch,
+  apiPostFile,
+} from '@/lib/api-client';
 
 export interface CloudDrawing {
   id: string;
@@ -29,11 +35,11 @@ export function uploadCloudDrawing(
   const params = new URLSearchParams({ name: file.name });
   if (opts.id) params.set('id', opts.id);
   if (opts.checkpoint) params.set('checkpoint', '1');
-  return apiGet<CloudDrawing>(`/api/drawings?${params}`, {
-    method: 'POST',
-    body: file,
-    headers: { 'Content-Type': 'application/dxf' },
-  });
+  return apiPostFile<CloudDrawing>(
+    `/api/drawings?${params}`,
+    file,
+    'application/dxf'
+  );
 }
 
 export const listCloudVersions = (id: string) =>
