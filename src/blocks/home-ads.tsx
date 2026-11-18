@@ -7,7 +7,6 @@ export function HomeBannerAd() {
     <AdSenseUnit
       placement="home-hero"
       slot={envConfigs.adsense_home_hero_slot}
-      format="banner"
       label={m['common.advertisement']()}
       className="mt-8"
     />
@@ -19,7 +18,6 @@ export function HomeNativeAd() {
     <AdSenseUnit
       placement="home-intro"
       slot={envConfigs.adsense_home_intro_slot}
-      format="rectangle"
       label={m['common.advertisement']()}
       className="mx-auto mb-12 max-w-7xl px-4 sm:px-6 lg:mb-16"
     />
