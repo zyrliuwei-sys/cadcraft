@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import {
   CheckCircle2,
   Info,
@@ -33,28 +33,44 @@ const VIRTUAL_HEIGHT = (VIRTUAL_WIDTH * 1358) / 2182;
 
 function useFitScale() {
   const ref = useRef<HTMLDivElement>(null);
-  const [box, setBox] = useState<{ scale: number; height: number } | null>(
-    null
-  );
-  // Hold the iframe until measured so phones don't boot the app twice.
-  const [measured, setMeasured] = useState(false);
+  const [box, setBox] = useState<{
+    width: number;
+    height: number;
+    scale: number;
+    fullscreen: boolean;
+  } | null>(null);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
     const update = () => {
-      setMeasured(true);
-      const scale = el.clientWidth / VIRTUAL_WIDTH;
-      if (!scale) return;
-      setBox({ scale, height: el.clientHeight / scale });
+      const { clientWidth, clientHeight } = el;
+      if (!clientWidth || !clientHeight) return;
+      const fullscreen = document.fullscreenElement?.contains(el) ?? false;
+      const widthScale = clientWidth / VIRTUAL_WIDTH;
+      // Fullscreen must fit both axes so short or ultrawide screens still
+      // have enough space for the editor's bottom controls.
+      const scale = fullscreen
+        ? Math.min(widthScale, clientHeight / VIRTUAL_HEIGHT)
+        : widthScale;
+      setBox({
+        width: clientWidth / scale,
+        height: clientHeight / scale,
+        scale,
+        fullscreen,
+      });
     };
     update();
     const observer = new ResizeObserver(update);
     observer.observe(el);
-    return () => observer.disconnect();
+    document.addEventListener('fullscreenchange', update);
+    return () => {
+      observer.disconnect();
+      document.removeEventListener('fullscreenchange', update);
+    };
   }, []);
 
-  return { ref, box, measured };
+  return { ref, box };
 }
 
 export function CadOnlinePage() {
@@ -117,7 +133,8 @@ export function CadOnlinePage() {
   };
   // v= busts a cached index.html that still points at the previous build's files
   const src = `${cadcraftLinks.app}${renderer}${renderer ? '&' : '?'}ui=2&v=${CADCRAFT_VERSION}`;
-  const { ref: frameBoxRef, box, measured } = useFitScale();
+  const { ref: frameBoxRef, box } = useFitScale();
+  const displayScale = box ? box.scale * (box.fullscreen ? 1 : uiZoom) : 1;
 
   const renderers: [Renderer, string][] = [
     ['', m['cad.online.render_auto']()],
@@ -134,8 +151,11 @@ export function CadOnlinePage() {
 
   return (
     <>
-      <div ref={editorShell} className="bg-background fullscreen:overflow-auto">
-        <section className="bg-sheet-grid border-b">
+      <div
+        ref={editorShell}
+        className="group/editor bg-background fullscreen:flex fullscreen:flex-col fullscreen:overflow-hidden"
+      >
+        <section className="bg-sheet-grid shrink-0 border-b">
           <div className="mx-auto flex max-w-[1600px] flex-col gap-4 px-4 py-5 sm:px-6 xl:flex-row xl:items-center xl:justify-between xl:gap-8">
             <div className="min-w-0">
               <h1 className="font-display text-2xl font-semibold sm:text-3xl">
@@ -171,7 +191,7 @@ export function CadOnlinePage() {
                 {m['cad.online.import_button']()}
               </button>
               <div
-                className="flex items-center border"
+                className="group-fullscreen/editor:hidden flex items-center border"
                 role="group"
                 aria-label={m['cad.online.ui_zoom']()}
               >
@@ -250,8 +270,8 @@ export function CadOnlinePage() {
           </div>
         </section>
 
-        <div className="mx-auto max-w-[1600px] px-0 sm:px-6 sm:py-4">
-          <div className="space-y-2 border-x border-t px-4 py-3 text-sm">
+        <div className="group-fullscreen/editor:flex group-fullscreen/editor:min-h-0 group-fullscreen/editor:w-full group-fullscreen/editor:max-w-none group-fullscreen/editor:flex-1 group-fullscreen/editor:flex-col group-fullscreen/editor:p-0 mx-auto max-w-[1600px] px-0 sm:px-6 sm:py-4">
+          <div className="shrink-0 space-y-2 border-x border-t px-4 py-3 text-sm">
             {files.signedIn && files.cloudLoadFailed && (
               <p
                 role="alert"
@@ -364,44 +384,44 @@ export function CadOnlinePage() {
               for (const file of Array.from(event.dataTransfer.files))
                 void openFile(file);
             }}
-            className="relative w-full overflow-auto border-y bg-[#22282f] sm:border"
-            style={{ aspectRatio: `${VIRTUAL_WIDTH} / ${VIRTUAL_HEIGHT}` }}
+            className="group-fullscreen/editor:aspect-auto group-fullscreen/editor:min-h-0 group-fullscreen/editor:flex-1 group-fullscreen/editor:overflow-hidden relative aspect-(--editor-aspect) w-full overflow-auto border-y bg-[#22282f] sm:border"
+            style={
+              {
+                '--editor-aspect': VIRTUAL_WIDTH / VIRTUAL_HEIGHT,
+              } as CSSProperties
+            }
           >
-            {measured && box && (
+            {box && (
               <div
                 className="relative"
                 style={{
-                  width: VIRTUAL_WIDTH * box.scale * uiZoom,
-                  height: box.height * box.scale * uiZoom,
+                  width: box.width * displayScale,
+                  height: box.height * displayScale,
                 }}
               >
                 <iframe
-                  key={`${src}${box ? '#fit' : ''}`}
+                  key={src}
                   src={src}
-                  data-fit={box ? '1' : undefined}
+                  data-fit="1"
                   title="CADCraft"
                   onLoad={(e) => {
                     track('online_app_loaded');
                     files.onFrameLoad(e.currentTarget);
                   }}
                   className="absolute top-0 left-0 block h-full w-full"
-                  style={
-                    box
-                      ? {
-                          width: VIRTUAL_WIDTH,
-                          height: box.height,
-                          transform: `scale(${box.scale * uiZoom})`,
-                          transformOrigin: '0 0',
-                        }
-                      : undefined
-                  }
+                  style={{
+                    width: box.width,
+                    height: box.height,
+                    transform: `scale(${displayScale})`,
+                    transformOrigin: '0 0',
+                  }}
                   allow="fullscreen; clipboard-read; clipboard-write"
                   allowFullScreen
                 />
               </div>
             )}
           </div>
-          <p className="text-muted-foreground px-4 pt-2 text-xs sm:px-0">
+          <p className="text-muted-foreground group-fullscreen/editor:hidden px-4 pt-2 text-xs sm:px-0">
             {m['cad.online.loading_note']()}{' '}
             {m['cad.online.license']({ version: CADCRAFT_VERSION })}
           </p>
