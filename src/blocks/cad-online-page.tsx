@@ -156,7 +156,10 @@ export function CadOnlinePage() {
         className="group/editor bg-background fullscreen:flex fullscreen:flex-col fullscreen:overflow-hidden"
       >
         <section className="bg-sheet-grid shrink-0 border-b">
-          <div className="mx-auto flex max-w-[1600px] flex-col gap-4 px-4 py-5 sm:px-6 xl:flex-row xl:items-center xl:justify-between xl:gap-8">
+          <div
+            google-side-rail-overlap="false"
+            className="mx-auto flex max-w-[1600px] flex-col gap-4 px-4 py-5 sm:px-6 xl:flex-row xl:items-center xl:justify-between xl:gap-8"
+          >
             <div className="min-w-0">
               <h1 className="font-display text-2xl font-semibold sm:text-3xl">
                 {m['cad.online.h1']()}
@@ -270,7 +273,13 @@ export function CadOnlinePage() {
           </div>
         </section>
 
-        <div className="group-fullscreen/editor:flex group-fullscreen/editor:min-h-0 group-fullscreen/editor:w-full group-fullscreen/editor:max-w-none group-fullscreen/editor:flex-1 group-fullscreen/editor:flex-col group-fullscreen/editor:p-0 mx-auto max-w-[1600px] px-0 sm:px-6 sm:py-4">
+        {/* AdSense side rails must stay outside the editor, including its
+            existing 24px desktop padding, rather than cover the tool panels.
+            https://support.google.com/adsense/answer/16531757 */}
+        <div
+          google-side-rail-overlap="false"
+          className="group-fullscreen/editor:flex group-fullscreen/editor:min-h-0 group-fullscreen/editor:w-full group-fullscreen/editor:max-w-none group-fullscreen/editor:flex-1 group-fullscreen/editor:flex-col group-fullscreen/editor:p-0 mx-auto max-w-[1600px] px-0 sm:px-6 sm:py-4"
+        >
           <div className="shrink-0 space-y-2 border-x border-t px-4 py-3 text-sm">
             {files.signedIn && files.cloudLoadFailed && (
               <p
