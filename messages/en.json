@@ -1214,6 +1214,8 @@
   "cad.dl.source_desc": "You need a recent Rust toolchain (Rust 1.95 or newer for the desktop and web UI). Then clone and run with a sample drawing:",
   "cad.dl.cli_title": "Command-line tool (for scripts and agents)",
   "cad.dl.cli_desc": "cadcraft-cli is a headless build for automation, CI and AI agents. It ships with the desktop downloads (macOS has a separate universal CLI zip).",
+  "cad.dl.cli_reference_link": "CLI downloads and command reference",
+  "cad.cmp.review_link": "Read the hands-on CADCraft review",
   "cad.dl.web_title": "Self-host the web version",
   "cad.dl.web_desc": "The release includes cadcraft-web-{version}.zip, a static site with no server code. Upload the folder anywhere that serves static files. Serve .wasm as application/wasm and enable gzip or Brotli to cut the download from about 23 MB to about 8 MB.",
   "cad.dl.web_try": "Or just use our hosted copy",

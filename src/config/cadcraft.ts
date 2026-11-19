@@ -19,3 +19,40 @@ export const cadcraftLinks = {
   /** Self-hosted copy of the official web build (public/cadcraft-app/). */
   app: '/cadcraft-app/index.html',
 } as const;
+
+export const cadcraftCliPackages = {
+  macOS: [
+    {
+      label: 'Universal',
+      url: `${RELEASE}/cadcraft-cli-${CADCRAFT_VERSION}-macos-universal.zip`,
+    },
+  ],
+  Windows: [
+    {
+      label: 'x64',
+      url: `${RELEASE}/cadcraft-${CADCRAFT_VERSION}-windows-x64-portable.zip`,
+    },
+    {
+      label: 'ARM64',
+      url: `${RELEASE}/cadcraft-${CADCRAFT_VERSION}-windows-arm64-portable.zip`,
+    },
+    {
+      label: 'x86',
+      url: `${RELEASE}/cadcraft-${CADCRAFT_VERSION}-windows-x86-portable.zip`,
+    },
+  ],
+  Linux: [
+    {
+      label: 'x86_64',
+      url: `${RELEASE}/cadcraft-${CADCRAFT_VERSION}-linux-x86_64.tar.gz`,
+    },
+    {
+      label: 'ARM64',
+      url: `${RELEASE}/cadcraft-${CADCRAFT_VERSION}-linux-aarch64.tar.gz`,
+    },
+    {
+      label: 'RISC-V 64',
+      url: `${RELEASE}/cadcraft-${CADCRAFT_VERSION}-linux-riscv64.tar.gz`,
+    },
+  ],
+} as const;

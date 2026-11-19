@@ -32,6 +32,7 @@
   "cad.dl.bsd_title": "FreeBSD",
   "cad.dl.cli_desc": "cadcraft-cli é a versão sem interface gráfica para automação, CI e agentes de IA. Ela acompanha os downloads para desktop; no macOS, a CLI tem um ZIP universal separado.",
   "cad.dl.cli_title": "Ferramenta de linha de comando (scripts e agentes)",
+  "cad.dl.cli_reference_link": "Downloads e referência de comandos da CLI (em inglês)",
   "cad.dl.h1": "Baixar CADCraft",
   "cad.dl.launcher_btn": "Baixar o ArtCraft Launcher",
   "cad.dl.launcher_desc": "O ArtCraft Launcher instala o CADCraft e o mantém atualizado junto com os outros aplicativos ArtCraft. É a opção para quem prefere atualizações automáticas.",

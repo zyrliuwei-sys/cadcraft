@@ -9,6 +9,7 @@ import { isBlogPostIndexable } from '@/content/posts/indexing';
 const STATIC_PATHS = [
   '',
   '/download',
+  '/cadcraft-cli',
   '/online',
   '/dwg-viewer',
   '/dxf-viewer',

@@ -1214,6 +1214,8 @@
   "cad.dl.source_desc": "需要较新的 Rust 工具链（桌面版和 Web 界面需 Rust 1.95 或更高）。克隆仓库并用示例图纸运行：",
   "cad.dl.cli_title": "命令行工具（用于脚本和 Agent）",
   "cad.dl.cli_desc": "cadcraft-cli 是用于自动化、CI 和 AI Agent 的无界面版本，随桌面版一同发布（macOS 另有通用 CLI zip 包）。",
+  "cad.dl.cli_reference_link": "CLI 下载与命令参考",
+  "cad.cmp.review_link": "阅读 CADCraft 实测评测",
   "cad.dl.web_title": "自建 Web 版",
   "cad.dl.web_desc": "发布文件包含 cadcraft-web-{version}.zip，这是一个没有服务端代码的静态站点，上传到任意静态文件服务器即可。请将 .wasm 以 application/wasm 类型提供，并开启 gzip 或 Brotli，下载体积可从约 23 MB 降到约 8 MB。",
   "cad.dl.web_try": "或者直接用我们托管的版本",

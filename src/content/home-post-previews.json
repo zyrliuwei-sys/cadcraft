@@ -1,5 +1,9 @@
 {
   "pt-BR": {
+    "cadcraft-review": {
+      "title": "CADCraft na prática: testes de DWG, DXF e PDF",
+      "description": "Veja o que um desenho de exemplo preservou após a conversão e o que o relatório apontou como alterado."
+    },
     "cadcraft-github": {
       "title": "CADCraft no GitHub: repositório oficial, versões e código-fonte",
       "description": "Encontre o repositório oficial do CADCraft, escolha o arquivo certo da versão, diferencie código-fonte de instaladores e compile uma versão específica."
@@ -43,7 +47,7 @@
       "title": "Existe AutoCAD portátil? Alternativas CAD portáteis e gratuitas"
     },
     "autodesk-alternatives": {
-      "title": "Alternativas à Autodesk: uma opção gratuita para cada produto"
+      "title": "Alternativas gratuitas à Autodesk para AutoCAD, Fusion, Revit e outros"
     },
     "autocad-clone": {
       "title": "Um clone de código aberto do AutoCAD feito com agentes de IA"
@@ -110,6 +114,10 @@
     }
   },
   "it-IT": {
+    "cadcraft-review": {
+      "title": "CADCraft alla prova: DWG, DXF e PDF",
+      "description": "Scopri cosa si conserva in un disegno di esempio dopo la conversione e quali differenze segnala il rapporto."
+    },
     "cadcraft-github": {
       "title": "CADCraft su GitHub: repository ufficiale, versioni e sorgenti",
       "description": "Trova il repository ufficiale CADCraft, scegli il file giusto della versione, distingui sorgenti e installer e compila un tag preciso."
@@ -153,7 +161,7 @@
       "title": "Esiste AutoCAD portatile? Alternative CAD gratuite e portatili"
     },
     "autodesk-alternatives": {
-      "title": "Alternative ad Autodesk: un’opzione gratuita per ogni prodotto"
+      "title": "Alternative gratuite ad Autodesk per AutoCAD, Fusion, Revit e altri prodotti"
     },
     "autocad-clone": {
       "title": "Un’alternativa a codice aperto ad AutoCAD costruita con agenti IA"
@@ -220,6 +228,10 @@
     }
   },
   "de-DE": {
+    "cadcraft-review": {
+      "title": "CADCraft im Praxistest: DWG, DXF und PDF",
+      "description": "Ein Beispieldokument zeigt, was die Konvertierung bewahrt und welche Unterschiede der Vergleich meldet."
+    },
     "cadcraft-github": {
       "title": "CADCraft auf GitHub: offizielles Repository, Versionen und Quellcode",
       "description": "Finden Sie das offizielle CADCraft-Repository, wählen Sie die richtige Veröffentlichungsdatei, unterscheiden Sie Quellcode und Installationspakete und kompilieren Sie einen festen Versionsstand."
@@ -263,7 +275,7 @@
       "title": "Gibt es ein portables AutoCAD? Kostenlose portable CAD-Alternativen"
     },
     "autodesk-alternatives": {
-      "title": "Alternativen zu Autodesk: eine kostenlose Option für jedes Produkt"
+      "title": "Kostenlose Autodesk-Alternativen für AutoCAD, Fusion, Revit und mehr"
     },
     "autocad-clone": {
       "title": "Ein quelloffener AutoCAD-Nachbau mit KI-Agenten"

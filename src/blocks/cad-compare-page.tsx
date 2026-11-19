@@ -161,6 +161,14 @@ export function CadComparePage() {
           {m['cad.cmp.table_title']()}
         </h2>
         <CompareTable rows={rows} className="mt-8" />
+        <p className="mt-5 text-sm">
+          <Link
+            href="/blog/cadcraft-review"
+            className="text-signal-ink font-semibold hover:underline"
+          >
+            {m['cad.cmp.review_link']()}
+          </Link>
+        </p>
       </section>
 
       <section className="bg-muted border-y py-16 lg:py-24">

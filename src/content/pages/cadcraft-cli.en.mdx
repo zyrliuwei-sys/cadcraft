@@ -1,0 +1,67 @@
+import { CadCliDownloads } from '@/components/cad-cli-downloads';
+import { CodeBlock } from '@/components/code-block';
+
+export const meta = {
+  title: 'CADCraft CLI: Download and Command Reference',
+  description:
+    'Download cadcraft-cli for macOS, Windows or Linux. Verify the installation, inspect a drawing and convert DWG or DXF files from your terminal.',
+  updated_at: '2026-11-19',
+  reviewed_at: '2026-11-19',
+  reviewed_version: '0.18.0',
+};
+
+## Download CADCraft CLI
+
+Choose your operating system and processor. The links point to the ArtCraft team's GitHub release that matches the version hosted on this site.
+
+<CadCliDownloads
+  releaseLabel="Official release"
+  checksumsLabel="SHA-256 checksums"
+  notes={{
+    macOS: 'Standalone ZIP for Apple silicon and Intel.',
+    Windows: 'The portable ZIP includes cadcraft-cli.exe.',
+    Linux: 'Find cadcraft-cli in the bin folder of the extracted tar.gz.',
+  }}
+/>
+
+## Verify the archive and start the CLI
+
+1. Compare the download's SHA-256 hash with the matching filename in the release's checksum list. Use `shasum -a 256` on macOS, `sha256sum` on Linux, or `Get-FileHash -Algorithm SHA256` in PowerShell, followed by the archive path.
+2. Extract the archive. Open a terminal in the folder that contains the binary. Run `./cadcraft-cli --version` on macOS or Linux, or `.\cadcraft-cli.exe --version` in PowerShell.
+3. The examples below assume `cadcraft-cli` is on your PATH. Otherwise, use the same relative path to the executable or call it by its full path from your working folder.
+
+<CodeBlock code="cadcraft-cli --version" />
+
+## Run a complete example
+
+Run these in an empty, writable folder. They generate the built-in bracket, inspect its entity counts and export a PDF preview. You can also [download the sample DXF](/examples/review-0180/bracket.dxf).
+
+<CodeBlock
+  code={[
+    'cadcraft-cli sample bracket bracket.dxf',
+    'cadcraft-cli info bracket.dxf',
+    'cadcraft-cli convert bracket.dxf bracket.pdf',
+  ].join('\n')}
+/>
+
+The v0.18.0 sample reports **46 entities**. The PDF command plots model space to a single page fitted to the drawing extents. Check the result in a PDF viewer before sending it on.
+
+## Common commands
+
+| Task                                             | Command                                                 |
+| ------------------------------------------------ | ------------------------------------------------------- |
+| Inspect a DWG without opening the desktop editor | `cadcraft-cli info drawing.dwg`                         |
+| Write a new DXF from a DWG                       | `cadcraft-cli convert drawing.dwg drawing-copy.dxf`     |
+| Export an SVG preview                            | `cadcraft-cli convert drawing.dxf drawing.svg`          |
+| Compare after saving and reopening               | `cadcraft-cli roundtrip drawing.dwg --out check-report` |
+| See conversion options                           | `cadcraft-cli convert --help`                           |
+
+Use a new output filename and keep the source drawing. Read the round-trip report before treating a successful conversion as proof that the file was preserved. [See the DWG, DXF and PDF results from our benchmark](/blog/cadcraft-review).
+
+## Where to go next
+
+- [CLI workflow tutorial](/blog/cadcraft-vs-autocad-command-line) for scripts, selection and framing.
+- [CADCraft MCP setup](/blog/autocad-ai-agent-mcp) for connecting an AI client.
+- [Desktop installation](/download) for the graphical app, or [open CADCraft online](/online) to inspect the bracket in your browser.
+
+For corrections to this guide, [contact the site](/contact). For bugs in the tool, use the [upstream issue tracker](https://github.com/storytold/cadcraft/issues).

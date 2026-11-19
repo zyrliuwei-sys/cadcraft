@@ -1,0 +1,67 @@
+import { CadCliDownloads } from '@/components/cad-cli-downloads';
+import { CodeBlock } from '@/components/code-block';
+
+export const meta = {
+  title: 'CADCraft CLI 下载与命令参考',
+  description:
+    '下载适用于 macOS、Windows 和 Linux 的 cadcraft-cli，验证安装，并在终端检查图纸、转换 DWG 和 DXF。',
+  updated_at: '2026-11-19',
+  reviewed_at: '2026-11-19',
+  reviewed_version: '0.18.0',
+};
+
+## 下载 CADCraft CLI
+
+选择系统和处理器。下载来自 ArtCraft 团队的 GitHub 发布页，版本与本站托管的在线版一致。
+
+<CadCliDownloads
+  releaseLabel="官方发布"
+  checksumsLabel="SHA-256 校验值"
+  notes={{
+    macOS: '支持 Apple 芯片和 Intel 的独立 ZIP。',
+    Windows: '便携版 ZIP 内含 cadcraft-cli.exe。',
+    Linux: '解压 tar.gz 后，在 bin 目录中找到 cadcraft-cli。',
+  }}
+/>
+
+## 校验并运行
+
+1. 在 macOS 用 `shasum -a 256`，在 Linux 用 `sha256sum`，在 PowerShell 用 `Get-FileHash -Algorithm SHA256`，后接下载文件的路径，与发布页上同名文件的校验值核对。
+2. 解压后，在可执行文件所在目录打开终端。macOS 或 Linux 运行 `./cadcraft-cli --version`，PowerShell 运行 `.\cadcraft-cli.exe --version`。
+3. 以下示例假设已将命令加入 PATH。也可以从工作目录直接用可执行文件的完整路径。
+
+<CodeBlock code="cadcraft-cli --version" />
+
+## 跑一个完整示例
+
+在空的可写目录运行以下命令，生成支架样例、检查图元数量并导出 PDF。也可[直接下载示例 DXF](/examples/review-0180/bracket.dxf)。
+
+<CodeBlock
+  code={[
+    'cadcraft-cli sample bracket bracket.dxf',
+    'cadcraft-cli info bracket.dxf',
+    'cadcraft-cli convert bracket.dxf bracket.pdf',
+  ].join('\n')}
+/>
+
+v0.18.0 的样例包含 **46 个图元**。PDF 命令将模型空间适配到单页。发送前，先用阅读器检查出图效果。
+
+## 常用命令
+
+| 任务                     | 命令                                                    |
+| ------------------------ | ------------------------------------------------------- |
+| 检查 DWG 内容            | `cadcraft-cli info drawing.dwg`                         |
+| 把 DWG 另存为 DXF        | `cadcraft-cli convert drawing.dwg drawing-copy.dxf`     |
+| 导出 SVG 预览            | `cadcraft-cli convert drawing.dxf drawing.svg`          |
+| 对比保存并重打开后的差异 | `cadcraft-cli roundtrip drawing.dwg --out check-report` |
+| 查看转换参数             | `cadcraft-cli convert --help`                           |
+
+请保留原件并使用新文件名。即使转换成功，也要查看比较报告。[查看 DWG、DXF 和 PDF 实测](/blog/cadcraft-review)。
+
+## 继续阅读
+
+- [CLI 工作流教程](/blog/cadcraft-vs-autocad-command-line)
+- [CADCraft MCP 配置](/blog/autocad-ai-agent-mcp)
+- [桌面版安装](/download)与[在线编辑器](/online)
+
+如发现指南有误，可[联系本站](/contact)。工具本身的问题请反馈到[上游项目](https://github.com/storytold/cadcraft/issues)。

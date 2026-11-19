@@ -189,7 +189,15 @@ export function CadDownloadPage() {
         </DocSection>
 
         <DocSection id="cli" title={m['cad.dl.cli_title']()}>
-          <p>{m['cad.dl.cli_desc']()}</p>
+          <p>
+            {m['cad.dl.cli_desc']()}{' '}
+            <Link
+              href="/cadcraft-cli"
+              className="text-signal-ink font-semibold hover:underline"
+            >
+              {m['cad.dl.cli_reference_link']()}
+            </Link>
+          </p>
           <CodeBlock
             code={
               'cadcraft-cli info drawing.dxf\ncadcraft-cli convert drawing.dxf drawing.svg\ncadcraft-cli mcp'

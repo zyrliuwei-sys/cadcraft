@@ -1,9 +1,9 @@
 import { PostFaq } from '@/components/post-faq';
 
 export const meta = {
-  title: 'Autodesk Alternatives: A Free Option for Every Autodesk Product',
+  title: 'Free Autodesk Alternatives for AutoCAD, Fusion, Revit and More',
   description:
-    'Free and open-source alternatives to AutoCAD, Fusion, Inventor, Revit, 3ds Max, Maya, Civil 3D, AutoCAD Electrical and EAGLE, product by product, plus which file format to export before you switch and what you lose.',
+    'Compare free alternatives to AutoCAD, Fusion, Inventor and Revit. See which app fits your work, which file format to export and what you may lose in the switch.',
   created_at: '2026-10-29',
   cover: '/imgs/blog/autodesk-alternatives-map.svg',
   faq: [
@@ -26,17 +26,18 @@ export const meta = {
   ],
 };
 
-**Short answer:** no single program replaces Autodesk, but almost every Autodesk product has a free or open-source counterpart:
+Choose a replacement for the Autodesk product you actually use. Before switching, export a representative project and check what the new tool can read, edit and send back.
 
-- **AutoCAD / AutoCAD LT** (2D drafting) → [CADCraft](/download), LibreCAD, QCAD Community Edition
-- **Fusion / Inventor** (parametric 3D) → FreeCAD, Onshape Free, SolveSpace
-- **Revit** (BIM) → Bonsai (the Blender add-on formerly called BlenderBIM), FreeCAD's BIM workbench
-- **3ds Max / Maya** (3D modelling and animation) → Blender
-- **Civil 3D** → QGIS for GIS and terrain; no full open-source equivalent
-- **AutoCAD Electrical** → QElectroTech
-- **EAGLE** (PCB design, now retired) → KiCad
+| If you use                                  | Free tools to try                                         | Export or keep before switching                                                                                    |
+| ------------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| AutoCAD or AutoCAD LT for 2D drafting       | [CADCraft](/download), LibreCAD or QCAD Community Edition | Export DXF and keep the original DWG. Check dimensions, fonts and custom objects.                                  |
+| Fusion or Inventor for parametric 3D        | FreeCAD, SolveSpace or Onshape Free                       | Export STEP for solid geometry. Keep the original model and a PDF drawing for design intent.                       |
+| Revit for BIM                               | Bonsai (Blender) or FreeCAD BIM                           | Export IFC and check property sets. Retain the native RVT for families and project history.                        |
+| 3ds Max or Maya for modelling and animation | Blender                                                   | Export FBX, OBJ or glTF as appropriate. Check materials, rigging and animation separately.                         |
+| Civil 3D for terrain and GIS                | QGIS for part of the workflow                             | Keep the original project and test a sample dataset. Corridor and pipe-network workflows need a separate solution. |
+| AutoCAD Electrical or EAGLE                 | QElectroTech for schematics, KiCad for PCB work           | Save the source project and a plotted reference. Check EAGLE schematics and boards in KiCad before switching.      |
 
-The tools are rarely the hard part. **File exchange is.** Export to open formats before your subscription ends; the table further down shows what to export and what you'll lose.
+If a customer requires an editable DWG or RVT back, test the exported copy in the software they use before committing.
 
 _cadcraft.org is an independent guide, not affiliated with Autodesk. CADCraft is the ArtCraft team's open-source CAD program ([getartcraft.com/apps/cadcraft](https://getartcraft.com/apps/cadcraft)). Product details are as of October 2026; licences and free plans change, so check each project's site._
 
@@ -132,5 +133,6 @@ Practical notes:
 ## Related
 
 - [Free AutoCAD alternatives](/blog/free-autocad-alternatives): the 2D options compared in depth
+- [CADCraft review](/blog/cadcraft-review): a reproducible DWG, DXF and PDF test
 - [Open source CAD compared](/blog/open-source-cad): FreeCAD, LibreCAD, QCAD, OpenSCAD, SolveSpace and CADCraft
 - [CAD file formats](/blog/cad-file-formats): which formats each tool reads and writes
