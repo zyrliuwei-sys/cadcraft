@@ -30,6 +30,9 @@ type Renderer = '' | '?webgl' | '?cpu';
 // Keep the reference desktop layout and scale the entire editor on every screen.
 const VIRTUAL_WIDTH = 1280;
 const VIRTUAL_HEIGHT = (VIRTUAL_WIDTH * 1358) / 2182;
+const BOTTOM_ANCHOR = 'ins.adsbygoogle[data-anchor-status]';
+const ANCHOR_HANDLE_HEIGHT = 30;
+const RECENT_FILES_CLEARANCE = 64;
 
 function useFitScale() {
   const ref = useRef<HTMLDivElement>(null);
@@ -63,21 +66,43 @@ function useFitScale() {
     update();
     const observer = new ResizeObserver(update);
     observer.observe(el);
-    // The bottom anchor reserves space with body padding. Let that space
-    // limit the editor width, so its existing aspect ratio determines height.
+    let anchor: HTMLElement | null = null;
     const updateBottomInset = () => {
-      el.style.setProperty(
-        '--editor-bottom-inset',
-        getComputedStyle(document.body).paddingBottom
-      );
+      const bounds = anchor?.getBoundingClientRect();
+      const bottom = anchor?.style.bottom;
+      // AdSense can keep the expanded padding even after the ad folds away.
+      // Count the visible ad and its handle, with room for the recent files row.
+      const inset =
+        bottom && bottom !== 'auto' && bounds?.height
+          ? `${Math.max(0, window.innerHeight - bounds.top) + ANCHOR_HANDLE_HEIGHT + RECENT_FILES_CLEARANCE}px`
+          : getComputedStyle(document.body).paddingBottom;
+      el.style.setProperty('--editor-bottom-inset', inset);
     };
-    updateBottomInset();
-    const bodyObserver = new MutationObserver(updateBottomInset);
-    bodyObserver.observe(document.body, { attributeFilter: ['style'] });
+    const anchorObserver = new MutationObserver(updateBottomInset);
+    const findAnchor = () => {
+      const next = document.querySelector<HTMLElement>(BOTTOM_ANCHOR);
+      if (next !== anchor) {
+        anchorObserver.disconnect();
+        anchor = next;
+        if (anchor)
+          anchorObserver.observe(anchor, { attributeFilter: ['style'] });
+      }
+      updateBottomInset();
+    };
+    findAnchor();
+    const adObserver = new MutationObserver(findAnchor);
+    adObserver.observe(document.body, {
+      attributeFilter: ['style'],
+      childList: true,
+    });
+    adObserver.observe(document.documentElement, { childList: true });
+    window.addEventListener('resize', updateBottomInset);
     document.addEventListener('fullscreenchange', update);
     return () => {
       observer.disconnect();
-      bodyObserver.disconnect();
+      anchorObserver.disconnect();
+      adObserver.disconnect();
+      window.removeEventListener('resize', updateBottomInset);
       document.removeEventListener('fullscreenchange', update);
     };
   }, []);
@@ -412,7 +437,7 @@ export function CadOnlinePage() {
                 // The sticky header is 4rem + its border. Leave room for
                 // the collapsed anchor tab even before its padding is set.
                 '--editor-fit-width':
-                  'calc(max(20rem, 100dvh - 4rem - 1px - max(2.5rem, var(--editor-bottom-inset, 0px))) * var(--editor-aspect))',
+                  'calc(max(20rem, 100dvh - 4rem - 1px - max(2rem, var(--editor-bottom-inset, 0px))) * var(--editor-aspect))',
               } as CSSProperties
             }
           >
