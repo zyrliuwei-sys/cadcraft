@@ -1230,7 +1230,7 @@
   "cad.online.ui_zoom": "编辑器界面大小",
   "cad.online.zoom_out": "缩小按钮和菜单",
   "cad.online.zoom_in": "放大按钮和菜单",
-  "cad.online.zoom_fit": "适应窗口",
+  "cad.online.zoom_fit": "适应宽度",
   "cad.online.fullscreen": "全屏打开",
   "cad.online.loading_note": "首次加载需下载约 8–23 MB，之后会被缓存。",
   "cad.online.tips_title": "试试这些命令",

@@ -30,15 +30,6 @@ type Renderer = '' | '?webgl' | '?cpu';
 // Keep the reference desktop layout and scale the entire editor on every screen.
 const VIRTUAL_WIDTH = 1280;
 const VIRTUAL_HEIGHT = (VIRTUAL_WIDTH * 1358) / 2182;
-const MIN_EDITOR_HEIGHT = 320;
-const EDITOR_BOTTOM_GAP = 8;
-
-function editorViewportBottom() {
-  // AdSense reserves space for its bottom anchor in the body's padding.
-  const bottomPadding =
-    parseFloat(getComputedStyle(document.body).paddingBottom) || 0;
-  return window.innerHeight - bottomPadding - EDITOR_BOTTOM_GAP;
-}
 
 function useFitScale() {
   const ref = useRef<HTMLDivElement>(null);
@@ -53,21 +44,15 @@ function useFitScale() {
     const el = ref.current;
     if (!el) return;
     const update = () => {
-      const fullscreen = document.fullscreenElement?.contains(el) ?? false;
-      // Use the document position so scrolling does not rescale the canvas.
-      const top = el.getBoundingClientRect().top + window.scrollY;
-      const availableHeight = Math.max(
-        MIN_EDITOR_HEIGHT,
-        Math.floor(editorViewportBottom() - top)
-      );
-      el.style.setProperty('--editor-available-height', `${availableHeight}px`);
-
       const { clientWidth, clientHeight } = el;
       if (!clientWidth || !clientHeight) return;
-      const scale = Math.min(
-        clientWidth / VIRTUAL_WIDTH,
-        clientHeight / VIRTUAL_HEIGHT
-      );
+      const fullscreen = document.fullscreenElement?.contains(el) ?? false;
+      const widthScale = clientWidth / VIRTUAL_WIDTH;
+      // Fullscreen must fit both axes so short or ultrawide screens still
+      // have enough space for the editor's bottom controls.
+      const scale = fullscreen
+        ? Math.min(widthScale, clientHeight / VIRTUAL_HEIGHT)
+        : widthScale;
       setBox({
         width: clientWidth / scale,
         height: clientHeight / scale,
@@ -76,27 +61,12 @@ function useFitScale() {
       });
     };
     update();
-    let pending = 0;
-    const scheduleUpdate = () => {
-      if (pending) return;
-      pending = requestAnimationFrame(() => {
-        pending = 0;
-        update();
-      });
-    };
-    const observer = new ResizeObserver(scheduleUpdate);
+    const observer = new ResizeObserver(update);
     observer.observe(el);
-    observer.observe(document.body);
-    const bodyStyles = new MutationObserver(scheduleUpdate);
-    bodyStyles.observe(document.body, { attributeFilter: ['style', 'class'] });
-    window.addEventListener('resize', scheduleUpdate);
-    document.addEventListener('fullscreenchange', scheduleUpdate);
+    document.addEventListener('fullscreenchange', update);
     return () => {
-      cancelAnimationFrame(pending);
       observer.disconnect();
-      bodyStyles.disconnect();
-      window.removeEventListener('resize', scheduleUpdate);
-      document.removeEventListener('fullscreenchange', scheduleUpdate);
+      document.removeEventListener('fullscreenchange', update);
     };
   }, []);
 
@@ -165,17 +135,6 @@ export function CadOnlinePage() {
   const src = `${cadcraftLinks.app}${renderer}${renderer ? '&' : '?'}ui=2&v=${CADCRAFT_VERSION}`;
   const { ref: frameBoxRef, box } = useFitScale();
   const displayScale = box ? box.scale * (box.fullscreen ? 1 : uiZoom) : 1;
-
-  const fitEditor = () => {
-    setUiZoom(1);
-    const frameBox = frameBoxRef.current;
-    if (!frameBox) return;
-    // Short windows use a minimum canvas height to keep controls readable.
-    // Bring the whole canvas above the anchor when the user selects Fit.
-    const overflow =
-      frameBox.getBoundingClientRect().bottom - editorViewportBottom();
-    if (overflow > 0) window.scrollBy(0, Math.ceil(overflow));
-  };
 
   const renderers: [Renderer, string][] = [
     ['', m['cad.online.render_auto']()],
@@ -251,7 +210,7 @@ export function CadOnlinePage() {
                 <button
                   type="button"
                   className="h-10 min-w-14 px-2 text-xs font-semibold"
-                  onClick={fitEditor}
+                  onClick={() => setUiZoom(1)}
                   aria-label={m['cad.online.zoom_fit']()}
                 >
                   {Math.round(uiZoom * 100)}%
@@ -434,7 +393,7 @@ export function CadOnlinePage() {
               for (const file of Array.from(event.dataTransfer.files))
                 void openFile(file);
             }}
-            className="group-fullscreen/editor:aspect-auto group-fullscreen/editor:max-h-none group-fullscreen/editor:min-h-0 group-fullscreen/editor:flex-1 group-fullscreen/editor:overflow-hidden relative aspect-(--editor-aspect) max-h-(--editor-available-height) w-full overflow-auto border-y bg-[#22282f] sm:border"
+            className="group-fullscreen/editor:aspect-auto group-fullscreen/editor:min-h-0 group-fullscreen/editor:flex-1 group-fullscreen/editor:overflow-hidden relative aspect-(--editor-aspect) w-full overflow-auto border-y bg-[#22282f] sm:border"
             style={
               {
                 '--editor-aspect': VIRTUAL_WIDTH / VIRTUAL_HEIGHT,
@@ -443,7 +402,7 @@ export function CadOnlinePage() {
           >
             {box && (
               <div
-                className="relative overflow-hidden"
+                className="relative"
                 style={{
                   width: box.width * displayScale,
                   height: box.height * displayScale,
