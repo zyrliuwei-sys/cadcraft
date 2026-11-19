@@ -63,9 +63,21 @@ function useFitScale() {
     update();
     const observer = new ResizeObserver(update);
     observer.observe(el);
+    // The bottom anchor reserves space with body padding. Let that space
+    // limit the editor width, so its existing aspect ratio determines height.
+    const updateBottomInset = () => {
+      el.style.setProperty(
+        '--editor-bottom-inset',
+        getComputedStyle(document.body).paddingBottom
+      );
+    };
+    updateBottomInset();
+    const bodyObserver = new MutationObserver(updateBottomInset);
+    bodyObserver.observe(document.body, { attributeFilter: ['style'] });
     document.addEventListener('fullscreenchange', update);
     return () => {
       observer.disconnect();
+      bodyObserver.disconnect();
       document.removeEventListener('fullscreenchange', update);
     };
   }, []);
@@ -393,16 +405,20 @@ export function CadOnlinePage() {
               for (const file of Array.from(event.dataTransfer.files))
                 void openFile(file);
             }}
-            className="group-fullscreen/editor:aspect-auto group-fullscreen/editor:min-h-0 group-fullscreen/editor:flex-1 group-fullscreen/editor:overflow-hidden relative aspect-(--editor-aspect) w-full overflow-auto border-y bg-[#22282f] sm:border"
+            className="group-fullscreen/editor:aspect-auto group-fullscreen/editor:max-w-none group-fullscreen/editor:min-h-0 group-fullscreen/editor:flex-1 group-fullscreen/editor:overflow-hidden relative mx-auto aspect-(--editor-aspect) w-full overflow-auto border-y bg-[#22282f] sm:border md:max-w-(--editor-fit-width)"
             style={
               {
                 '--editor-aspect': VIRTUAL_WIDTH / VIRTUAL_HEIGHT,
+                // The sticky header is 4rem + its border. Leave room for
+                // the collapsed anchor tab even before its padding is set.
+                '--editor-fit-width':
+                  'calc(max(20rem, 100dvh - 4rem - 1px - max(2.5rem, var(--editor-bottom-inset, 0px))) * var(--editor-aspect))',
               } as CSSProperties
             }
           >
             {box && (
               <div
-                className="relative"
+                className="relative overflow-clip"
                 style={{
                   width: box.width * displayScale,
                   height: box.height * displayScale,
