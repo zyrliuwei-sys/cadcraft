@@ -1230,7 +1230,7 @@
   "cad.online.ui_zoom": "Editor interface size",
   "cad.online.zoom_out": "Make controls smaller",
   "cad.online.zoom_in": "Make controls larger",
-  "cad.online.zoom_fit": "Fit editor to width",
+  "cad.online.zoom_fit": "Fit editor to window",
   "cad.online.fullscreen": "Open full screen",
   "cad.online.loading_note": "The first load downloads about 8–23 MB. After that it is cached.",
   "cad.online.tips_title": "Try these commands",
