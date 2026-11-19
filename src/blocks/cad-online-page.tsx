@@ -471,7 +471,7 @@ export function CadOnlinePage() {
               </div>
             )}
           </div>
-          <p className="text-muted-foreground group-fullscreen/editor:hidden px-4 pt-2 text-xs sm:px-0">
+          <p className="text-muted-foreground group-fullscreen/editor:hidden px-4 pt-2 text-center text-xs sm:px-0">
             {m['cad.online.loading_note']()}{' '}
             {m['cad.online.license']({ version: CADCRAFT_VERSION })}
           </p>
