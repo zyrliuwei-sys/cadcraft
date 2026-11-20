@@ -25,6 +25,7 @@ import { getLocale } from '@/paraglide/runtime.js';
 import { Ads } from '@/components/analytics/ads';
 import { Clarity } from '@/components/analytics/clarity';
 import { GoogleAnalytics } from '@/components/analytics/google-analytics';
+import { GoogleTagManager } from '@/components/analytics/google-tag-manager';
 import { PageViewTracker } from '@/components/analytics/page-view-tracker';
 import { Plausible } from '@/components/analytics/plausible';
 import { PurchaseTracker } from '@/components/analytics/purchase-tracker';
@@ -173,6 +174,7 @@ function RootDocument({ children }: { children: ReactNode }) {
     <html lang={getLocale()} suppressHydrationWarning>
       <head>
         <HeadContent />
+        <GoogleTagManager />
         {isNotFound && <meta name="robots" content="noindex" />}
         {loadAds ? (
           <Ads code={adsenseCode} />
